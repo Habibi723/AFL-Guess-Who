@@ -4,316 +4,72 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AFL Guess Who</title>
-
 <style>
-:root{
---bg:#07120d;
---card:#102019;
---card2:#172a21;
---text:#f4fff7;
---muted:#a9beb1;
---green:#35d07f;
---yellow:#ffd84d;
---red:#ff6b6b;
---line:#294438
-}
-
+:root{--bg:#07120d;--card:#102019;--card2:#172a21;--text:#f4fff7;--muted:#a9beb1;--green:#35d07f;--yellow:#ffd84d;--red:#ff6b6b;--line:#294438}
 *{box-sizing:border-box}
-
-body{
-margin:0;
-background:radial-gradient(circle at top,#123523,#07120d 55%);
-color:var(--text);
-font-family:Arial,system-ui,sans-serif
-}
-
-#app{
-max-width:1150px;
-margin:auto;
-padding:22px
-}
-
-header{
-display:flex;
-justify-content:space-between;
-gap:15px;
-align-items:center
-}
-
-.brand{
-font-size:26px;
-font-weight:900
-}
-
-.brand span{
-color:var(--green)
-}
-
-.score{
-background:var(--card);
-border:1px solid var(--line);
-padding:10px 14px;
-border-radius:14px;
-font-weight:800
-}
-
-.hero{
-text-align:center;
-padding:28px 0 18px
-}
-
-.hero h1{
-font-size:clamp(32px,6vw,56px);
-margin:0 0 8px
-}
-
-.hero p{
-color:var(--muted);
-margin:0
-}
-
-.panel{
-background:rgba(16,32,25,.96);
-border:1px solid var(--line);
-border-radius:24px;
-padding:20px;
-box-shadow:0 20px 60px #0008
-}
-
-.stats{
-display:flex;
-flex-wrap:wrap;
-gap:8px;
-margin-bottom:14px
-}
-
-.pill{
-background:var(--card2);
-border:1px solid var(--line);
-padding:8px 12px;
-border-radius:999px;
-font-size:14px
-}
-
-.questionbar{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin:12px 0
-}
-
-.questionbar input{
-flex:1;
-min-width:240px;
-background:#0b1711;
-color:var(--text);
-border:1px solid var(--line);
-border-radius:13px;
-padding:12px;
-font-size:16px
-}
-
-.btn{
-border:0;
-border-radius:13px;
-padding:12px 16px;
-font-weight:900;
-cursor:pointer;
-background:var(--green);
-color:#04130b
-}
-
-.btn.secondary{
-background:var(--card2);
-border:1px solid var(--line);
-color:var(--text)
-}
-
-.btn:disabled{
-opacity:.45;
-cursor:not-allowed
-}
-
-.answer{
-min-height:30px;
-margin:10px 0;
-font-weight:900;
-text-align:center
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(6,1fr);
-gap:10px;
-margin-top:18px
-}
-
-.player{
-min-height:150px;
-background:var(--card2);
-color:var(--text);
-border:1px solid var(--line);
-border-radius:17px;
-padding:12px;
-text-align:left;
-cursor:pointer;
-transition:.35s;
-transform-style:preserve-3d;
-position:relative
-}
-
-.player.flipped{
-transform:rotateY(180deg)
-}
-
-.player-front,
-.player-back{
-backface-visibility:hidden;
-width:100%;
-height:100%
-}
-
-.player-back{
-position:absolute;
-inset:0;
-display:grid;
-place-items:center;
-text-align:center;
-padding:12px;
-transform:rotateY(180deg);
-font-weight:1000;
-font-size:18px
-}
-
-.avatar{
-width:100%;
-height:110px;
-object-fit:cover;
-border-radius:10px;
-display:block;
-background:linear-gradient(135deg,var(--green),#167a49);
-color:#04130b;
-font-weight:1000;
-margin-bottom:9px
-}
-
-.player h3{
-font-size:14px;
-margin:0 0 4px
-}
-
-.player small{
-display:none
-}
-
-.controls{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin-top:16px
-}
-
-.final{
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-margin-top:18px
-}
-
-.final select{
-flex:1;
-min-width:240px;
-background:var(--card2);
-color:var(--text);
-border:1px solid var(--line);
-border-radius:13px;
-padding:12px;
-font-weight:800
-}
-
-.win{
-color:var(--green)
-}
-
-.lose{
-color:var(--red)
-}
-
-.help{
-color:var(--muted);
-font-size:13px;
-line-height:1.5;
-margin-top:14px
-}
-
-@media(max-width:800px){
-.grid{
-grid-template-columns:repeat(3,1fr)
-}
-}
-
-@media(max-width:500px){
-#app{
-padding:12px
-}
-
-.grid{
-grid-template-columns:repeat(2,1fr)
-}
-
-.panel{
-padding:14px
-}
-}
+body{margin:0;background:radial-gradient(circle at top,#123523,#07120d 55%);color:var(--text);font-family:Arial,system-ui,sans-serif}
+#app{max-width:1150px;margin:auto;padding:22px}
+header{display:flex;justify-content:space-between;gap:15px;align-items:center}
+.brand{font-size:26px;font-weight:900}
+.brand span{color:var(--green)}
+.score{background:rgba(16,32,25,.45);border:1px solid rgba(41,68,56,.65);padding:10px 14px;border-radius:14px;font-weight:800}
+.hero{text-align:center;padding:28px 0 18px}
+.hero h1{font-size:clamp(32px,6vw,56px);margin:0 0 8px}
+.hero p{color:var(--muted);margin:0}
+.panel{background:rgba(16,32,25,.45);border:1px solid rgba(41,68,56,.65);border-radius:24px;padding:20px;box-shadow:0 20px 60px #0005}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.pill{background:rgba(23,42,33,.45);border:1px solid rgba(41,68,56,.65);padding:8px 12px;border-radius:999px;font-size:14px}
+.questionbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}
+.questionbar input{flex:1;min-width:240px;background:rgba(11,23,17,.45);color:var(--text);border:1px solid rgba(41,68,56,.65);border-radius:13px;padding:12px;font-size:16px}
+.btn{border:0;border-radius:13px;padding:12px 16px;font-weight:900;cursor:pointer;background:var(--green);color:#04130b}
+.btn.secondary{background:rgba(23,42,33,.45);border:1px solid rgba(41,68,56,.65);color:var(--text)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.answer{min-height:30px;margin:10px 0;font-weight:900;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:18px}
+.player{min-height:150px;background:rgba(23,42,33,.45);color:var(--text);border:1px solid rgba(41,68,56,.65);border-radius:17px;padding:12px;text-align:left;cursor:pointer;transition:.35s;transform-style:preserve-3d;position:relative}
+.player.flipped{transform:rotateY(180deg)}
+.player-front,.player-back{backface-visibility:hidden;width:100%;height:100%}
+.player-back{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:12px;transform:rotateY(180deg);font-weight:1000;font-size:18px}
+.avatar{width:100%;height:110px;object-fit:cover;border-radius:10px;display:block;background:linear-gradient(135deg,var(--green),#167a49);color:#04130b;font-weight:1000;margin-bottom:9px}
+.avatar.fallback{display:grid;place-items:center;font-size:20px}
+.player h3{font-size:14px;margin:0 0 4px}
+.player small{display:none}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.final{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.final input{flex:1;min-width:240px;background:rgba(11,23,17,.45);color:var(--text);border:1px solid rgba(41,68,56,.65);border-radius:13px;padding:12px;font-size:16px;font-weight:800}
+.final input::placeholder{color:var(--muted)}
+.win{color:var(--green)}
+.lose{color:var(--red)}
+.help{color:var(--muted);font-size:13px;line-height:1.5;margin-top:14px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:500px){#app{padding:12px}.grid{grid-template-columns:repeat(2,1fr)}.panel{padding:14px}}
 </style>
 </head>
 
 <body>
-
 <div id="app">
 
 <header>
 <div class="brand">🏉 AFL <span>GUESS WHO</span></div>
-
-<div class="score">
-Wins: <b id="wins">0</b> ·
-Streak: <b id="streak">0</b>
-</div>
+<div class="score">Wins: <b id="wins">0</b> · Streak: <b id="streak">0</b></div>
 </header>
 
 <section class="hero">
 <h1>Who’s that AFL player? 👀</h1>
-<p>Ask exactly 10 questions. Then make one final guess. You have 1 life.</p>
+<p>Ask questions and guess whenever you want. You have 1 life.</p>
 </section>
 
 <section class="panel">
 
 <div class="stats">
-<div class="pill">
-❓ <b id="qcount">0</b>/10 questions
-</div>
-
-<div class="pill">
-❤️ 1 life
-</div>
-
-<div class="pill">
-🎯 Target is hidden
-</div>
+<div class="pill">❓ <b id="qcount">0</b>/10 questions</div>
+<div class="pill">❤️ 1 life</div>
+<div class="pill">🎯 Target is hidden</div>
 </div>
 
 <div class="questionbar">
-
-<input
-id="questionInput"
-placeholder="Type a yes/no question, e.g. “Is the player a midfielder?”"
-autocomplete="off"
->
-
-<button class="btn" id="askBtn">
-Ask question
-</button>
-
+<input id="questionInput" placeholder="Ask ANY yes/no question about the player..." autocomplete="off">
+<button class="btn" id="askBtn">Ask question</button>
 </div>
 
 <div class="answer" id="answer"></div>
@@ -321,42 +77,26 @@ Ask question
 <div class="grid" id="grid"></div>
 
 <div class="final">
-
-<select id="guess">
-<option value="">Choose your final player...</option>
-</select>
-
-<button class="btn" id="guessBtn" disabled>
-Make final guess
-</button>
-
+<input id="guess" placeholder="Type the AFL player's name here..." autocomplete="off">
+<button class="btn" id="guessBtn">Guess player</button>
 </div>
 
 <div class="controls">
-
-<button class="btn secondary" id="newBtn">
-🔄 New board
-</button>
-
-<button class="btn secondary" id="scoreBtn">
-Reset score
-</button>
-
+<button class="btn secondary" id="newBtn">🔄 New board</button>
+<button class="btn secondary" id="scoreBtn">Reset score</button>
 </div>
 
 <div class="help">
-You can ask about team, position, whether they are a current player,
-or whether they are retired. The game answers Yes/No when it understands
-the question. The target never appears on the 24-player board.
+Ask any yes/no question you want. The game will answer strictly <b>YES</b> or <b>NO</b>.
+Questions can be about the player's team, position, current/retired status,
+name, or other information in the game's player data.
 </div>
 
 </section>
 </div>
 
 <script>
-
 const players=[
-
 ['Wayne Carey','North Melbourne','Forward','retired'],
 ['Tony Lockett','St Kilda / Sydney','Forward','retired'],
 ['Gary Ablett Sr','Hawthorn / Geelong','Forward','retired'],
@@ -408,23 +148,20 @@ const players=[
 ['Jason Horne-Francis','Port Adelaide','Midfielder','current'],
 ['Jack Sinclair','St Kilda','Defender','current'],
 ['Zach Merrett','Essendon','Midfielder','current']
-
 ].map(x=>({
-
 name:x[0],
 team:x[1],
 pos:x[2],
 status:x[3]
-
 }));
 
 let target=null;
 let board=[];
 let questions=0;
 let gameOver=false;
-
 let wins=+localStorage.getItem('agwWins')||0;
 let streak=+localStorage.getItem('agwStreak')||0;
+let flippedCards=new Set();
 
 const $=id=>document.getElementById(id);
 
@@ -435,45 +172,44 @@ n.split(' ')
 .slice(0,2);
 
 const portrait=p=>{
-
 let e=document.createElement('div');
-
 e.textContent=initials(p.name);
-
 e.style.cssText=
 'width:100%;height:110px;border-radius:10px;display:grid;place-items:center;font-size:30px;font-weight:1000;color:#fff;background:radial-gradient(circle at 50% 34%,#f0b78b 0 17%,transparent 18%),radial-gradient(circle at 50% 68%,#20252a 0 28%,transparent 29%),linear-gradient(160deg,#1d3b2c,#0b1711)';
-
 return e.outerHTML
 }
 
 function save(){
-
 localStorage.setItem('agwWins',wins);
-localStorage.setItem('agwStreak',streak);
-
+localStorage.setItem('agwStreak',streak)
 }
 
 function newGame(){
+target=players[Math.floor(Math.random()*players.length)];
 
-target=
-players[Math.floor(Math.random()*players.length)];
+let pool=players.filter(p=>p.name!==target.name);
 
-let pool=
-players.filter(p=>p.name!==target.name);
-
-board=
-pool
+board=pool
 .sort(()=>Math.random()-.5)
 .slice(0,24);
 
 questions=0;
 gameOver=false;
+flippedCards=new Set();
 
 $('answer').textContent='';
 $('questionInput').value='';
 
-render();
+render()
+}
 
+function toggleCard(name){
+if(flippedCards.has(name))
+flippedCards.delete(name);
+else
+flippedCards.add(name);
+
+render()
 }
 
 function render(){
@@ -482,180 +218,155 @@ $('wins').textContent=wins;
 $('streak').textContent=streak;
 $('qcount').textContent=questions;
 
-$('guess').innerHTML=
-'<option value="">Choose your final player...</option>'+
-players.map(p=>
-'<option value="'+p.name+'">'+p.name+'</option>'
-).join('');
+$('guess').disabled=gameOver;
+$('guessBtn').disabled=gameOver;
+$('askBtn').disabled=gameOver;
+$('questionInput').disabled=gameOver;
 
-$('guess').disabled=
-questions<10||gameOver;
-
-$('guessBtn').disabled=
-questions<10||gameOver;
-
-$('askBtn').disabled=
-questions>=10||gameOver;
-
-$('questionInput').disabled=
-questions>=10||gameOver;
-
-$('grid').innerHTML=
-
-board.map(p=>
-
-'<button type="button" class="player" onclick="this.classList.toggle(\'flipped\')">'+
-
+$('grid').innerHTML=board.map(p=>
+'<button type="button" class="player '+(flippedCards.has(p.name)?'flipped':'')+'" onclick="toggleCard(\''+
+p.name.replace(/'/g,"\\'")+
+'\')">'+
 '<div class="player-front">'+
-
 portrait(p)+
-
-'<h3>'+
-p.name+
-'</h3>'+
-
-'<small>'+
-p.team+
-' · '+
-p.pos+
-'</small>'+
-
+'<h3>'+p.name+'</h3>'+
+'<small>'+p.team+' · '+p.pos+'</small>'+
 '</div>'+
-
-'<div class="player-back">'+
-p.name+
-'</div>'+
-
+'<div class="player-back">'+p.name+'</div>'+
 '</button>'
-
-).join('');
-
+).join('')
 }
 
 function answerQuestion(q){
 
-let s=
-q.toLowerCase()
-.replace(/[?!.]/g,'');
+let s=q.toLowerCase().replace(/[?!.]/g,'').trim();
 
 let yes=null;
 
-if(/\b(mid|midfielder|midfield)\b/.test(s))
+let n=target.name.toLowerCase();
+let team=target.team.toLowerCase();
+let pos=target.pos.toLowerCase();
 
-yes=
-target.pos==='Midfielder';
-
-else if(/\b(defender|backman|back)\b/.test(s))
-
-yes=
-target.pos==='Defender';
-
-else if(/\b(forward|full forward|key forward|small forward)\b/.test(s))
-
-yes=
-target.pos==='Forward';
-
-else if(/\bruck\b/.test(s))
-
-yes=
-target.pos==='Ruck';
-
-else if(/\bretired\b|\bretire\b/.test(s))
-
-yes=
-target.status==='retired';
-
-else if(/\bcurrent\b|\bplaying now\b|\bstill playing\b/.test(s))
-
-yes=
-target.status==='current';
-
-else{
-
-let team=
-target.team
-.split('/')
-.map(x=>x.trim().toLowerCase());
-
-let found=
-team.find(t=>s.includes(t));
-
-if(found)
-yes=true;
-
-}
-
-if(yes===null){
-
-let known=
-players.find(p=>
+let known=players.find(p=>
 s.includes(p.name.toLowerCase())
 );
 
 if(known)
-yes=
-known.name===target.name;
+yes=known.name===target.name;
 
+else if(/\b(mid|midfielder|midfield)\b/.test(s))
+yes=pos==='midfielder';
+
+else if(/\b(defender|backman|back)\b/.test(s))
+yes=pos==='defender';
+
+else if(/\b(forward|full forward|key forward|small forward)\b/.test(s))
+yes=pos==='forward';
+
+else if(/\bruck\b/.test(s))
+yes=pos==='ruck';
+
+else if(/\bretired\b|\bretire(d)?\b/.test(s))
+yes=target.status==='retired';
+
+else if(/\bcurrent\b|\bplaying now\b|\bstill playing\b|\bactive\b/.test(s))
+yes=target.status==='current';
+
+else{
+
+let matchedTeam=
+team
+.split('/')
+.map(x=>x.trim())
+.some(t=>s.includes(t));
+
+if(matchedTeam)
+yes=true;
+
+else if(/\b(name|called|named)\b/.test(s)){
+
+let words=n.split(' ');
+
+yes=words.some(w=>
+w.length>2&&s.includes(w)
+);
+
+}else{
+
+let attr=
+target.team+' '+
+target.pos+' '+
+target.status+' '+
+target.name;
+
+let qWords=s
+.split(/\s+/)
+.filter(w=>
+w.length>2&&
+![
+'the','and','this','that','player',
+'person','they','their','does',
+'is','are','was','were','have',
+'has','had','from','with','for'
+].includes(w)
+);
+
+let matches=qWords.filter(w=>
+attr.toLowerCase().includes(w)
+);
+
+if(matches.length>=2)
+yes=true;
+}
 }
 
-return yes===null
-
-?
-'I can only answer questions about position, team, or current/retired status. Try another question.'
-
-:
-(yes?'✅ Yes — ':'❌ No — ')+q;
-
+return yes===null?'NO':(yes?'YES':'NO')
 }
 
 function ask(){
 
-if(gameOver||questions>=10)
-return;
+if(gameOver)return;
 
-let q=
-$('questionInput').value.trim();
+let q=$('questionInput').value.trim();
 
 if(!q){
-
-$('answer').textContent=
-'Type a question first.';
-
-return;
-
+$('answer').textContent='Type a question first.';
+return
 }
 
 questions++;
 
-$('answer').textContent=
-answerQuestion(q);
+$('answer').textContent=answerQuestion(q);
 
 $('questionInput').value='';
 
-render();
-
+render()
 }
 
 function finalGuess(){
 
-if(gameOver||questions<10)
-return;
+if(gameOver)return;
 
-let name=
-$('guess').value;
+let typed=$('guess').value.trim();
 
-if(!name){
+if(!typed){
+$('answer').textContent='Type a player name first.';
+return
+}
 
+let found=players.find(p=>
+p.name.toLowerCase()===typed.toLowerCase()
+);
+
+if(!found){
 $('answer').textContent=
-'Choose a player first.';
-
-return;
-
+'Player not found — type the full player name.';
+return
 }
 
 gameOver=true;
 
-if(name===target.name){
+if(found.name===target.name){
 
 wins++;
 streak++;
@@ -663,52 +374,41 @@ streak++;
 $('answer').innerHTML=
 '<span class="win">🔥 Correct! It was '+
 target.name+
-' — you cooked.</span>';
+' — you cooked.</span>'
 
-}
-
-else{
+}else{
 
 streak=0;
 
 $('answer').innerHTML=
 '<span class="lose">😭 Wrong! It was '+
 target.name+
-'. Game over.</span>';
-
+'. Game over.</span>'
 }
 
 save();
-render();
-
+render()
 }
 
 $('askBtn').onclick=ask;
-
 $('guessBtn').onclick=finalGuess;
-
 $('newBtn').onclick=newGame;
 
 $('scoreBtn').onclick=()=>{
-
 wins=0;
 streak=0;
-
 save();
-newGame();
-
+newGame()
 };
 
 $('questionInput').addEventListener(
 'keydown',
 e=>{
-if(e.key==='Enter')
-ask();
+if(e.key==='Enter')ask()
 }
 );
 
 newGame();
-
 </script>
 
 </body>
