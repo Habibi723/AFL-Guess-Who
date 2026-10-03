@@ -1,0 +1,715 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AFL Guess Who</title>
+
+<style>
+:root{
+--bg:#07120d;
+--card:#102019;
+--card2:#172a21;
+--text:#f4fff7;
+--muted:#a9beb1;
+--green:#35d07f;
+--yellow:#ffd84d;
+--red:#ff6b6b;
+--line:#294438
+}
+
+*{box-sizing:border-box}
+
+body{
+margin:0;
+background:radial-gradient(circle at top,#123523,#07120d 55%);
+color:var(--text);
+font-family:Arial,system-ui,sans-serif
+}
+
+#app{
+max-width:1150px;
+margin:auto;
+padding:22px
+}
+
+header{
+display:flex;
+justify-content:space-between;
+gap:15px;
+align-items:center
+}
+
+.brand{
+font-size:26px;
+font-weight:900
+}
+
+.brand span{
+color:var(--green)
+}
+
+.score{
+background:var(--card);
+border:1px solid var(--line);
+padding:10px 14px;
+border-radius:14px;
+font-weight:800
+}
+
+.hero{
+text-align:center;
+padding:28px 0 18px
+}
+
+.hero h1{
+font-size:clamp(32px,6vw,56px);
+margin:0 0 8px
+}
+
+.hero p{
+color:var(--muted);
+margin:0
+}
+
+.panel{
+background:rgba(16,32,25,.96);
+border:1px solid var(--line);
+border-radius:24px;
+padding:20px;
+box-shadow:0 20px 60px #0008
+}
+
+.stats{
+display:flex;
+flex-wrap:wrap;
+gap:8px;
+margin-bottom:14px
+}
+
+.pill{
+background:var(--card2);
+border:1px solid var(--line);
+padding:8px 12px;
+border-radius:999px;
+font-size:14px
+}
+
+.questionbar{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin:12px 0
+}
+
+.questionbar input{
+flex:1;
+min-width:240px;
+background:#0b1711;
+color:var(--text);
+border:1px solid var(--line);
+border-radius:13px;
+padding:12px;
+font-size:16px
+}
+
+.btn{
+border:0;
+border-radius:13px;
+padding:12px 16px;
+font-weight:900;
+cursor:pointer;
+background:var(--green);
+color:#04130b
+}
+
+.btn.secondary{
+background:var(--card2);
+border:1px solid var(--line);
+color:var(--text)
+}
+
+.btn:disabled{
+opacity:.45;
+cursor:not-allowed
+}
+
+.answer{
+min-height:30px;
+margin:10px 0;
+font-weight:900;
+text-align:center
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(6,1fr);
+gap:10px;
+margin-top:18px
+}
+
+.player{
+min-height:150px;
+background:var(--card2);
+color:var(--text);
+border:1px solid var(--line);
+border-radius:17px;
+padding:12px;
+text-align:left;
+cursor:pointer;
+transition:.35s;
+transform-style:preserve-3d;
+position:relative
+}
+
+.player.flipped{
+transform:rotateY(180deg)
+}
+
+.player-front,
+.player-back{
+backface-visibility:hidden;
+width:100%;
+height:100%
+}
+
+.player-back{
+position:absolute;
+inset:0;
+display:grid;
+place-items:center;
+text-align:center;
+padding:12px;
+transform:rotateY(180deg);
+font-weight:1000;
+font-size:18px
+}
+
+.avatar{
+width:100%;
+height:110px;
+object-fit:cover;
+border-radius:10px;
+display:block;
+background:linear-gradient(135deg,var(--green),#167a49);
+color:#04130b;
+font-weight:1000;
+margin-bottom:9px
+}
+
+.player h3{
+font-size:14px;
+margin:0 0 4px
+}
+
+.player small{
+display:none
+}
+
+.controls{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:16px
+}
+
+.final{
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+margin-top:18px
+}
+
+.final select{
+flex:1;
+min-width:240px;
+background:var(--card2);
+color:var(--text);
+border:1px solid var(--line);
+border-radius:13px;
+padding:12px;
+font-weight:800
+}
+
+.win{
+color:var(--green)
+}
+
+.lose{
+color:var(--red)
+}
+
+.help{
+color:var(--muted);
+font-size:13px;
+line-height:1.5;
+margin-top:14px
+}
+
+@media(max-width:800px){
+.grid{
+grid-template-columns:repeat(3,1fr)
+}
+}
+
+@media(max-width:500px){
+#app{
+padding:12px
+}
+
+.grid{
+grid-template-columns:repeat(2,1fr)
+}
+
+.panel{
+padding:14px
+}
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<header>
+<div class="brand">🏉 AFL <span>GUESS WHO</span></div>
+
+<div class="score">
+Wins: <b id="wins">0</b> ·
+Streak: <b id="streak">0</b>
+</div>
+</header>
+
+<section class="hero">
+<h1>Who’s that AFL player? 👀</h1>
+<p>Ask exactly 10 questions. Then make one final guess. You have 1 life.</p>
+</section>
+
+<section class="panel">
+
+<div class="stats">
+<div class="pill">
+❓ <b id="qcount">0</b>/10 questions
+</div>
+
+<div class="pill">
+❤️ 1 life
+</div>
+
+<div class="pill">
+🎯 Target is hidden
+</div>
+</div>
+
+<div class="questionbar">
+
+<input
+id="questionInput"
+placeholder="Type a yes/no question, e.g. “Is the player a midfielder?”"
+autocomplete="off"
+>
+
+<button class="btn" id="askBtn">
+Ask question
+</button>
+
+</div>
+
+<div class="answer" id="answer"></div>
+
+<div class="grid" id="grid"></div>
+
+<div class="final">
+
+<select id="guess">
+<option value="">Choose your final player...</option>
+</select>
+
+<button class="btn" id="guessBtn" disabled>
+Make final guess
+</button>
+
+</div>
+
+<div class="controls">
+
+<button class="btn secondary" id="newBtn">
+🔄 New board
+</button>
+
+<button class="btn secondary" id="scoreBtn">
+Reset score
+</button>
+
+</div>
+
+<div class="help">
+You can ask about team, position, whether they are a current player,
+or whether they are retired. The game answers Yes/No when it understands
+the question. The target never appears on the 24-player board.
+</div>
+
+</section>
+</div>
+
+<script>
+
+const players=[
+
+['Wayne Carey','North Melbourne','Forward','retired'],
+['Tony Lockett','St Kilda / Sydney','Forward','retired'],
+['Gary Ablett Sr','Hawthorn / Geelong','Forward','retired'],
+['Jason Dunstall','Hawthorn','Forward','retired'],
+['Leigh Matthews','Hawthorn','Midfielder','retired'],
+['Michael Voss','Brisbane','Midfielder','retired'],
+['Nathan Buckley','Collingwood','Midfielder','retired'],
+['Robert Harvey','St Kilda','Midfielder','retired'],
+['James Hird','Essendon','Midfielder','retired'],
+['Matthew Scarlett','Geelong','Defender','retired'],
+['Glenn Archer','North Melbourne','Defender','retired'],
+['Dustin Fletcher','Essendon','Defender','retired'],
+['Matthew Lloyd','Essendon','Forward','retired'],
+['Chris Judd','West Coast / Carlton','Midfielder','retired'],
+['Adam Goodes','Sydney','Forward','retired'],
+['Cyril Rioli','Hawthorn','Forward','retired'],
+['Buddy Franklin','Hawthorn / Sydney','Forward','retired'],
+['Luke Hodge','Hawthorn / Brisbane','Defender','retired'],
+['Sam Mitchell','Hawthorn','Midfielder','retired'],
+['Joel Selwood','Geelong','Midfielder','retired'],
+['Scott Pendlebury','Collingwood','Midfielder','current'],
+['Dane Swan','Collingwood','Midfielder','retired'],
+['Gary Ablett Jr','Geelong / Gold Coast','Midfielder','retired'],
+['Nick Riewoldt','St Kilda','Forward','retired'],
+['Matthew Pavlich','Fremantle','Forward','retired'],
+['Jimmy Bartel','Geelong','Midfielder','retired'],
+['Lenny Hayes','St Kilda','Midfielder','retired'],
+['Trent Cotchin','Richmond','Midfielder','retired'],
+['Jack Riewoldt','Richmond','Forward','retired'],
+['Eddie Betts','Carlton / Adelaide','Forward','retired'],
+['Andrew McLeod','Adelaide','Defender','retired'],
+['Mark Ricciuto','Adelaide','Midfielder','retired'],
+['Simon Black','Brisbane','Midfielder','retired'],
+['Jonathan Brown','Brisbane','Forward','retired'],
+['Josh Kennedy','West Coast','Forward','retired'],
+['Shane Crawford','Hawthorn','Midfielder','retired'],
+['Brad Johnson','Western Bulldogs','Forward','retired'],
+['Nick Daicos','Collingwood','Midfielder','current'],
+['Harry Sheezel','North Melbourne','Midfielder','current'],
+['Sam Walsh','Carlton','Midfielder','current'],
+['Will Day','Hawthorn','Defender','current'],
+['James Sicily','Hawthorn','Defender','current'],
+['Charlie Curnow','Carlton','Forward','current'],
+['Jeremy Cameron','Geelong','Forward','current'],
+['Ben King','Gold Coast','Forward','current'],
+['Max Gawn','Melbourne','Ruck','current'],
+['Lachie Neale','Brisbane','Midfielder','current'],
+['Marcus Bontempelli','Western Bulldogs','Midfielder','current'],
+['Jason Horne-Francis','Port Adelaide','Midfielder','current'],
+['Jack Sinclair','St Kilda','Defender','current'],
+['Zach Merrett','Essendon','Midfielder','current']
+
+].map(x=>({
+
+name:x[0],
+team:x[1],
+pos:x[2],
+status:x[3]
+
+}));
+
+let target=null;
+let board=[];
+let questions=0;
+let gameOver=false;
+
+let wins=+localStorage.getItem('agwWins')||0;
+let streak=+localStorage.getItem('agwStreak')||0;
+
+const $=id=>document.getElementById(id);
+
+const initials=n=>
+n.split(' ')
+.map(x=>x[0])
+.join('')
+.slice(0,2);
+
+const portrait=p=>{
+
+let e=document.createElement('div');
+
+e.textContent=initials(p.name);
+
+e.style.cssText=
+'width:100%;height:110px;border-radius:10px;display:grid;place-items:center;font-size:30px;font-weight:1000;color:#fff;background:radial-gradient(circle at 50% 34%,#f0b78b 0 17%,transparent 18%),radial-gradient(circle at 50% 68%,#20252a 0 28%,transparent 29%),linear-gradient(160deg,#1d3b2c,#0b1711)';
+
+return e.outerHTML
+}
+
+function save(){
+
+localStorage.setItem('agwWins',wins);
+localStorage.setItem('agwStreak',streak);
+
+}
+
+function newGame(){
+
+target=
+players[Math.floor(Math.random()*players.length)];
+
+let pool=
+players.filter(p=>p.name!==target.name);
+
+board=
+pool
+.sort(()=>Math.random()-.5)
+.slice(0,24);
+
+questions=0;
+gameOver=false;
+
+$('answer').textContent='';
+$('questionInput').value='';
+
+render();
+
+}
+
+function render(){
+
+$('wins').textContent=wins;
+$('streak').textContent=streak;
+$('qcount').textContent=questions;
+
+$('guess').innerHTML=
+'<option value="">Choose your final player...</option>'+
+players.map(p=>
+'<option value="'+p.name+'">'+p.name+'</option>'
+).join('');
+
+$('guess').disabled=
+questions<10||gameOver;
+
+$('guessBtn').disabled=
+questions<10||gameOver;
+
+$('askBtn').disabled=
+questions>=10||gameOver;
+
+$('questionInput').disabled=
+questions>=10||gameOver;
+
+$('grid').innerHTML=
+
+board.map(p=>
+
+'<button type="button" class="player" onclick="this.classList.toggle(\'flipped\')">'+
+
+'<div class="player-front">'+
+
+portrait(p)+
+
+'<h3>'+
+p.name+
+'</h3>'+
+
+'<small>'+
+p.team+
+' · '+
+p.pos+
+'</small>'+
+
+'</div>'+
+
+'<div class="player-back">'+
+p.name+
+'</div>'+
+
+'</button>'
+
+).join('');
+
+}
+
+function answerQuestion(q){
+
+let s=
+q.toLowerCase()
+.replace(/[?!.]/g,'');
+
+let yes=null;
+
+if(/\b(mid|midfielder|midfield)\b/.test(s))
+
+yes=
+target.pos==='Midfielder';
+
+else if(/\b(defender|backman|back)\b/.test(s))
+
+yes=
+target.pos==='Defender';
+
+else if(/\b(forward|full forward|key forward|small forward)\b/.test(s))
+
+yes=
+target.pos==='Forward';
+
+else if(/\bruck\b/.test(s))
+
+yes=
+target.pos==='Ruck';
+
+else if(/\bretired\b|\bretire\b/.test(s))
+
+yes=
+target.status==='retired';
+
+else if(/\bcurrent\b|\bplaying now\b|\bstill playing\b/.test(s))
+
+yes=
+target.status==='current';
+
+else{
+
+let team=
+target.team
+.split('/')
+.map(x=>x.trim().toLowerCase());
+
+let found=
+team.find(t=>s.includes(t));
+
+if(found)
+yes=true;
+
+}
+
+if(yes===null){
+
+let known=
+players.find(p=>
+s.includes(p.name.toLowerCase())
+);
+
+if(known)
+yes=
+known.name===target.name;
+
+}
+
+return yes===null
+
+?
+'I can only answer questions about position, team, or current/retired status. Try another question.'
+
+:
+(yes?'✅ Yes — ':'❌ No — ')+q;
+
+}
+
+function ask(){
+
+if(gameOver||questions>=10)
+return;
+
+let q=
+$('questionInput').value.trim();
+
+if(!q){
+
+$('answer').textContent=
+'Type a question first.';
+
+return;
+
+}
+
+questions++;
+
+$('answer').textContent=
+answerQuestion(q);
+
+$('questionInput').value='';
+
+render();
+
+}
+
+function finalGuess(){
+
+if(gameOver||questions<10)
+return;
+
+let name=
+$('guess').value;
+
+if(!name){
+
+$('answer').textContent=
+'Choose a player first.';
+
+return;
+
+}
+
+gameOver=true;
+
+if(name===target.name){
+
+wins++;
+streak++;
+
+$('answer').innerHTML=
+'<span class="win">🔥 Correct! It was '+
+target.name+
+' — you cooked.</span>';
+
+}
+
+else{
+
+streak=0;
+
+$('answer').innerHTML=
+'<span class="lose">😭 Wrong! It was '+
+target.name+
+'. Game over.</span>';
+
+}
+
+save();
+render();
+
+}
+
+$('askBtn').onclick=ask;
+
+$('guessBtn').onclick=finalGuess;
+
+$('newBtn').onclick=newGame;
+
+$('scoreBtn').onclick=()=>{
+
+wins=0;
+streak=0;
+
+save();
+newGame();
+
+};
+
+$('questionInput').addEventListener(
+'keydown',
+e=>{
+if(e.key==='Enter')
+ask();
+}
+);
+
+newGame();
+
+</script>
+
+</body>
+</html>
