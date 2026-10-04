@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-04T06:52:11.523Z",
+  "generated": "2026-10-04T06:54:58.107Z",
   "source": "afl.com.au public AFL API season squad photoURL",
   "players": {
     "garyablett|14051984": {
@@ -79,6 +79,19 @@
       "season": 2025,
       "debutYear": "2014",
       "lastYear": 2025
+    },
+    "jasonakermanis|24021977": {
+      "name": "Jason Akermanis",
+      "dobKey": "24021977",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/62/Jason_Akermanis.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "verified-wikimedia-fallback"
     },
     "aliiraliir|05091994": {
       "name": "Aliir Aliir",
@@ -275,6 +288,19 @@
       "debutYear": "2018",
       "lastYear": 2026
     },
+    "stevenbaker|22051980": {
+      "name": "Steven Baker",
+      "dobKey": "22051980",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/63/10._Steven_Baker%2C_St_Kilda_FC_01.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "verified-wikimedia-fallback"
+    },
     "lukeball|25051984": {
       "name": "Luke Ball",
       "officialName": "Luke Ball",
@@ -340,6 +366,19 @@
       "debutYear": null,
       "lastYear": 2026
     },
+    "leobarry|19051977": {
+      "name": "Leo Barry",
+      "dobKey": "19051977",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
     "jimmybartel|04121983": {
       "name": "Jimmy Bartel",
       "officialName": "Jimmy Bartel",
@@ -352,6 +391,19 @@
       "season": null,
       "debutYear": "2002",
       "lastYear": 2016
+    },
+    "nathanbassett|07121976": {
+      "name": "Nathan Bassett",
+      "dobKey": "07121976",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/4/42/Nathan_Bassett_2018.1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "verified-wikimedia-fallback"
     },
     "ryanbastinac|22061991": {
       "name": "Ryan Bastinac",
@@ -417,6 +469,19 @@
       "season": 2026,
       "debutYear": "2020",
       "lastYear": 2026
+    },
+    "peterbell|01031976": {
+      "name": "Peter Bell",
+      "dobKey": "01031976",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Peter_Bell.jpg/960px-Peter_Bell.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "verified-wikimedia-fallback"
     },
     "milesbergman|18102001": {
       "name": "Miles Bergman",
@@ -535,6 +600,19 @@
       "debutYear": "2008",
       "lastYear": 2017
     },
+    "heathblack|28051979": {
+      "name": "Heath Black",
+      "dobKey": "28051979",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "simonblack|03041979": {
       "name": "Simon Black",
       "officialName": "Simon Black",
@@ -626,6 +704,19 @@
       "debutYear": "2009",
       "lastYear": 2022
     },
+    "craigbolton|31051980": {
+      "name": "Craig Bolton",
+      "dobKey": "31051980",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/2/25/Craig_Bolton_kicking%2C_Syd_v_PA_2009_%283558517625%29_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "verified-wikimedia-fallback"
+    },
     "judebolton|15031980": {
       "name": "Jude Bolton",
       "officialName": "Jude Bolton",
@@ -664,6 +755,19 @@
       "season": 2026,
       "debutYear": "2014",
       "lastYear": 2026
+    },
+    "joelbowden|21061978": {
+      "name": "Joel Bowden",
+      "dobKey": "21061978",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Joel_Bowden_%28cropped%29.jpg/960px-Joel_Bowden_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "verified-wikimedia-fallback"
     },
     "jackbowes|26011998": {
       "name": "Jack Bowes",
@@ -704,6 +808,19 @@
       "debutYear": "2003",
       "lastYear": 2017
     },
+    "danielbradshaw|21111978": {
+      "name": "Daniel Bradshaw",
+      "dobKey": "21111978",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/d/de/Daniel_Bradshaw.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "verified-wikimedia-fallback"
+    },
     "lachlanbramble|19041998": {
       "name": "Lachlan Bramble",
       "officialName": "Lachlan Bramble",
@@ -716,6 +833,19 @@
       "season": 2026,
       "debutYear": "2021",
       "lastYear": 2026
+    },
+    "michaelbraun|24031978": {
+      "name": "Michael Braun",
+      "dobKey": "24031978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
     },
     "andrewbrayshaw|08111999": {
       "name": "Andrew Brayshaw",
@@ -860,6 +990,19 @@
       "debutYear": "2000",
       "lastYear": 2014
     },
+    "leighbrown|23021982": {
+      "name": "Leigh Brown",
+      "dobKey": "23021982",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
+    },
     "lukebrown|22091992": {
       "name": "Luke Brown",
       "officialName": "Luke Brown",
@@ -872,6 +1015,19 @@
       "season": 2022,
       "debutYear": "2012",
       "lastYear": 2022
+    },
+    "nathanbrown|10021978": {
+      "name": "Nathan Brown",
+      "dobKey": "10021978",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Nathan_Brown_of_Richmond_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "verified-wikimedia-fallback"
     },
     "nathanbrown|17121988": {
       "name": "Nathan Brown",
@@ -938,6 +1094,19 @@
       "debutYear": "2020",
       "lastYear": 2026
     },
+    "peterburgoyne|29011978": {
+      "name": "Peter Burgoyne",
+      "dobKey": "29011978",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/66/Peter_burgoyne.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "verified-wikimedia-fallback"
+    },
     "shaunburgoyne|21101982": {
       "name": "Shaun Burgoyne",
       "officialName": "Shaun Burgoyne",
@@ -950,6 +1119,32 @@
       "season": 2021,
       "debutYear": "2002",
       "lastYear": 2021
+    },
+    "scottburns|23121974": {
+      "name": "Scott Burns",
+      "dobKey": "23121974",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Scott_Burns_070525.jpg/960px-Scott_Burns_070525.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "verified-wikimedia-fallback"
+    },
+    "brettburton|04051978": {
+      "name": "Brett Burton",
+      "dobKey": "04051978",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/9/96/Brett_Burton.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "verified-wikimedia-fallback"
     },
     "ryanburton|31011997": {
       "name": "Ryan Burton",
@@ -1146,6 +1341,32 @@
       "debutYear": "2010",
       "lastYear": 2021
     },
+    "joshcarr|29041980": {
+      "name": "Josh Carr",
+      "dobKey": "29041980",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
+    },
+    "matthewcarr|29121978": {
+      "name": "Matthew Carr",
+      "dobKey": "29121978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "andrewcarrazzo|15121983": {
       "name": "Andrew Carrazzo",
       "officialName": "Andrew Carrazzo",
@@ -1171,6 +1392,19 @@
       "season": 2024,
       "debutYear": "2012",
       "lastYear": 2024
+    },
+    "domeniccassisi|22091982": {
+      "name": "Domenic Cassisi",
+      "dobKey": "22091982",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2014,
+      "lastYear": 2014,
+      "source": "unresolved"
     },
     "adamcerra|07101999": {
       "name": "Adam Cerra",
@@ -1458,6 +1692,19 @@
       "debutYear": "2020",
       "lastYear": 2026
     },
+    "bencousins|30061978": {
+      "name": "Ben Cousins",
+      "dobKey": "30061978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
+    },
     "brennancox|13081998": {
       "name": "Brennan Cox",
       "officialName": "Brennan Cox",
@@ -1496,6 +1743,19 @@
       "season": 2026,
       "debutYear": "2016",
       "lastYear": 2026
+    },
+    "shanecrawford|09091974": {
+      "name": "Shane Crawford",
+      "dobKey": "09091974",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
     },
     "jamiecripps|23041992": {
       "name": "Jamie Cripps",
@@ -1536,6 +1796,19 @@
       "debutYear": "2012",
       "lastYear": 2026
     },
+    "trentcroad|09031980": {
+      "name": "Trent Croad",
+      "dobKey": "09031980",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "danielcross|30031983": {
       "name": "Daniel Cross",
       "officialName": "Daniel Cross",
@@ -1561,6 +1834,19 @@
       "season": 2024,
       "debutYear": "2013",
       "lastYear": 2024
+    },
+    "jaredcrouch|05031978": {
+      "name": "Jared Crouch",
+      "dobKey": "05031978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
     },
     "mattcrouch|21041995": {
       "name": "Matt Crouch",
@@ -1848,6 +2134,32 @@
       "debutYear": "2018",
       "lastYear": 2026
     },
+    "leondavis|17061981": {
+      "name": "Leon Davis",
+      "dobKey": "17061981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
+    },
+    "nickdavis|30031980": {
+      "name": "Nick Davis",
+      "dobKey": "30031980",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "phildavis|30081990": {
       "name": "Phil Davis",
       "officialName": "Phil Davis",
@@ -1951,6 +2263,19 @@
       "season": 2017,
       "debutYear": "2005",
       "lastYear": 2016
+    },
+    "stuartdew|18081979": {
+      "name": "Stuart Dew",
+      "dobKey": "18081979",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
     },
     "alandidak|15021983": {
       "name": "Alan Didak",
@@ -2160,6 +2485,19 @@
       "debutYear": null,
       "lastYear": 2026
     },
+    "nathaneagleton|10111978": {
+      "name": "Nathan Eagleton",
+      "dobKey": "10111978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
+    },
     "bradebert|02041990": {
       "name": "Brad Ebert",
       "officialName": "Brad Ebert",
@@ -2277,6 +2615,32 @@
       "debutYear": "2001",
       "lastYear": 2016
     },
+    "petereveritt|03051974": {
+      "name": "Peter Everitt",
+      "dobKey": "03051974",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
+    "jefffarmer|24061977": {
+      "name": "Jeff Farmer",
+      "dobKey": "24061977",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "kanefarrell|17031999": {
       "name": "Kane Farrell",
       "officialName": "Kane Farrell",
@@ -2289,6 +2653,19 @@
       "season": 2026,
       "debutYear": "2018",
       "lastYear": 2026
+    },
+    "brendanfevola|20011981": {
+      "name": "Brendan Fevola",
+      "dobKey": "20011981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
     },
     "braydenfiorini|22081997": {
       "name": "Brayden Fiorini",
@@ -2354,6 +2731,19 @@
       "season": 2026,
       "debutYear": "2020",
       "lastYear": 2026
+    },
+    "chadfletcher|30081979": {
+      "name": "Chad Fletcher",
+      "dobKey": "30081979",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Chad_Fletcher.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "verified-wikimedia-fallback"
     },
     "dustinfletcher|07051975": {
       "name": "Dustin Fletcher",
@@ -2432,6 +2822,19 @@
       "season": null,
       "debutYear": "2005",
       "lastYear": 2014
+    },
+    "nicfosdike|26021980": {
+      "name": "Nic Fosdike",
+      "dobKey": "26021980",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Nic_Fosdike-2006.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "verified-wikimedia-fallback"
     },
     "billyframpton|20111996": {
       "name": "Billy Frampton",
@@ -2563,6 +2966,19 @@
       "debutYear": "2014",
       "lastYear": 2026
     },
+    "michaelgardiner|05071979": {
+      "name": "Michael Gardiner",
+      "dobKey": "05071979",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/c/c8/15._Michael_Gardiner%2C_St_Kilda_FC_01.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "verified-wikimedia-fallback"
+    },
     "jeffgarlett|03081989": {
       "name": "Jeff Garlett",
       "officialName": "Jeff Garlett",
@@ -2601,6 +3017,19 @@
       "season": 2022,
       "debutYear": "2008",
       "lastYear": 2021
+    },
+    "frasergehrig|03031976": {
+      "name": "Fraser Gehrig",
+      "dobKey": "03031976",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
     },
     "mitchgeorgiades|28092001": {
       "name": "Mitch Georgiades",
@@ -2771,6 +3200,19 @@
       "debutYear": "1999",
       "lastYear": 2015
     },
+    "simongoodwin|26121976": {
+      "name": "Simon Goodwin",
+      "dobKey": "26121976",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Simon_Goodwin_2018.11.jpg/960px-Simon_Goodwin_2018.11.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "verified-wikimedia-fallback"
+    },
     "jackgraham|25021998": {
       "name": "Jack Graham",
       "officialName": "Jack Graham",
@@ -2796,6 +3238,19 @@
       "season": null,
       "debutYear": "2003",
       "lastYear": 2012
+    },
+    "shannongrant|19041977": {
+      "name": "Shannon Grant",
+      "dobKey": "19041977",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
     },
     "robbiegray|30031988": {
       "name": "Robbie Gray",
@@ -3044,6 +3499,19 @@
       "debutYear": "2005",
       "lastYear": 2016
     },
+    "mitchhahn|10051981": {
+      "name": "Mitch Hahn",
+      "dobKey": "10051981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
+    },
     "davidhale|22051984": {
       "name": "David Hale",
       "officialName": "David Hale",
@@ -3069,6 +3537,19 @@
       "season": 2023,
       "debutYear": "2012",
       "lastYear": 2023
+    },
+    "barryhall|08021977": {
+      "name": "Barry Hall",
+      "dobKey": "08021977",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
     },
     "joelhamling|09041993": {
       "name": "Joel Hamling",
@@ -3161,6 +3642,19 @@
       "debutYear": "2002",
       "lastYear": 2012
     },
+    "tomharley|18071978": {
+      "name": "Tom Harley",
+      "dobKey": "18071978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
     "jamesharmes|05101995": {
       "name": "James Harmes",
       "officialName": "James Harmes",
@@ -3173,6 +3667,19 @@
       "season": 2026,
       "debutYear": "2015",
       "lastYear": 2025
+    },
+    "danielharris|10051982": {
+      "name": "Daniel Harris",
+      "dobKey": "10051982",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
     },
     "hamishhartlett|14081990": {
       "name": "Hamish Hartlett",
@@ -3199,6 +3706,32 @@
       "season": null,
       "debutYear": "1996",
       "lastYear": 2016
+    },
+    "robertharvey|21081971": {
+      "name": "Robert Harvey",
+      "dobKey": "21081971",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
+    "paulhasleby|12061981": {
+      "name": "Paul Hasleby",
+      "dobKey": "12061981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
     },
     "tomhawkins|21071988": {
       "name": "Tom Hawkins",
@@ -3251,6 +3784,19 @@
       "season": 2026,
       "debutYear": "2017",
       "lastYear": 2026
+    },
+    "desheadland|21011981": {
+      "name": "Des Headland",
+      "dobKey": "21011981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
     },
     "isaacheeney|05051996": {
       "name": "Isaac Heeney",
@@ -3460,6 +4006,19 @@
       "debutYear": "2016",
       "lastYear": 2026
     },
+    "mitchhinge|26061998": {
+      "name": "Mitch Hinge",
+      "dobKey": "26061998",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2026,
+      "lastYear": 2026,
+      "source": "unresolved"
+    },
     "erichipwood|13091997": {
       "name": "Eric Hipwood",
       "officialName": "Eric Hipwood",
@@ -3498,6 +4057,32 @@
       "season": 2026,
       "debutYear": "2015",
       "lastYear": 2026
+    },
+    "benholland|10051977": {
+      "name": "Ben Holland",
+      "dobKey": "10051977",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
+    "brodieholland|03011980": {
+      "name": "Brodie Holland",
+      "dobKey": "03011980",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
     },
     "nickholman|29051995": {
       "name": "Nick Holman",
@@ -3603,6 +4188,19 @@
       "debutYear": "2007",
       "lastYear": 2021
     },
+    "ryanhoulihan|21011982": {
+      "name": "Ryan Houlihan",
+      "dobKey": "21011982",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
+    },
     "danhouston|12051997": {
       "name": "Dan Houston",
       "officialName": "Dan Houston",
@@ -3642,6 +4240,19 @@
       "debutYear": "2011",
       "lastYear": 2026
     },
+    "maxhudghton|02091976": {
+      "name": "Max Hudghton",
+      "dobKey": "02091976",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
     "benhudson|24021979": {
       "name": "Ben Hudson",
       "officialName": "Ben Hudson",
@@ -3680,6 +4291,19 @@
       "season": null,
       "debutYear": "2001",
       "lastYear": 2014
+    },
+    "adamhunter|18061981": {
+      "name": "Adam Hunter",
+      "dobKey": "18061981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
     },
     "lachiehunter|13121994": {
       "name": "Lachie Hunter",
@@ -3915,6 +4539,58 @@
       "debutYear": "2000",
       "lastYear": 2013
     },
+    "bradjohnson|18071976": {
+      "name": "Brad Johnson",
+      "dobKey": "18071976",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Brad_Johnson_04.03.17.jpg/960px-Brad_Johnson_04.03.17.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "verified-wikimedia-fallback"
+    },
+    "jasonjohnson|25011978": {
+      "name": "Jason Johnson",
+      "dobKey": "25011978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
+    "kanejohnson|15031978": {
+      "name": "Kane Johnson",
+      "dobKey": "15031978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
+    "markjohnson|23051978": {
+      "name": "Mark Johnson",
+      "dobKey": "23051978",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/2/20/Mark_Johnson.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "verified-wikimedia-fallback"
+    },
     "michaeljohnson|20101984": {
       "name": "Michael Johnson",
       "officialName": "Michael Johnson",
@@ -3940,6 +4616,19 @@
       "season": 2017,
       "debutYear": "2002",
       "lastYear": 2017
+    },
+    "travisjohnstone|17071980": {
+      "name": "Travis Johnstone",
+      "dobKey": "17071980",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/0/07/Travisjohnstonelion.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "verified-wikimedia-fallback"
     },
     "darrenjolly|06111981": {
       "name": "Darren Jolly",
@@ -3979,6 +4668,19 @@
       "season": 2026,
       "debutYear": "2019",
       "lastYear": 2026
+    },
+    "coreyjones|26021981": {
+      "name": "Corey Jones",
+      "dobKey": "26021981",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/a/a8/Corey_jones.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "verified-wikimedia-fallback"
     },
     "lachiejones|09042002": {
       "name": "Lachie Jones",
@@ -4173,6 +4875,19 @@
       "debutYear": "2016",
       "lastYear": 2026
     },
+    "tadhgkennelly|01071981": {
+      "name": "Tadhg Kennelly",
+      "dobKey": "01071981",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Tadhg_Kennelly_2018.2.jpg/960px-Tadhg_Kennelly_2018.2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "verified-wikimedia-fallback"
+    },
     "danielkerr|16051983": {
       "name": "Daniel Kerr",
       "officialName": "Daniel Kerr",
@@ -4198,6 +4913,32 @@
       "season": 2026,
       "debutYear": "2019",
       "lastYear": 2026
+    },
+    "stevenking|22111978": {
+      "name": "Steven King",
+      "dobKey": "22111978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
+    },
+    "brettkirk|25101976": {
+      "name": "Brett Kirk",
+      "dobKey": "25101976",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
     },
     "jakekolodjashnij|09081995": {
       "name": "Jake Kolodjashnij",
@@ -4264,6 +5005,19 @@
       "debutYear": "2008",
       "lastYear": 2020
     },
+    "brendonlade|10071976": {
+      "name": "Brendon Lade",
+      "dobKey": "10071976",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
     "rorylaird|29121993": {
       "name": "Rory Laird",
       "officialName": "Rory Laird",
@@ -4315,6 +5069,19 @@
       "season": 2026,
       "debutYear": null,
       "lastYear": 2026
+    },
+    "nigellappin|21061976": {
+      "name": "Nigel Lappin",
+      "dobKey": "21061976",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
     },
     "nicklarkey|06061998": {
       "name": "Nick Larkey",
@@ -4420,6 +5187,19 @@
       "debutYear": "2011",
       "lastYear": 2026
     },
+    "cameronling|27021981": {
+      "name": "Cameron Ling",
+      "dobKey": "27021981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
+    },
     "patricklipinski|17071998": {
       "name": "Patrick Lipinski",
       "officialName": "Patrick Lipinski",
@@ -4446,6 +5226,19 @@
       "debutYear": "2014",
       "lastYear": 2026
     },
+    "matthewlloyd|16041978": {
+      "name": "Matthew Lloyd",
+      "dobKey": "16041978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
     "rorylobb|09021993": {
       "name": "Rory Lobb",
       "officialName": "Rory Lobb",
@@ -4458,6 +5251,19 @@
       "season": 2026,
       "debutYear": "2014",
       "lastYear": 2026
+    },
+    "tarkynlockyer|30101979": {
+      "name": "Tarkyn Lockyer",
+      "dobKey": "30101979",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
     },
     "griffinlogue|13041998": {
       "name": "Griffin Logue",
@@ -4497,6 +5303,19 @@
       "season": 2026,
       "debutYear": "2017",
       "lastYear": 2026
+    },
+    "scottlucas|30121977": {
+      "name": "Scott Lucas",
+      "dobKey": "30121977",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
     },
     "jacklukosius|09082000": {
       "name": "Jack Lukosius",
@@ -4771,6 +5590,32 @@
       "debutYear": "2008",
       "lastYear": 2019
     },
+    "benmathews|29111978": {
+      "name": "Ben Mathews",
+      "dobKey": "29111978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
+    "martinmattner|06081982": {
+      "name": "Martin Mattner",
+      "dobKey": "06081982",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2013,
+      "lastYear": 2013,
+      "source": "unresolved"
+    },
     "nickmaxwell|03061983": {
       "name": "Nick Maxwell",
       "officialName": "Nick Maxwell",
@@ -5018,6 +5863,19 @@
       "debutYear": "2001",
       "lastYear": 2014
     },
+    "kenmcgregor|29011981": {
+      "name": "Ken Mcgregor",
+      "dobKey": "29011981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "justinmcinerney|18082000": {
       "name": "Justin Mcinerney",
       "officialName": "Justin McInerney",
@@ -5135,6 +5993,19 @@
       "debutYear": "2019",
       "lastYear": 2026
     },
+    "andrewmcleod|04081976": {
+      "name": "Andrew Mcleod",
+      "dobKey": "04081976",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
+    },
     "shaunmcmanus|09021976": {
       "name": "Shaun Mcmanus",
       "officialName": "Shaun McManus",
@@ -5239,6 +6110,19 @@
       "debutYear": "1999",
       "lastYear": 2012
     },
+    "paulmedhurst|11121981": {
+      "name": "Paul Medhurst",
+      "dobKey": "11121981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
+    },
     "lloydmeek|22041998": {
       "name": "Lloyd Meek",
       "officialName": "Lloyd Meek",
@@ -5317,6 +6201,19 @@
       "debutYear": null,
       "lastYear": 2026
     },
+    "malmichael|24061977": {
+      "name": "Mal Michael",
+      "dobKey": "24061977",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Mal_michael.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "verified-wikimedia-fallback"
+    },
     "maxmichalanney|26022004": {
       "name": "Max Michalanney",
       "officialName": "Max Michalanney",
@@ -5356,6 +6253,19 @@
       "debutYear": "2018",
       "lastYear": 2026
     },
+    "darrenmilburn|15041977": {
+      "name": "Darren Milburn",
+      "dobKey": "15041977",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
+    },
     "waynemilera|14091997": {
       "name": "Wayne Milera",
       "officialName": "Wayne Milera",
@@ -5381,6 +6291,19 @@
       "season": 2026,
       "debutYear": "2021",
       "lastYear": 2026
+    },
+    "bradmiller|06071983": {
+      "name": "Brad Miller",
+      "dobKey": "06071983",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2012,
+      "lastYear": 2012,
+      "source": "unresolved"
     },
     "toukmiller|22021996": {
       "name": "Touk Miller",
@@ -5498,6 +6421,19 @@
       "season": 2017,
       "debutYear": "2002",
       "lastYear": 2017
+    },
+    "cameronmooney|26091979": {
+      "name": "Cameron Mooney",
+      "dobKey": "26091979",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
     },
     "darcymoore|25011996": {
       "name": "Darcy Moore",
@@ -5707,6 +6643,19 @@
       "debutYear": "2012",
       "lastYear": 2026
     },
+    "davidneitz|22011975": {
+      "name": "David Neitz",
+      "dobKey": "22011975",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "jainewcombe|02082001": {
       "name": "Jai Newcombe",
       "officialName": "Jai Newcombe",
@@ -5771,6 +6720,32 @@
       "season": 2026,
       "debutYear": "2019",
       "lastYear": 2026
+    },
+    "timnotting|21101978": {
+      "name": "Tim Notting",
+      "dobKey": "21101978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
+    "shaneobree|15031979": {
+      "name": "Shane Obree",
+      "dobKey": "15031979",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
     },
     "reillyobrien|20081995": {
       "name": "Reilly Obrien",
@@ -5837,6 +6812,19 @@
       "debutYear": "2016",
       "lastYear": 2026
     },
+    "michaeloloughlin|20021977": {
+      "name": "Michael Oloughlin",
+      "dobKey": "20021977",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
     "jaegeromeara|23021994": {
       "name": "Jaeger Omeara",
       "officialName": "Jaeger O'Meara",
@@ -5862,6 +6850,19 @@
       "season": null,
       "debutYear": "2001",
       "lastYear": 2013
+    },
+    "bradottens|25011980": {
+      "name": "Brad Ottens",
+      "dobKey": "25011980",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
     },
     "mitchowens|24092003": {
       "name": "Mitch Owens",
@@ -6058,6 +7059,19 @@
       "debutYear": "2001",
       "lastYear": 2017
     },
+    "harrypetty|12111999": {
+      "name": "Harry Petty",
+      "dobKey": "12111999",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2026,
+      "lastYear": 2026,
+      "source": "unresolved"
+    },
     "liampicken|01081986": {
       "name": "Liam Picken",
       "officialName": "Liam Picken",
@@ -6175,6 +7189,32 @@
       "debutYear": "2011",
       "lastYear": 2026
     },
+    "simonprestigiacomo|31011978": {
+      "name": "Simon Prestigiacomo",
+      "dobKey": "31011978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
+    },
+    "mattpriddis|21031985": {
+      "name": "Matt Priddis",
+      "dobKey": "21031985",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2017,
+      "lastYear": 2017,
+      "source": "unresolved"
+    },
     "paulpuopolo|02121987": {
       "name": "Paul Puopolo",
       "officialName": "Paul Puopolo",
@@ -6265,6 +7305,19 @@
       "season": 2026,
       "debutYear": "2018",
       "lastYear": 2026
+    },
+    "bradyrawlings|10061981": {
+      "name": "Brady Rawlings",
+      "dobKey": "10061981",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
     },
     "farrenray|23031986": {
       "name": "Farren Ray",
@@ -6435,6 +7488,19 @@
       "debutYear": "2002",
       "lastYear": 2016
     },
+    "matthewrichardson|19031975": {
+      "name": "Matthew Richardson",
+      "dobKey": "19031975",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/3/3f/Matthew_richardson.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "verified-wikimedia-fallback"
+    },
     "jordanridley|20101998": {
       "name": "Jordan Ridley",
       "officialName": "Jordan Ridley",
@@ -6552,6 +7618,19 @@
       "debutYear": "2003",
       "lastYear": 2014
     },
+    "russellrobertson|24111978": {
+      "name": "Russell Robertson",
+      "dobKey": "24111978",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Russell_Robertson_2009.jpg/960px-Russell_Robertson_2009.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "verified-wikimedia-fallback"
+    },
     "mitchrobinson|07061989": {
       "name": "Mitch Robinson",
       "officialName": "Mitch Robinson",
@@ -6564,6 +7643,19 @@
       "season": 2022,
       "debutYear": "2009",
       "lastYear": 2022
+    },
+    "anthonyrocca|15081977": {
+      "name": "Anthony Rocca",
+      "dobKey": "15081977",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
     },
     "tomrockliff|22021990": {
       "name": "Tom Rockliff",
@@ -6772,6 +7864,19 @@
       "season": 2026,
       "debutYear": "2015",
       "lastYear": 2026
+    },
+    "jasonsaddington|23101979": {
+      "name": "Jason Saddington",
+      "dobKey": "23101979",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
     },
     "christiansalem|15071995": {
       "name": "Christian Salem",
@@ -7124,6 +8229,19 @@
       "debutYear": "2009",
       "lastYear": 2024
     },
+    "robertshirley|09061980": {
+      "name": "Robert Shirley",
+      "dobKey": "09061980",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
     "jaydenshort|24011996": {
       "name": "Jayden Short",
       "officialName": "Jayden Short",
@@ -7189,6 +8307,19 @@
       "debutYear": "2016",
       "lastYear": 2026
     },
+    "troysimmonds|13071978": {
+      "name": "Troy Simmonds",
+      "dobKey": "13071978",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Troy_Simmonds_%28cropped%29.jpg/960px-Troy_Simmonds_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "verified-wikimedia-fallback"
+    },
     "jysimpkin|05031998": {
       "name": "Jy Simpkin",
       "officialName": "Jy Simpkin",
@@ -7201,6 +8332,19 @@
       "season": 2026,
       "debutYear": "2017",
       "lastYear": 2026
+    },
+    "adamsimpson|16021976": {
+      "name": "Adam Simpson",
+      "dobKey": "16021976",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Adam_Simpson_2018.1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "verified-wikimedia-fallback"
     },
     "kadesimpson|05051984": {
       "name": "Kade Simpson",
@@ -7227,6 +8371,19 @@
       "season": 2026,
       "debutYear": "2015",
       "lastYear": 2026
+    },
+    "jesssinclair|26081978": {
+      "name": "Jess Sinclair",
+      "dobKey": "26081978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
     },
     "rorysloane|17031990": {
       "name": "Rory Sloane",
@@ -7319,6 +8476,19 @@
       "debutYear": "2022",
       "lastYear": 2026
     },
+    "deansolomon|09011980": {
+      "name": "Dean Solomon",
+      "dobKey": "09011980",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Dean_Solomon.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "verified-wikimedia-fallback"
+    },
     "charliespargo|25111999": {
       "name": "Charlie Spargo",
       "officialName": "Charlie Spargo",
@@ -7409,6 +8579,19 @@
       "season": 2026,
       "debutYear": "2015",
       "lastYear": 2026
+    },
+    "tysonstenglein|16071980": {
+      "name": "Tyson Stenglein",
+      "dobKey": "16071980",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
     },
     "dylanstephens|08012001": {
       "name": "Dylan Stephens",
@@ -7513,6 +8696,32 @@
       "season": 2026,
       "debutYear": "2013",
       "lastYear": 2026
+    },
+    "nicksuban|09051990": {
+      "name": "Nick Suban",
+      "dobKey": "09051990",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2017,
+      "lastYear": 2017,
+      "source": "unresolved"
+    },
+    "mattsuckling|25071988": {
+      "name": "Matt Suckling",
+      "dobKey": "25071988",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Matt_Suckling_2018.2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2020,
+      "lastYear": 2020,
+      "source": "verified-wikimedia-fallback"
     },
     "andrewswallow|02061987": {
       "name": "Andrew Swallow",
@@ -7696,6 +8905,19 @@
       "debutYear": "2007",
       "lastYear": 2018
     },
+    "nathanthompson|14021978": {
+      "name": "Nathan Thompson",
+      "dobKey": "14021978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "scottthompson|09051986": {
       "name": "Scott Thompson",
       "dobKey": "09051986",
@@ -7747,6 +8969,19 @@
       "debutYear": "2008",
       "lastYear": 2017
     },
+    "gregtivendale|19041979": {
+      "name": "Greg Tivendale",
+      "dobKey": "19041979",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "adamtomlinson|10081993": {
       "name": "Adam Tomlinson",
       "officialName": "Adam Tomlinson",
@@ -7785,6 +9020,19 @@
       "season": 2026,
       "debutYear": "2021",
       "lastYear": 2026
+    },
+    "warrentredrea|24121978": {
+      "name": "Warren Tredrea",
+      "dobKey": "24121978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2010,
+      "lastYear": 2010,
+      "source": "unresolved"
     },
     "adamtreloar|09031993": {
       "name": "Adam Treloar",
@@ -7928,6 +9176,19 @@
       "season": 2018,
       "debutYear": "2003",
       "lastYear": 2018
+    },
+    "shanewakelin|12081974": {
+      "name": "Shane Wakelin",
+      "dobKey": "12081974",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
     },
     "andrewwalker|18051986": {
       "name": "Andrew Walker",
@@ -8098,6 +9359,19 @@
       "debutYear": null,
       "lastYear": 2026
     },
+    "shannonwatt|26111980": {
+      "name": "Shannon Watt",
+      "dobKey": "26111980",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
     "jackwatts|26031991": {
       "name": "Jack Watts",
       "officialName": "Jack Watts",
@@ -8202,6 +9476,32 @@
       "debutYear": "2003",
       "lastYear": 2019
     },
+    "andrewwelsh|11021983": {
+      "name": "Andrew Welsh",
+      "dobKey": "11021983",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2011,
+      "lastYear": 2011,
+      "source": "unresolved"
+    },
+    "scottwelsh|07121978": {
+      "name": "Scott Welsh",
+      "dobKey": "07121978",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
     "rhyleewest|12072000": {
       "name": "Rhylee West",
       "officialName": "Rhylee West",
@@ -8215,6 +9515,19 @@
       "debutYear": "2019",
       "lastYear": 2026
     },
+    "scottwest|14111974": {
+      "name": "Scott West",
+      "dobKey": "14111974",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "unresolved"
+    },
     "justinwesthoff|01101986": {
       "name": "Justin Westhoff",
       "officialName": "Justin Westhoff",
@@ -8227,6 +9540,45 @@
       "season": 2020,
       "debutYear": "2007",
       "lastYear": 2020
+    },
+    "matthewwhelan|13111979": {
+      "name": "Matthew Whelan",
+      "dobKey": "13111979",
+      "photoURL": "",
+      "fallbackPhotoURL": "",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "unresolved"
+    },
+    "jeffwhite|19021977": {
+      "name": "Jeff White",
+      "dobKey": "19021977",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Jeff_white.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "verified-wikimedia-fallback"
+    },
+    "mattwhite|15041987": {
+      "name": "Matt White",
+      "dobKey": "15041987",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/7/70/Matthew_White_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2017,
+      "lastYear": 2017,
+      "source": "verified-wikimedia-fallback"
     },
     "lachiewhitfield|18071994": {
       "name": "Lachie Whitfield",
@@ -8318,6 +9670,19 @@
       "debutYear": "2022",
       "lastYear": 2026
     },
+    "michaelwilson|21111976": {
+      "name": "Michael Wilson",
+      "dobKey": "21111976",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Michael_Wilson_Port_Power.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "verified-wikimedia-fallback"
+    },
     "nathanwilson|07011993": {
       "name": "Nathan Wilson",
       "officialName": "Nathan Wilson",
@@ -8369,6 +9734,19 @@
       "season": 2024,
       "debutYear": "2012",
       "lastYear": 2023
+    },
+    "davidwirrpanda|03081979": {
+      "name": "David Wirrpanda",
+      "dobKey": "03081979",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/60/David_Wirrpanda%2C_2005_AFL_Grand_Final_parade.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2009,
+      "lastYear": 2009,
+      "source": "verified-wikimedia-fallback"
     },
     "jarrodwitts|13091992": {
       "name": "Jarrod Witts",
@@ -8513,6 +9891,19 @@
       "debutYear": "2017",
       "lastYear": 2026
     },
+    "ademyze|21091977": {
+      "name": "Adem Yze",
+      "dobKey": "21091977",
+      "photoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Adem_Yze_2017.jpg/960px-Adem_Yze_2017.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "providerId": "",
+      "champId": "",
+      "aflProfileId": null,
+      "team": "",
+      "season": 2008,
+      "lastYear": 2008,
+      "source": "verified-wikimedia-fallback"
+    },
     "davidzaharakis|21021990": {
       "name": "David Zaharakis",
       "officialName": "David Zaharakis",
@@ -8580,6 +9971,7 @@
     }
   },
   "poolCount": 767,
-  "matchedCount": 660,
-  "photoUrlCount": 660
+  "matchedCount": 767,
+  "photoUrlCount": 660,
+  "fallbackPhotoCount": 32
 }
