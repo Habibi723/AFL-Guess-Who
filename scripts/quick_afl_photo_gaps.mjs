@@ -131,40 +131,29 @@ function looksLikeCorrectAflPage(html,rec){
 }
 
 async function wikipediaHtmlPhoto(rec){
-  const title=String(rec.name||'').trim().replace(/\s+/g,'_');
+  const name=rec.name||'';
+  const title=name.trim().replace(/\s+/g,'_');
   const direct='https://en.wikipedia.org/wiki/'+encodeURIComponent(title).replace(/%2F/g,'/');
   try{
     const r=await getText(direct);
-    if(looksLikeCorrectAflPage(r.text,rec)){
-      const src=ogImage(r.text);
-      if(src)return src;
-    }
-  }catch(e){}
+    if(!looksLikeCorrectAflPage(r.text,rec))return '';
 
-  // Normal Wikipedia HTML search page fallback.
-  try{
-    const q=rec.name+' Australian rules footballer '+String(rec.dobKey||'').slice(-4);
-    const r=await getText('https://en.wikipedia.org/w/index.php?search='+encodeURIComponent(q));
-    const links=[...r.text.matchAll(/href=["'](\/wiki\/[^"'#?]+)["']/gi)]
-      .map(m=>m[1])
-      .filter(x=>!/Special:|Help:|Wikipedia:|Category:|File:/i.test(x));
-    const seen=new Set();
-    for(const path of links.slice(0,10)){
-      if(seen.has(path))continue;
-      seen.add(path);
-      try{
-        const page=await getText('https://en.wikipedia.org'+path);
-        if(!looksLikeCorrectAflPage(page.text,rec))continue;
-        const src=ogImage(page.text);
-        if(src)return src;
-      }catch(e){}
-    }
+    // Only accept the page's lead/infobox image when the HTML clearly refers to
+    // this exact player name. Generic og:image can be another person on the page.
+    const exactName=norm(r.text.slice(0,120000)).includes(norm(name));
+    if(!exactName)return '';
+
+    const src=ogImage(r.text);
+    const fileKey=norm(src);
+    const first=firstToken(name), last=lastToken(name);
+    if(src && fileKey.includes(first) && fileKey.includes(last))return src;
   }catch(e){}
   return '';
 }
 
 async function findPhoto(rec){
-  return await wikipediaHtmlPhoto(rec)||await wikidataPhoto(rec)||await wikipediaPhoto(rec)||'';
+  // Structured sources first. HTML is last resort and must pass a strict filename match.
+  return await wikidataPhoto(rec)||await wikipediaPhoto(rec)||await wikipediaHtmlPhoto(rec)||'';
 }
 
 const targets=Object.entries(players).filter(([,r])=>!r.photoURL&&!r.fallbackPhotoURL);
