@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-04T06:54:58.107Z",
+  "generated": "2026-10-04T07:34:32.401Z",
   "source": "afl.com.au public AFL API season squad photoURL",
   "players": {
     "garyablett|14051984": {
@@ -292,14 +292,14 @@
       "name": "Steven Baker",
       "dobKey": "22051980",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/63/10._Steven_Baker%2C_St_Kilda_FC_01.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2011,
       "lastYear": 2011,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "lukeball|25051984": {
       "name": "Luke Ball",
@@ -370,14 +370,14 @@
       "name": "Leo Barry",
       "dobKey": "19051977",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/8/81/Barry_hall.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jimmybartel|04121983": {
       "name": "Jimmy Bartel",
@@ -474,14 +474,14 @@
       "name": "Peter Bell",
       "dobKey": "01031976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Peter_Bell.jpg/960px-Peter_Bell.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "milesbergman|18102001": {
       "name": "Miles Bergman",
@@ -604,14 +604,14 @@
       "name": "Heath Black",
       "dobKey": "28051979",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/e/ea/Heath_Ledger_%282%29.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "simonblack|03041979": {
       "name": "Simon Black",
@@ -760,14 +760,14 @@
       "name": "Joel Bowden",
       "dobKey": "21061978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Joel_Bowden_%28cropped%29.jpg/960px-Joel_Bowden_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jackbowes|26011998": {
       "name": "Jack Bowes",
@@ -838,14 +838,14 @@
       "name": "Michael Braun",
       "dobKey": "24031978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Nathan_Brown_of_Richmond_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "andrewbrayshaw|08111999": {
       "name": "Andrew Brayshaw",
@@ -994,14 +994,14 @@
       "name": "Leigh Brown",
       "dobKey": "23021982",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Leigh_Matthews_2025.jpg/960px-Leigh_Matthews_2025.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2011,
       "lastYear": 2011,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "lukebrown|22091992": {
       "name": "Luke Brown",
@@ -1020,14 +1020,14 @@
       "name": "Nathan Brown",
       "dobKey": "10021978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Nathan_Brown_of_Richmond_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "nathanbrown|17121988": {
       "name": "Nathan Brown",
@@ -1098,14 +1098,14 @@
       "name": "Peter Burgoyne",
       "dobKey": "29011978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/66/Peter_burgoyne.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "shaunburgoyne|21101982": {
       "name": "Shaun Burgoyne",
@@ -1124,27 +1124,27 @@
       "name": "Scott Burns",
       "dobKey": "23121974",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Scott_Burns_070525.jpg/960px-Scott_Burns_070525.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "brettburton|04051978": {
       "name": "Brett Burton",
       "dobKey": "04051978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/9/96/Brett_Burton.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "ryanburton|31011997": {
       "name": "Ryan Burton",
@@ -1345,27 +1345,27 @@
       "name": "Josh Carr",
       "dobKey": "29041980",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/20260316_Josh_Carr.jpg/960px-20260316_Josh_Carr.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "matthewcarr|29121978": {
       "name": "Matthew Carr",
       "dobKey": "29121978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Nathan_Brown_of_Richmond_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "andrewcarrazzo|15121983": {
       "name": "Andrew Carrazzo",
@@ -1397,14 +1397,14 @@
       "name": "Domenic Cassisi",
       "dobKey": "22091982",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/1/19/Domenic_Cassisi_Port_Power.JPG?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2014,
       "lastYear": 2014,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "adamcerra|07101999": {
       "name": "Adam Cerra",
@@ -1696,14 +1696,14 @@
       "name": "Ben Cousins",
       "dobKey": "30061978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Ben_Cousins.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "brennancox|13081998": {
       "name": "Brennan Cox",
@@ -1748,14 +1748,14 @@
       "name": "Shane Crawford",
       "dobKey": "09091974",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/d/d6/Shane_Crawford%2C_2015_AFL_Grand_Final_Parade_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jamiecripps|23041992": {
       "name": "Jamie Cripps",
@@ -1800,7 +1800,7 @@
       "name": "Trent Croad",
       "dobKey": "09031980",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Trent_croad.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Trent_croad.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
@@ -1839,14 +1839,14 @@
       "name": "Jared Crouch",
       "dobKey": "05031978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Brett_kirk2.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "mattcrouch|21041995": {
       "name": "Matt Crouch",
@@ -2138,27 +2138,27 @@
       "name": "Leon Davis",
       "dobKey": "17061981",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/0/08/Paul_Chapman.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2011,
       "lastYear": 2011,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "nickdavis|30031980": {
       "name": "Nick Davis",
       "dobKey": "30031980",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Nick_Riewoldt_2017.1.jpg/960px-Nick_Riewoldt_2017.1.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "phildavis|30081990": {
       "name": "Phil Davis",
@@ -2268,7 +2268,7 @@
       "name": "Stuart Dew",
       "dobKey": "18081979",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Stuart_Dew_2018.1.jpg/960px-Stuart_Dew_2018.1.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Stuart_Dew_2018.1.jpg/960px-Stuart_Dew_2018.1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
@@ -2489,7 +2489,7 @@
       "name": "Nathan Eagleton",
       "dobKey": "10111978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Nathan_Eagleton.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/2/2d/Nathan_Eagleton.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
@@ -2619,27 +2619,27 @@
       "name": "Peter Everitt",
       "dobKey": "03051974",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Peter_Bell.jpg/960px-Peter_Bell.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jefffarmer|24061977": {
       "name": "Jeff Farmer",
       "dobKey": "24061977",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Jeff_Farmer.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "kanefarrell|17031999": {
       "name": "Kane Farrell",
@@ -2658,14 +2658,14 @@
       "name": "Brendan Fevola",
       "dobKey": "20011981",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/f/f0/FevolaBrisbane.JPG?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "braydenfiorini|22081997": {
       "name": "Brayden Fiorini",
@@ -2736,14 +2736,14 @@
       "name": "Chad Fletcher",
       "dobKey": "30081979",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Chad_Fletcher.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "dustinfletcher|07051975": {
       "name": "Dustin Fletcher",
@@ -2827,14 +2827,14 @@
       "name": "Nic Fosdike",
       "dobKey": "26021980",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/d/d0/Nic_Fosdike-2006.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "billyframpton|20111996": {
       "name": "Billy Frampton",
@@ -2970,14 +2970,14 @@
       "name": "Michael Gardiner",
       "dobKey": "05071979",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/c/c8/15._Michael_Gardiner%2C_St_Kilda_FC_01.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2011,
       "lastYear": 2011,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jeffgarlett|03081989": {
       "name": "Jeff Garlett",
@@ -3022,14 +3022,14 @@
       "name": "Fraser Gehrig",
       "dobKey": "03031976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Johno.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "mitchgeorgiades|28092001": {
       "name": "Mitch Georgiades",
@@ -3204,14 +3204,14 @@
       "name": "Simon Goodwin",
       "dobKey": "26121976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/Simon_Goodwin_2018.11.jpg/960px-Simon_Goodwin_2018.11.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jackgraham|25021998": {
       "name": "Jack Graham",
@@ -3243,14 +3243,14 @@
       "name": "Shannon Grant",
       "dobKey": "19041977",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/9/9e/Ben_Dixon_2018.1.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "robbiegray|30031988": {
       "name": "Robbie Gray",
@@ -3503,7 +3503,7 @@
       "name": "Mitch Hahn",
       "dobKey": "10051981",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/3/32/Mitch_hahn.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/3/32/Mitch_hahn.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
@@ -3542,7 +3542,7 @@
       "name": "Barry Hall",
       "dobKey": "08021977",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/8/81/Barry_hall.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/8/81/Barry_hall.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
@@ -3646,14 +3646,14 @@
       "name": "Tom Harley",
       "dobKey": "18071978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/57/Tom_Harley_2018.1.jpg/960px-Tom_Harley_2018.1.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jamesharmes|05101995": {
       "name": "James Harmes",
@@ -3672,7 +3672,7 @@
       "name": "Daniel Harris",
       "dobKey": "10051982",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/0/02/Daniel_Harris_cropped.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/0/02/Daniel_Harris_cropped.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
@@ -3711,7 +3711,7 @@
       "name": "Robert Harvey",
       "dobKey": "21081971",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Robert_Harvey.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Robert_Harvey.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
@@ -3724,14 +3724,14 @@
       "name": "Paul Hasleby",
       "dobKey": "12061981",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/0/08/Paul_Chapman.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "tomhawkins|21071988": {
       "name": "Tom Hawkins",
@@ -3789,14 +3789,14 @@
       "name": "Des Headland",
       "dobKey": "21011981",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Jeff_Farmer.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "isaacheeney|05051996": {
       "name": "Isaac Heeney",
@@ -4010,14 +4010,14 @@
       "name": "Mitch Hinge",
       "dobKey": "26061998",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e7/Mitch_Hinge_at_the_2026_School_Holidays_Open_Training_in_Adelaide_Oval_%28028A7790%29.jpg/960px-Mitch_Hinge_at_the_2026_School_Holidays_Open_Training_in_Adelaide_Oval_%28028A7790%29.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2026,
       "lastYear": 2026,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "erichipwood|13091997": {
       "name": "Eric Hipwood",
@@ -4062,27 +4062,27 @@
       "name": "Ben Holland",
       "dobKey": "10051977",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Ben_Holland.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "brodieholland|03011980": {
       "name": "Brodie Holland",
       "dobKey": "03011980",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Brodie_Holland_2006.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "nickholman|29051995": {
       "name": "Nick Holman",
@@ -4192,14 +4192,14 @@
       "name": "Ryan Houlihan",
       "dobKey": "21011982",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/2/26/Robert_Murphy_2017.1.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2011,
       "lastYear": 2011,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "danhouston|12051997": {
       "name": "Dan Houston",
@@ -4244,14 +4244,14 @@
       "name": "Max Hudghton",
       "dobKey": "02091976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/en/8/8d/1997AFLGrandFinal.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "benhudson|24021979": {
       "name": "Ben Hudson",
@@ -4296,14 +4296,14 @@
       "name": "Adam Hunter",
       "dobKey": "18061981",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/en/1/14/Adam_Hunter.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "lachiehunter|13121994": {
       "name": "Lachie Hunter",
@@ -4543,53 +4543,53 @@
       "name": "Brad Johnson",
       "dobKey": "18071976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Brad_Johnson_04.03.17.jpg/960px-Brad_Johnson_04.03.17.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jasonjohnson|25011978": {
       "name": "Jason Johnson",
       "dobKey": "25011978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Johno.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "kanejohnson|15031978": {
       "name": "Kane Johnson",
       "dobKey": "15031978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Nathan_Brown_of_Richmond_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "markjohnson|23051978": {
       "name": "Mark Johnson",
       "dobKey": "23051978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/2/20/Mark_Johnson.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "michaeljohnson|20101984": {
       "name": "Michael Johnson",
@@ -4918,7 +4918,7 @@
       "name": "Steven King",
       "dobKey": "22111978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Steven_King_2018.2.jpg/960px-Steven_King_2018.2.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Steven_King_2018.2.jpg/960px-Steven_King_2018.2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
@@ -4931,14 +4931,14 @@
       "name": "Brett Kirk",
       "dobKey": "25101976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Brett_kirk2.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jakekolodjashnij|09081995": {
       "name": "Jake Kolodjashnij",
@@ -5009,14 +5009,14 @@
       "name": "Brendon Lade",
       "dobKey": "10071976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Brendon_Lade_2018.1.jpg/960px-Brendon_Lade_2018.1.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "rorylaird|29121993": {
       "name": "Rory Laird",
@@ -5074,14 +5074,14 @@
       "name": "Nigel Lappin",
       "dobKey": "21061976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Peter_Bell.jpg/960px-Peter_Bell.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "nicklarkey|06061998": {
       "name": "Nick Larkey",
@@ -5191,14 +5191,14 @@
       "name": "Cameron Ling",
       "dobKey": "27021981",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/1/17/Lingy_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2011,
       "lastYear": 2011,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "patricklipinski|17071998": {
       "name": "Patrick Lipinski",
@@ -5230,14 +5230,14 @@
       "name": "Matthew Lloyd",
       "dobKey": "16041978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/Matthew_Lloyd_2005.jpg/960px-Matthew_Lloyd_2005.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "rorylobb|09021993": {
       "name": "Rory Lobb",
@@ -5308,14 +5308,14 @@
       "name": "Scott Lucas",
       "dobKey": "30121977",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Jeff_Farmer.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jacklukosius|09082000": {
       "name": "Jack Lukosius",
@@ -5594,27 +5594,27 @@
       "name": "Ben Mathews",
       "dobKey": "29111978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Ben_Mathews_wearing_2005_premiership_medallion.jpg/960px-Ben_Mathews_wearing_2005_premiership_medallion.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "martinmattner|06081982": {
       "name": "Martin Mattner",
       "dobKey": "06081982",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/e/e9/Mattner_after_game.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2013,
       "lastYear": 2013,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "nickmaxwell|03061983": {
       "name": "Nick Maxwell",
@@ -5997,14 +5997,14 @@
       "name": "Andrew Mcleod",
       "dobKey": "04081976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/4/4a/Amcleod_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "shaunmcmanus|09021976": {
       "name": "Shaun Mcmanus",
@@ -6426,14 +6426,14 @@
       "name": "Cameron Mooney",
       "dobKey": "26091979",
       "photoURL": "",
-      "fallbackPhotoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/6e/Cameron_Mooney_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2011,
       "lastYear": 2011,
-      "source": "unresolved"
+      "source": "verified-wikimedia-fallback"
     },
     "darcymoore|25011996": {
       "name": "Darcy Moore",
@@ -6647,14 +6647,14 @@
       "name": "David Neitz",
       "dobKey": "22011975",
       "photoURL": "",
-      "fallbackPhotoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/2/28/David_neitz.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "unresolved"
+      "source": "verified-wikimedia-fallback"
     },
     "jainewcombe|02082001": {
       "name": "Jai Newcombe",
@@ -6816,14 +6816,14 @@
       "name": "Michael Oloughlin",
       "dobKey": "20021977",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Michael_O%27Loughlin_at_Collins_Booksellers_for_an_autographing_session_in_Wagga_Wagga.jpg/960px-Michael_O%27Loughlin_at_Collins_Booksellers_for_an_autographing_session_in_Wagga_Wagga.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jaegeromeara|23021994": {
       "name": "Jaeger Omeara",
@@ -7310,14 +7310,14 @@
       "name": "Brady Rawlings",
       "dobKey": "10061981",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/7/70/Brady_Rawlings.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2011,
       "lastYear": 2011,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "farrenray|23031986": {
       "name": "Farren Ray",
@@ -8233,14 +8233,14 @@
       "name": "Robert Shirley",
       "dobKey": "09061980",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/2/26/Robert_Murphy_2017.1.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jaydenshort|24011996": {
       "name": "Jayden Short",
@@ -8337,14 +8337,14 @@
       "name": "Adam Simpson",
       "dobKey": "16021976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Adam_Simpson_2018.1.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "kadesimpson|05051984": {
       "name": "Kade Simpson",
@@ -8480,14 +8480,14 @@
       "name": "Dean Solomon",
       "dobKey": "09011980",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Dean_Solomon.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "charliespargo|25111999": {
       "name": "Charlie Spargo",
@@ -8701,27 +8701,27 @@
       "name": "Nick Suban",
       "dobKey": "09051990",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/5/5a/Nick-Suban-Rd-9-2014.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2017,
       "lastYear": 2017,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "mattsuckling|25071988": {
       "name": "Matt Suckling",
       "dobKey": "25071988",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Matt_Suckling_2018.2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2020,
       "lastYear": 2020,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "andrewswallow|02061987": {
       "name": "Andrew Swallow",
@@ -9025,14 +9025,14 @@
       "name": "Warren Tredrea",
       "dobKey": "24121978",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/4/42/Warren_tredrea.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "adamtreloar|09031993": {
       "name": "Adam Treloar",
@@ -9480,7 +9480,7 @@
       "name": "Andrew Welsh",
       "dobKey": "11021983",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Andrew_Welsh.jpg/960px-Andrew_Welsh.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Andrew_Welsh.jpg/960px-Andrew_Welsh.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
@@ -9519,14 +9519,14 @@
       "name": "Scott West",
       "dobKey": "14111974",
       "photoURL": "",
-      "fallbackPhotoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/b/b1/Scott_west_afl_player.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "unresolved"
+      "source": "verified-wikimedia-fallback"
     },
     "justinwesthoff|01101986": {
       "name": "Justin Westhoff",
@@ -9558,27 +9558,27 @@
       "name": "Jeff White",
       "dobKey": "19021977",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Jeff_white.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "mattwhite|15041987": {
       "name": "Matt White",
       "dobKey": "15041987",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/7/70/Matthew_White_cropped.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2017,
       "lastYear": 2017,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "lachiewhitfield|18071994": {
       "name": "Lachie Whitfield",
@@ -9674,14 +9674,14 @@
       "name": "Michael Wilson",
       "dobKey": "21111976",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/d/d1/Michael_Wilson_Port_Power.JPG?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "nathanwilson|07011993": {
       "name": "Nathan Wilson",
@@ -9739,14 +9739,14 @@
       "name": "David Wirrpanda",
       "dobKey": "03081979",
       "photoURL": "",
-      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/60/David_Wirrpanda%2C_2005_AFL_Grand_Final_parade.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "jarrodwitts|13091992": {
       "name": "Jarrod Witts",
@@ -9895,14 +9895,14 @@
       "name": "Adem Yze",
       "dobKey": "21091977",
       "photoURL": "",
-      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Adem_Yze_2017.jpg/960px-Adem_Yze_2017.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+      "fallbackPhotoURL": "",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "verified-wikimedia-fallback"
+      "source": "unresolved"
     },
     "davidzaharakis|21021990": {
       "name": "David Zaharakis",
@@ -9973,6 +9973,5 @@
   "poolCount": 767,
   "matchedCount": 767,
   "photoUrlCount": 660,
-  "fallbackPhotoCount": 32,
-  "quickFallbackGenerated": "2026-10-04T07:22:36.581Z"
+  "fallbackPhotoCount": 24
 }
