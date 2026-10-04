@@ -34,7 +34,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 .avatar.fallback{display:grid;place-items:center;font-size:20px;font-weight:1000;color:#fff;background:linear-gradient(135deg,var(--green),#167a49)}
 .avatar.photo-ready{background-size:cover;background-repeat:no-repeat;background-position:center 8%;font-size:0}
 .player h3{font-size:14px;margin:0 0 4px}
-.player small{display:none}
+.player small{display:block;color:var(--muted);font-size:11px;line-height:1.3;margin-top:2px}
 .controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 .final{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .final input{flex:1;min-width:240px;background:rgba(11,23,17,.45);color:var(--text);border:1px solid rgba(41,68,56,.65);border-radius:13px;padding:12px;font-size:16px;font-weight:800}
@@ -88,9 +88,8 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-Ask any yes/no question you want. The game will answer strictly <b>YES</b> or <b>NO</b>.
-Questions can be about the player's team, position, current/retired status,
-name, or other information in the game's player data.
+Ask yes/no questions about the player's <b>team, position, current/retired status, number of clubs or name</b>.
+For supported questions the game will answer <b>YES</b> or <b>NO</b>. If the game does not have enough data to answer safely, it will say it doesn't know instead of guessing.
 </div>
 
 </section>
@@ -116,7 +115,7 @@ const players=[
 ['Cyril Rioli','Hawthorn','Forward','retired'],
 ['Buddy Franklin','Hawthorn / Sydney','Forward','retired'],
 ['Luke Hodge','Hawthorn / Brisbane','Defender','retired'],
-['Sam Mitchell','Hawthorn','Midfielder','retired'],
+['Sam Mitchell','Hawthorn / West Coast','Midfielder','retired'],
 ['Joel Selwood','Geelong','Midfielder','retired'],
 ['Scott Pendlebury','Collingwood','Midfielder','current'],
 ['Dane Swan','Collingwood','Midfielder','retired'],
@@ -132,7 +131,7 @@ const players=[
 ['Mark Ricciuto','Adelaide','Midfielder','retired'],
 ['Simon Black','Brisbane','Midfielder','retired'],
 ['Jonathan Brown','Brisbane','Forward','retired'],
-['Josh Kennedy','West Coast','Forward','retired'],
+['Josh Kennedy','Carlton / West Coast','Forward','retired'],
 ['Shane Crawford','Hawthorn','Midfielder','retired'],
 ['Brad Johnson','Western Bulldogs','Forward','retired'],
 ['Nick Daicos','Collingwood','Midfielder','current'],
@@ -141,12 +140,12 @@ const players=[
 ['Will Day','Hawthorn','Defender','current'],
 ['James Sicily','Hawthorn','Defender','current'],
 ['Charlie Curnow','Carlton','Forward','current'],
-['Jeremy Cameron','Geelong','Forward','current'],
+['Jeremy Cameron','GWS / Geelong','Forward','current'],
 ['Ben King','Gold Coast','Forward','current'],
 ['Max Gawn','Melbourne','Ruck','current'],
-['Lachie Neale','Brisbane','Midfielder','current'],
+['Lachie Neale','Fremantle / Brisbane','Midfielder','current'],
 ['Marcus Bontempelli','Western Bulldogs','Midfielder','current'],
-['Jason Horne-Francis','Port Adelaide','Midfielder','current'],
+['Jason Horne-Francis','North Melbourne / Port Adelaide','Midfielder','current'],
 ['Jack Sinclair','St Kilda','Defender','current'],
 ['Zach Merrett','Essendon','Midfielder','current']
 ].map(x=>({
@@ -188,6 +187,10 @@ const wikiTitles={
 'Jack Sinclair':'Jack Sinclair (footballer)'
 };
 
+const specialPhotos={
+'Tony Lockett':'https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Files/Images/Lockett_57587567HF1.jpg'
+};
+
 const photoCache={};
 
 const portrait=p=>
@@ -195,6 +198,10 @@ const portrait=p=>
 
 async function getPlayerPhoto(name){
 if(photoCache[name]!==undefined)return photoCache[name];
+if(specialPhotos[name]){
+photoCache[name]=specialPhotos[name];
+return specialPhotos[name]
+}
 let title=wikiTitles[name]||name;
 try{
 let url='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail&pithumbsize=500&titles='+encodeURIComponent(title);
@@ -290,89 +297,92 @@ hydratePhotos()
 }
 
 function answerQuestion(q){
+const s=q.toLowerCase().replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,' ').trim();
+const fullName=target.name.toLowerCase();
+const nameParts=fullName.split(' ');
+const firstName=nameParts[0];
+const lastName=nameParts[nameParts.length-1];
+const pos=target.pos.toLowerCase();
+const clubs=target.team.split('/').map(x=>x.trim().toLowerCase());
 
-let s=q.toLowerCase().replace(/[?!.]/g,'').trim();
+const teamAliases={
+'Adelaide':['adelaide','crows'],
+'Brisbane':['brisbane','brisbane lions','lions'],
+'Carlton':['carlton','blues'],
+'Collingwood':['collingwood','magpies','pies'],
+'Essendon':['essendon','bombers','dons'],
+'Fremantle':['fremantle','dockers','freo'],
+'Geelong':['geelong','cats'],
+'Gold Coast':['gold coast','gold coast suns','suns'],
+'GWS':['gws','giants','greater western sydney'],
+'Hawthorn':['hawthorn','hawks'],
+'Melbourne':['melbourne','demons','dees'],
+'North Melbourne':['north melbourne','kangaroos','roos'],
+'Port Adelaide':['port adelaide','port','power'],
+'Richmond':['richmond','tigers'],
+'St Kilda':['st kilda','saints'],
+'Sydney':['sydney','sydney swans','swans'],
+'West Coast':['west coast','west coast eagles','eagles'],
+'Western Bulldogs':['western bulldogs','bulldogs','dogs']
+};
 
-let yes=null;
-
-let n=target.name.toLowerCase();
-let team=target.team.toLowerCase();
-let pos=target.pos.toLowerCase();
-
-let known=players.find(p=>
-s.includes(p.name.toLowerCase())
-);
-
-if(known)
-yes=known.name===target.name;
-
-else if(/\b(mid|midfielder|midfield)\b/.test(s))
-yes=pos==='midfielder';
-
-else if(/\b(defender|backman|back)\b/.test(s))
-yes=pos==='defender';
-
-else if(/\b(forward|full forward|key forward|small forward)\b/.test(s))
-yes=pos==='forward';
-
-else if(/\bruck\b/.test(s))
-yes=pos==='ruck';
-
-else if(/\bretired\b|\bretire(d)?\b/.test(s))
-yes=target.status==='retired';
-
-else if(/\bcurrent\b|\bplaying now\b|\bstill playing\b|\bactive\b/.test(s))
-yes=target.status==='current';
-
-else{
-
-let matchedTeam=
-team
-.split('/')
-.map(x=>x.trim())
-.some(t=>s.includes(t));
-
-if(matchedTeam)
-yes=true;
-
-else if(/\b(name|called|named)\b/.test(s)){
-
-let words=n.split(' ');
-
-yes=words.some(w=>
-w.length>2&&s.includes(w)
-);
-
-}else{
-
-let attr=
-target.team+' '+
-target.pos+' '+
-target.status+' '+
-target.name;
-
-let qWords=s
-.split(/\s+/)
-.filter(w=>
-w.length>2&&
-![
-'the','and','this','that','player',
-'person','they','their','does',
-'is','are','was','were','have',
-'has','had','from','with','for'
-].includes(w)
-);
-
-let matches=qWords.filter(w=>
-attr.toLowerCase().includes(w)
-);
-
-if(matches.length>=2)
-yes=true;
+const canonicalClub=x=>{
+for(const [club,aliases] of Object.entries(teamAliases)){
+if(club.toLowerCase()===x)return club;
 }
+return x;
+};
+
+const targetClubNames=clubs.map(canonicalClub);
+
+let known=players.find(p=>s.includes(p.name.toLowerCase()));
+if(known)return known.name===target.name?'YES':'NO';
+
+let m=s.match(/first name.*start(?:s)? with\s+([a-z])/);
+if(m)return firstName.startsWith(m[1])?'YES':'NO';
+
+m=s.match(/last name.*start(?:s)? with\s+([a-z])/);
+if(m)return lastName.startsWith(m[1])?'YES':'NO';
+
+m=s.match(/(?:full )?name.*start(?:s)? with\s+([a-z])/);
+if(m)return fullName.startsWith(m[1])?'YES':'NO';
+
+m=s.match(/first name\s+(?:is|called)\s+([a-z-]+)/);
+if(m)return firstName===m[1]?'YES':'NO';
+
+m=s.match(/last name\s+(?:is|called)\s+([a-z-]+)/);
+if(m)return lastName===m[1]?'YES':'NO';
+
+if(/\b(mid|midfielder|midfield)\b/.test(s))return pos==='midfielder'?'YES':'NO';
+if(/\b(defender|backman|backline|back pocket|half back)\b/.test(s))return pos==='defender'?'YES':'NO';
+if(/\b(forward|full forward|key forward|small forward|half forward)\b/.test(s))return pos==='forward'?'YES':'NO';
+if(/\b(ruck|ruckman)\b/.test(s))return pos==='ruck'?'YES':'NO';
+
+if(/\b(retired|retire|retirement)\b/.test(s))return target.status==='retired'?'YES':'NO';
+if(/\b(current|active|still playing|playing now|plays now)\b/.test(s))return target.status==='current'?'YES':'NO';
+
+const clubCount=targetClubNames.length;
+if(/\b(more than one|multiple|two or more) clubs?\b/.test(s))return clubCount>1?'YES':'NO';
+if(/\b(one club|one-club|only one club|single club)\b/.test(s))return clubCount===1?'YES':'NO';
+if(/\b(two clubs|2 clubs)\b/.test(s))return clubCount===2?'YES':'NO';
+
+const mentionedClubs=[];
+for(const [club,aliases] of Object.entries(teamAliases)){
+if(aliases.some(a=>s.includes(a)))mentionedClubs.push(club);
+}
+if(mentionedClubs.length){
+const checks=mentionedClubs.map(club=>targetClubNames.includes(club));
+if(mentionedClubs.length>1&&s.includes(' and '))return checks.every(Boolean)?'YES':'NO';
+return checks.some(Boolean)?'YES':'NO';
 }
 
-return yes===null?'NO':(yes?'YES':'NO')
+if(/\b(name|called|named)\b/.test(s)){
+const words=s.split(' ');
+if(words.includes(firstName)||words.includes(lastName))return 'YES';
+return 'NO';
+}
+
+return "I DON'T KNOW — ask about the player's team, position, current/retired status, club count or name.";
 }
 
 function ask(){
