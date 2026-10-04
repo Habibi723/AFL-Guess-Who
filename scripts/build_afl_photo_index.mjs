@@ -41,11 +41,18 @@ const masterLines=masterText.trim().split(/\r?\n/);
 const masterHead=csvCells(masterLines[0]);
 const masterIx=Object.fromEntries(masterHead.map((h,i)=>[h,i]));
 const wantedDobs=new Set();
+const masterRecords=[];
 for(let i=1;i<masterLines.length;i++){
   if(!masterLines[i].trim())continue;
   const v=csvCells(masterLines[i]);
   const lastYear=Number(v[masterIx.last_year])||0;
-  if(lastYear>=2008&&v[masterIx.dob_key])wantedDobs.add(v[masterIx.dob_key]);
+  const dk=v[masterIx.dob_key]||'';
+  if(lastYear<2008||!dk)continue;
+  const first=v[masterIx.first_name]||'';
+  const last=v[masterIx.last_name]||'';
+  const name=(first+' '+last).trim();
+  wantedDobs.add(dk);
+  masterRecords.push({name,first,last,dobKey:dk,lastYear});
 }
 
 const compsJson=await getJson(API+'competitions');
@@ -148,6 +155,48 @@ while(page<numPages){
     };
   }
   page++;
+}
+
+
+// Alias official AFL catalogue names back to the names used by the game database.
+// This safely handles particles that the source database sometimes drops:
+// "Matt de Boer" -> "Matt Boer", "Jordan De Goey" -> "Jordan Goey",
+// "Callum Ah Chee" -> "Callum Chee".
+const byDob=new Map();
+for(const rec of Object.values(out.players)){
+  if(!rec?.dobKey)continue;
+  if(!byDob.has(rec.dobKey))byDob.set(rec.dobKey,[]);
+  byDob.get(rec.dobKey).push(rec);
+}
+const firstToken=s=>norm(String(s||'').trim().split(/\s+/)[0]||'');
+const lastToken=s=>norm(String(s||'').trim().split(/\s+/).pop()||'');
+
+for(const m of masterRecords){
+  const gameKey=identity(m.name,m.dobKey);
+  let rec=out.players[gameKey];
+
+  if(!rec){
+    const candidates=(byDob.get(m.dobKey)||[]).filter(x=>
+      firstToken(x.name)===norm(m.first) &&
+      lastToken(x.name)===norm(m.last)
+    );
+    if(candidates.length===1){
+      const hit=candidates[0];
+      rec={
+        ...hit,
+        name:m.name,
+        officialName:hit.name
+      };
+      out.players[gameKey]=rec;
+    }
+  }
+
+  if(rec?.champId){
+    const y=Math.max(2008,Math.min(2026,Number(m.lastYear)||2026));
+    const primary='https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Players/ChampIDImages/AFL/'+y+'014/'+rec.champId+'.png?im=Scale,width=0.6,height=0.6';
+    if(!rec.photoURL)rec.photoURL=primary;
+    rec.lastYear=y;
+  }
 }
 
 await fs.mkdir('data',{recursive:true});
