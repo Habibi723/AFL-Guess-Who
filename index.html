@@ -116,6 +116,27 @@ const SPECIAL_PHOTOS={
 'Tony Lockett':'https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Files/Images/Lockett_57587567HF1.jpg'
 };
 
+const FALLBACK_META=[
+['Wayne','Carey','retired'],['Tony','Lockett','retired'],['Gary','Ablett','retired'],
+['Jason','Dunstall','retired'],['Leigh','Matthews','retired'],['Michael','Voss','retired'],
+['Nathan','Buckley','retired'],['Robert','Harvey','retired'],['James','Hird','retired'],
+['Matthew','Scarlett','retired'],['Dustin','Fletcher','retired'],['Matthew','Lloyd','retired'],
+['Chris','Judd','retired'],['Adam','Goodes','retired'],['Cyril','Rioli','retired'],
+['Lance','Franklin','retired'],['Luke','Hodge','retired'],['Sam','Mitchell','retired'],
+['Joel','Selwood','retired'],['Scott','Pendlebury','active'],['Nick','Daicos','active'],
+['Harry','Sheezel','active'],['Sam','Walsh','active'],['Will','Day','active'],
+['James','Sicily','active'],['Charlie','Curnow','active'],['Jeremy','Cameron','active'],
+['Max','Gawn','active'],['Marcus','Bontempelli','active'],['Zach','Merrett','active']
+].map((x,i)=>({
+slug:'fallback_'+i,
+first:x[0],
+last:x[1],
+dobKey:'',
+lastYear:x[2]==='active'?2026:null,
+careerGames:0,
+sourceStatus:x[2]
+}));
+
 let allPlayerMeta=[];
 let currentAflMap=new Map();
 let board=[];
@@ -333,6 +354,11 @@ return r.text();
 
 async function loadDetails(meta){
 if(detailCache.has(meta.slug))return detailCache.get(meta.slug);
+if(meta.slug.startsWith('fallback_')){
+const p={...basicPlayer(meta),detailsLoading:false};
+detailCache.set(meta.slug,p);
+return p;
+}
 
 const personalUrl=PLAYER_DATA_BASE+meta.slug+'_personal_details.csv';
 const perfUrl=PLAYER_DATA_BASE+meta.slug+'_performance_details.csv';
@@ -729,9 +755,11 @@ render();
 }).catch(e=>console.warn('Current AFL extras failed',e));
 }catch(err){
 console.error(err);
-$('playerCount').textContent='Database load failed';
-$('answer').textContent='Could not load the all-time player list. Refresh the page to try again.';
+allPlayerMeta=FALLBACK_META;
+$('playerCount').textContent='Fallback player mode';
+$('answer').textContent='All-time database could not load, so the game opened in fallback mode.';
 $('newBtn').disabled=false;
+await newGame();
 }
 }
 
