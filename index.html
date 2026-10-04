@@ -91,7 +91,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos now try AFL and official club image sources first. If those do not display, the game immediately falls back to a strictly matched Wikipedia/Wikimedia/Wikidata image using the player's name and birth year, rather than leaving the card blank. Ask direct stat questions or yes/no questions.
+The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos now come from AFL.com.au first: the game reads the AFL website's public season/squad feeds and uses each player's returned photoURL. Retired players are looked up in their last AFL season by exact name and date of birth. Only if AFL.com.au has no usable photo does the game use a verified Wikipedia/Wikimedia/Wikidata fallback. Ask direct stat questions or yes/no questions.
 </div>
 
 </section>
@@ -163,6 +163,8 @@ let currentAflMap=new Map();
 let officialAflPlayerMap=new Map();
 let officialAflCataloguePromise=null;
 let officialAflCatalogueDone=false;
+let aflSeasonMapPromise=null;
+const aflSeasonPhotoMaps=new Map();
 let board=[];
 let target=null;
 let questions=0;
@@ -321,7 +323,7 @@ name,
 positions:mapPosition(row.position),
 jumper:row.jumperNumber??null,
 height:Number(p.heightInCm)||null,
-photo:'',
+photo:row.photoURL||p.photoURL||'',
 aflId:p.id,
 aflProfileId:p.id,
 providerId:p.providerId||''
@@ -335,6 +337,139 @@ return new Map();
 }
 }
 
+
+
+async function loadAflSeasonMap(){
+if(aflSeasonMapPromise)return aflSeasonMapPromise;
+aflSeasonMapPromise=(async()=>{
+try{
+const cr=await fetchWithTimeout(AFL_API+'competitions',{},6000);
+if(!cr.ok)return new Map();
+const cj=await cr.json();
+const comps=cj.competitions||cj||[];
+const aflComp=(Array.isArray(comps)?comps:[]).find(x=>
+x?.code==='AFL'||x?.code==='AFLM'||x?.id===1
+)||((Array.isArray(comps)&&comps[0])||null);
+if(!aflComp?.id)return new Map();
+
+const sr=await fetchWithTimeout(AFL_API+'competitions/'+aflComp.id+'/compseasons',{},7000);
+if(!sr.ok)return new Map();
+const sj=await sr.json();
+const seasons=sj.compSeasons||sj||[];
+const m=new Map();
+for(const s of (Array.isArray(seasons)?seasons:[])){
+let year=null;
+const pid=String(s.providerId||'');
+let mm=pid.match(/^CD_S(\d{4})/);
+if(mm)year=Number(mm[1]);
+if(!year){
+mm=String(s.name||'').match(/^(\d{4})/);
+if(mm)year=Number(mm[1]);
+}
+if(year&&s.id)m.set(year,s.id);
+}
+return m;
+}catch(e){
+console.warn('AFL season map unavailable',e);
+return new Map();
+}
+})();
+return aflSeasonMapPromise;
+}
+
+async function loadAflSeasonPhotoMap(year){
+year=Number(year);
+if(!year)return new Map();
+if(aflSeasonPhotoMaps.has(year))return aflSeasonPhotoMaps.get(year);
+
+const promise=(async()=>{
+try{
+const seasons=await loadAflSeasonMap();
+const seasonId=seasons.get(year);
+if(!seasonId)return new Map();
+
+const tr=await fetchWithTimeout(AFL_API+'teams?compSeasonId='+seasonId+'&pageSize=100',{},7000);
+if(!tr.ok)return new Map();
+const tj=await tr.json();
+const teams=(tj.teams||[]).filter(t=>!t.teamType||t.teamType==='MEN');
+
+const out=new Map();
+let next=0;
+const workers=Array.from({length:6},async()=>{
+while(next<teams.length){
+const team=teams[next++];
+try{
+const r=await fetchWithTimeout(AFL_API+'squads?teamId='+team.id+'&compSeasonId='+seasonId,{},6000);
+if(!r.ok)continue;
+const j=await r.json();
+for(const row of (j.squad?.players||[])){
+const p=row.player||{};
+const name=((p.firstName||'')+' '+(p.surname||'')).trim();
+if(!name)continue;
+const dobKey=dobKeyFromIso(p.dateOfBirth);
+const photo=row.photoURL||p.photoURL||'';
+const providerId=p.providerId||'';
+out.set(officialIdentityKey(name,dobKey),{
+photo,
+providerId,
+champId:String(providerId).replace(/^CD_I/,''),
+aflProfileId:p.id||null,
+season:year
+});
+}
+}catch(e){
+console.warn('AFL squad photo load failed',year,team.id,e);
+}
+}
+});
+await Promise.allSettled(workers);
+return out;
+}catch(e){
+console.warn('AFL season photo map failed',year,e);
+return new Map();
+}
+})();
+
+aflSeasonPhotoMaps.set(year,promise);
+const resolved=await promise;
+aflSeasonPhotoMaps.set(year,resolved);
+return resolved;
+}
+
+async function resolveAflWebsitePhoto(p){
+const key=officialIdentityKey(p.name,p.dobKey);
+
+// Current season exact AFL squad photo captured by the website feed.
+if(p.photo){
+const ok=await imageWorks(p.photo,1600);
+if(ok)return p.photo;
+}
+
+// For retired players (and current players missing a photo), use the AFL website
+// squad feed from their actual latest season.
+const years=[];
+const addYear=y=>{y=Number(y);if(y>=2008&&y<=2026&&!years.includes(y))years.push(y)};
+addYear(p.lastYear);
+if(p.status==='current')addYear(2026);
+addYear((Number(p.lastYear)||2026)-1);
+
+for(const year of years){
+const map=await loadAflSeasonPhotoMap(year);
+const hit=map.get(key);
+if(!hit)continue;
+
+if(hit.providerId&&!p.providerId){
+p.providerId=hit.providerId;
+p.champId=hit.champId||'';
+p.aflProfileId=hit.aflProfileId||p.aflProfileId||null;
+}
+if(hit.photo){
+const ok=await imageWorks(hit.photo,1800);
+if(ok)return hit.photo;
+}
+}
+return '';
+}
 
 function applyOfficialIdentity(p){
 const hit=officialAflPlayerMap.get(officialIdentityKey(p.name,p.dobKey));
@@ -522,20 +657,27 @@ const identity=(p.fantasyId||'')+'|'+(p.champId||p.providerId||'')+'|'+(official
 const key=p.slug+'|'+identity;
 if(bestPhotoCache.has(key))return bestPhotoCache.get(key);
 
-let src=await resolveOfficialPhotoQuick(p);
+// First choice: the exact photoURL returned by AFL.com.au's own public player/squad feeds.
+let src=await resolveAflWebsitePhoto(p);
 if(src){
 bestPhotoCache.set(key,src);
 return src;
 }
 
-// If AFL does not render quickly, use a strictly matched open-web fallback.
+// Second choice: other AFL-owned static/archive image patterns.
+src=await resolveOfficialPhotoQuick(p);
+if(src){
+bestPhotoCache.set(key,src);
+return src;
+}
+
+// Final fallback only when AFL.com.au has no usable photo.
 src=await wikiPhoto(p);
 if(src){
 bestPhotoCache.set(key,src);
 return src;
 }
 
-// Only cache a total miss once the all-time AFL identity lookup has finished.
 if(officialAflCatalogueDone)bestPhotoCache.set(key,'');
 return '';
 }
