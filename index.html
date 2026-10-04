@@ -91,7 +91,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use AFL-owned sources only. Current players now use their Champion Data ID on AFL static-image servers first, avoiding Fantasy hotlink blocks. Retired players are matched through the full AFL all-time catalogue with proper pagination, then checked across historical AFL image archives. Ask direct stat questions or yes/no questions.
+The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos now try AFL and official club image sources first. If those do not display, the game immediately falls back to a strictly matched Wikipedia/Wikimedia/Wikidata image using the player's name and birth year, rather than leaving the card blank. Ask direct stat questions or yes/no questions.
 </div>
 
 </section>
@@ -176,6 +176,7 @@ let flippedCards=new Set();
 const detailCache=new Map();
 const photoCache=new Map();
 const officialPhotoCache=new Map();
+const bestPhotoCache=new Map();
 const positionCache=new Map();
 const $=id=>document.getElementById(id);
 
@@ -504,6 +505,41 @@ img.src=src;
 });
 }
 
+async function resolveOfficialPhotoQuick(p){
+const candidates=officialPhotoCandidates(p).slice(0,18);
+const batchSize=6;
+for(let i=0;i<candidates.length;i+=batchSize){
+const batch=candidates.slice(i,i+batchSize);
+const results=await Promise.all(batch.map(src=>imageWorks(src,1200)));
+const hit=results.findIndex(Boolean);
+if(hit>=0)return batch[hit];
+}
+return '';
+}
+
+async function resolveBestPhoto(p){
+const identity=(p.fantasyId||'')+'|'+(p.champId||p.providerId||'')+'|'+(officialAflCatalogueDone?'done':'loading');
+const key=p.slug+'|'+identity;
+if(bestPhotoCache.has(key))return bestPhotoCache.get(key);
+
+let src=await resolveOfficialPhotoQuick(p);
+if(src){
+bestPhotoCache.set(key,src);
+return src;
+}
+
+// If AFL does not render quickly, use a strictly matched open-web fallback.
+src=await wikiPhoto(p);
+if(src){
+bestPhotoCache.set(key,src);
+return src;
+}
+
+// Only cache a total miss once the all-time AFL identity lookup has finished.
+if(officialAflCatalogueDone)bestPhotoCache.set(key,'');
+return '';
+}
+
 async function resolveOfficialPhoto(p){
 const cacheKey=p.slug+'|'+(p.fantasyId||'')+'|'+(p.champId||p.providerId||'')+'|'+(officialAflCatalogueDone?'done':'loading');
 if(officialPhotoCache.has(cacheKey))return officialPhotoCache.get(cacheKey);
@@ -756,16 +792,33 @@ return player;
 }
 
 function titleMatchesPlayer(title,p){
-const playerKey=normaliseName(p.name);
-const titleKey=normaliseName(String(title||'').replace(/\([^)]*\)/g,''));
-if(!playerKey||!titleKey)return false;
-return titleKey.startsWith(playerKey)||playerKey.startsWith(titleKey);
+const cleanTitle=String(title||'').replace(/\([^)]*\)/g,'').trim();
+const playerParts=String(p.name||'').trim().split(/\s+/);
+const titleParts=cleanTitle.split(/\s+/);
+if(!playerParts.length||!titleParts.length)return false;
+
+const playerSurname=normaliseName(playerParts[playerParts.length-1]);
+const titleSurname=normaliseName(titleParts[titleParts.length-1]);
+if(!playerSurname||playerSurname!==titleSurname)return false;
+
+const playerFirst=normaliseName(playerParts[0]);
+const titleFirst=normaliseName(titleParts[0]);
+if(!playerFirst||!titleFirst)return false;
+
+// Exact full-name matches are strongest.
+if(normaliseName(cleanTitle)===normaliseName(p.name))return true;
+
+// Allow common first-name shortening/expansion only when surname is exact.
+return playerFirst.startsWith(titleFirst)||titleFirst.startsWith(playerFirst);
 }
 
 function commonsTitleMatchesPlayer(title,p){
 const fileKey=normaliseName(String(title||'').replace(/^file:/i,''));
-const playerKey=normaliseName(p.name);
-return !!playerKey&&fileKey.includes(playerKey);
+const parts=String(p.name||'').trim().split(/\s+/);
+if(parts.length<2)return false;
+const first=normaliseName(parts[0]);
+const surname=normaliseName(parts[parts.length-1]);
+return !!first&&!!surname&&fileKey.includes(first)&&fileKey.includes(surname);
 }
 
 async function wikiPhoto(p){
@@ -780,7 +833,7 @@ const searchTerms=[
 ];
 
 for(const q of searchTerms){
-const u='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=5&prop=pageimages&piprop=thumbnail&pithumbsize=700';
+const u='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=5&prop=pageimages&piprop=thumbnail&pithumbsize=900';
 const r=await fetchWithTimeout(u,{},4000);
 if(!r.ok)continue;
 const j=await r.json();
@@ -793,7 +846,7 @@ if(candidates[0]?.thumbnail?.source)return setAndReturn(candidates[0].thumbnail.
 
 // Commons is only accepted when the image filename itself contains the full player name.
 for(const q of searchTerms){
-const u='https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=700';
+const u='https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=900';
 const r=await fetchWithTimeout(u,{},4000);
 if(!r.ok)continue;
 const j=await r.json();
@@ -940,33 +993,22 @@ const el=slots[next++];
 const p=board.find(x=>x.slug===el.dataset.slug);
 if(!p||!document.body.contains(el))continue;
 
-// Current player headshots should appear immediately.
-// If the browser rejects it, the card falls back into the AFL archive resolver below.
-if(p.status==='current'&&p.photo){
-const direct=p.photo;
-el.style.backgroundImage='url("'+direct.replace(/"/g,'%22')+'")';
-el.classList.add('photo-ready');
-el.classList.remove('no-photo');
-el.textContent='';
-continue;
-}
-
-if(!p.fantasyId&&!p.providerId&&!officialAflCatalogueDone){
 el.classList.add('no-photo');
-el.textContent='AFL PHOTO LOADING\n'+initials(p.name);
-continue;
-}
+el.textContent='PHOTO LOADING\n'+initials(p.name);
 
-const src=await resolveOfficialPhoto(p);
+const src=await resolveBestPhoto(p);
 if(!document.body.contains(el))continue;
+
 if(src){
 el.style.backgroundImage='url("'+src.replace(/"/g,'%22')+'")';
 el.classList.add('photo-ready');
 el.classList.remove('no-photo');
 el.textContent='';
 }else{
+el.style.backgroundImage='';
+el.classList.remove('photo-ready');
 el.classList.add('no-photo');
-el.textContent='NO AFL PHOTO FOUND\n'+initials(p.name);
+el.textContent='NO VERIFIED PHOTO\n'+initials(p.name);
 }
 }
 });
