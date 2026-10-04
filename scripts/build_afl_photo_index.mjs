@@ -324,11 +324,15 @@ async function getVerifiedWikiPhoto(m){
 
 // Pre-build a verified backup for players that don't have a reliable AFL identity.
 // The browser still tries AFL.com.au / AFL Photos first; this is only the safety net.
-const missingForFallback=masterRecords.filter(m=>!out.players[identity(m.name,m.dobKey)]);
+const missingForFallback=masterRecords.filter(m=>{
+  const rec=out.players[identity(m.name,m.dobKey)];
+  return !rec?.photoURL;
+});
 await mapPool(missingForFallback,6,async m=>{
   const fallbackPhotoURL=await getVerifiedWikiPhoto(m);
   const key=identity(m.name,m.dobKey);
-  if(!out.players[key]){
+  const existing=out.players[key];
+  if(!existing){
     out.players[key]={
       name:m.name,
       dobKey:m.dobKey,
@@ -342,8 +346,9 @@ await mapPool(missingForFallback,6,async m=>{
       lastYear:m.lastYear,
       source:fallbackPhotoURL?'verified-wikimedia-fallback':'unresolved'
     };
-  }else if(fallbackPhotoURL){
-    out.players[key].fallbackPhotoURL=fallbackPhotoURL;
+  }else{
+    if(fallbackPhotoURL)existing.fallbackPhotoURL=fallbackPhotoURL;
+    if(!existing.source)existing.source=fallbackPhotoURL?'verified-wikimedia-fallback':'afl-id-no-photo';
   }
 });
 
