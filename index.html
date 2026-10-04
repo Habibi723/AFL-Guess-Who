@@ -91,7 +91,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board can use <b>every VFL/AFL player in the historical database from 1897–present</b>. Club histories come from each player's match records. Confirmed 2027 moves are applied on top of 2026 records. Current players use AFL headshots. Historical cards try Wikipedia and Wikimedia Commons for a real photo. Career length is counted from the exact unique seasons and career games in the match data; confirmed 2027 moves are shown separately and do not count as seasons already played.
+The board now uses <b>well-known players whose careers overlap 1989 to the present</b>: established stars with 150+ career games, current players with 80+ games, plus a curated list of famous younger stars. Club histories come from match records, and confirmed 2027 moves are shown separately.
 </div>
 
 </section>
@@ -111,6 +111,18 @@ const CONFIRMED_2027_MOVES={
 'Joel Amartey':'Carlton',
 'Jordon Butts':'Western Bulldogs'
 };
+
+const MODERN_STAR_NAMES=new Set([
+'Nick Daicos','Harry Sheezel','Harley Reid','Nick Watson','Sam Darcy',
+'Jason Horne-Francis','Logan Morris','Josh Treacy','Kysaiah Pickett',
+'Nasiah Wanganeen-Milera','Zak Butters','Connor Rozee','Will Day',
+'Bailey Smith','Finn Callaghan','Tom Green','Errol Gulden','Chad Warner',
+'Izak Rankine','Noah Anderson','Matt Rowell','Max Holmes','Jye Amiss',
+'Luke Jackson','Josh Rachele','Riley Thilthorpe','Colby McKercher',
+'George Wardlaw','Cam Mackenzie','Jai Newcombe','Josh Weddle',
+'Mabior Chol','Dylan Moore','Jarman Impey','Josh Battle',
+'Jordan Clark','Lachie Ash','Oliver Dempsey','Murphy Reid'
+]);
 
 const SPECIAL_PHOTOS={
 'Tony Lockett':'https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Files/Images/Lockett_57587567HF1.jpg'
@@ -195,6 +207,15 @@ if(r.includes('FWD')||r.includes('FORWARD'))out.push('Forward');
 return [...new Set(out)];
 }
 
+function isWellKnownModernPlayer(row){
+const name=(titleWord(row.first)+' '+titleWord(row.last)).trim();
+if(!row.lastYear||row.lastYear<1989)return false;
+if(row.careerGames>=150)return true;
+if(row.sourceStatus==='active'&&row.careerGames>=80)return true;
+if(MODERN_STAR_NAMES.has(name))return true;
+return false;
+}
+
 async function loadMaster(){
 const r=await fetchWithTimeout(MASTER_URL,{cache:'no-store'},8000);
 if(!r.ok)throw new Error('Could not load all-time AFL player list');
@@ -216,7 +237,7 @@ careerGames:Number(x[idx.career_games])||0,
 sourceStatus:x[idx.status]||'retired'
 });
 }
-return rows;
+return rows.filter(isWellKnownModernPlayer);
 }
 
 async function loadCurrentAflMap(){
@@ -559,7 +580,7 @@ function render(){
 $('wins').textContent=wins;
 $('streak').textContent=streak;
 $('qcount').textContent=questions;
-$('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' all-time players';
+$('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' well-known players (1989–current)';
 $('guess').disabled=gameOver||loadingBoard;
 $('guessBtn').disabled=gameOver||loadingBoard;
 $('askBtn').disabled=gameOver||loadingBoard;
@@ -739,10 +760,10 @@ async function init(){
 $('askBtn').disabled=true;
 $('guessBtn').disabled=true;
 $('newBtn').disabled=true;
-$('answer').textContent='Loading player list…';
+$('answer').textContent='Loading well-known AFL players from 1989 to now…';
 try{
 allPlayerMeta=await loadMaster();
-$('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' all-time players';
+$('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' well-known players (1989–current)';
 $('newBtn').disabled=false;
 await newGame();
 
