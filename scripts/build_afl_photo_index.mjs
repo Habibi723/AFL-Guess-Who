@@ -40,21 +40,43 @@ const masterText=await fs.readFile('data/player_status.csv','utf8');
 const masterLines=masterText.trim().split(/\r?\n/);
 const masterHead=csvCells(masterLines[0]);
 const masterIx=Object.fromEntries(masterHead.map((h,i)=>[h,i]));
+const MODERN_STAR_NAMES=new Set([
+'Nick Daicos','Harry Sheezel','Harley Reid','Nick Watson','Sam Darcy',
+'Jason Horne-Francis','Logan Morris','Josh Treacy','Kysaiah Pickett',
+'Nasiah Wanganeen-Milera','Zak Butters','Connor Rozee','Will Day',
+'Bailey Smith','Finn Callaghan','Tom Green','Errol Gulden','Chad Warner',
+'Izak Rankine','Noah Anderson','Matt Rowell','Max Holmes','Jye Amiss',
+'Luke Jackson','Josh Rachele','Riley Thilthorpe','Colby McKercher',
+'George Wardlaw','Cam Mackenzie','Jai Newcombe','Josh Weddle',
+'Mabior Chol','Dylan Moore','Jarman Impey','Josh Battle',
+'Jordan Clark','Lachie Ash','Oliver Dempsey','Murphy Reid'
+]);
+const titleWord=s=>String(s||'').split(/([-'])/).map(part=>{
+  if(part==='-'||part==="'")return part;
+  return part?part.charAt(0).toUpperCase()+part.slice(1):part;
+}).join('');
+
 const wantedDobs=new Set();
 const masterRecords=[];
 for(let i=1;i<masterLines.length;i++){
   if(!masterLines[i].trim())continue;
   const v=csvCells(masterLines[i]);
   const lastYear=Number(v[masterIx.last_year])||0;
+  const careerGames=Number(v[masterIx.career_games])||0;
+  const status=v[masterIx.status]||'';
   const dk=v[masterIx.dob_key]||'';
-  if(lastYear<2008||!dk)continue;
   const first=v[masterIx.first_name]||'';
   const last=v[masterIx.last_name]||'';
-  const name=(first+' '+last).trim();
+  const name=(titleWord(first)+' '+titleWord(last)).trim();
+  const keep=lastYear>=2008 && (
+    careerGames>=150 ||
+    (status==='active'&&careerGames>=80) ||
+    MODERN_STAR_NAMES.has(name)
+  );
+  if(!keep||!dk)continue;
   wantedDobs.add(dk);
-  masterRecords.push({name,first,last,dobKey:dk,lastYear});
+  masterRecords.push({name,first,last,dobKey:dk,lastYear,careerGames,status});
 }
-
 
 const masterByNormName=new Map();
 const masterByFirstLast=new Map();
@@ -231,6 +253,35 @@ for(const m of masterRecords){
     rec.lastYear=y;
   }
 }
+
+
+// Keep the published index small and exact: only players actually eligible for the game.
+const poolPlayers={};
+const missing=[];
+let withPhoto=0;
+for(const m of masterRecords){
+  const key=identity(m.name,m.dobKey);
+  const rec=out.players[key];
+  if(rec){
+    poolPlayers[key]=rec;
+    if(rec.photoURL)withPhoto++;
+  }else{
+    missing.push(m.name);
+  }
+}
+out.players=poolPlayers;
+out.poolCount=masterRecords.length;
+out.matchedCount=Object.keys(poolPlayers).length;
+out.photoUrlCount=withPhoto;
+
+await fs.writeFile('data/afl_photo_index_summary.json',JSON.stringify({
+  generated:out.generated,
+  poolCount:masterRecords.length,
+  matchedCount:Object.keys(poolPlayers).length,
+  photoUrlCount:withPhoto,
+  missingCount:missing.length,
+  missing
+},null,2)+'\n');
 
 await fs.mkdir('data',{recursive:true});
 await fs.writeFile('data/afl_photo_index.json',JSON.stringify(out,null,2)+'\n');
