@@ -91,7 +91,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known players who played at some point from 2008 to now</b>, including current AFL players. Every loaded card shows career games, career goals, seasons played and career years. Current players use AFL headshots; retired players try Wikipedia and Wikimedia Commons for a real photo.
+The board uses <b>well-known players who played at some point from 2008 to now</b>. Current players use official AFL headshots. Retired-player photos are only shown when the full name can be verified; otherwise the card shows no verified photo instead of risking the wrong person. If a position cannot be verified, it is shown as <b>UTL</b>.
 </div>
 
 </section>
@@ -129,22 +129,22 @@ const SPECIAL_PHOTOS={
 };
 
 const FALLBACK_META=[
-['Wayne','Carey','retired'],['Tony','Lockett','retired'],['Gary','Ablett','retired'],
-['Jason','Dunstall','retired'],['Leigh','Matthews','retired'],['Michael','Voss','retired'],
-['Nathan','Buckley','retired'],['Robert','Harvey','retired'],['James','Hird','retired'],
-['Matthew','Scarlett','retired'],['Dustin','Fletcher','retired'],['Matthew','Lloyd','retired'],
-['Chris','Judd','retired'],['Adam','Goodes','retired'],['Cyril','Rioli','retired'],
-['Lance','Franklin','retired'],['Luke','Hodge','retired'],['Sam','Mitchell','retired'],
-['Joel','Selwood','retired'],['Scott','Pendlebury','active'],['Nick','Daicos','active'],
-['Harry','Sheezel','active'],['Sam','Walsh','active'],['Will','Day','active'],
-['James','Sicily','active'],['Charlie','Curnow','active'],['Jeremy','Cameron','active'],
-['Max','Gawn','active'],['Marcus','Bontempelli','active'],['Zach','Merrett','active']
+['Lance','Franklin','retired'],['Chris','Judd','retired'],['Gary','Ablett Jr','retired'],
+['Luke','Hodge','retired'],['Sam','Mitchell','retired'],['Joel','Selwood','retired'],
+['Dane','Swan','retired'],['Dustin','Martin','retired'],['Nat','Fyfe','retired'],
+['Jack','Riewoldt','retired'],['Scott','Pendlebury','active'],['Patrick','Dangerfield','active'],
+['Marcus','Bontempelli','active'],['Lachie','Neale','active'],['Max','Gawn','active'],
+['Jeremy','Cameron','active'],['Zach','Merrett','active'],['Tom','Stewart','active'],
+['Nick','Daicos','active'],['Harry','Sheezel','active'],['Harley','Reid','active'],
+['Will','Day','active'],['Zak','Butters','active'],['Connor','Rozee','active'],
+['Noah','Anderson','active'],['Matt','Rowell','active'],['Errol','Gulden','active'],
+['Chad','Warner','active'],['Jason','Horne-Francis','active'],['Sam','Darcy','active']
 ].map((x,i)=>({
 slug:'fallback_'+i,
 first:x[0],
 last:x[1],
 dobKey:'',
-lastYear:x[2]==='active'?2026:null,
+lastYear:x[2]==='active'?2026:2025,
 careerGames:0,
 sourceStatus:x[2]
 }));
@@ -477,41 +477,59 @@ detailCache.set(meta.slug,player);
 return player;
 }
 
+function titleMatchesPlayer(title,p){
+const playerKey=normaliseName(p.name);
+const titleKey=normaliseName(String(title||'').replace(/\([^)]*\)/g,''));
+if(!playerKey||!titleKey)return false;
+return titleKey.startsWith(playerKey)||playerKey.startsWith(titleKey);
+}
+
+function commonsTitleMatchesPlayer(title,p){
+const fileKey=normaliseName(String(title||'').replace(/^file:/i,''));
+const playerKey=normaliseName(p.name);
+return !!playerKey&&fileKey.includes(playerKey);
+}
+
 async function wikiPhoto(p){
 if(photoCache.has(p.slug))return photoCache.get(p.slug);
 const setAndReturn=src=>{photoCache.set(p.slug,src||'');return src||''};
-try{
-const titleUrl='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail&pithumbsize=700&titles='+encodeURIComponent(p.name);
-let r=await fetchWithTimeout(titleUrl,{},4000);
-let j=await r.json();
-let page=Object.values(j.query?.pages||{})[0];
-if(page?.thumbnail?.source)return setAndReturn(page.thumbnail.source);
 
+try{
+const year=p.dobYear||'';
 const searchTerms=[
-'"'+p.name+'" Australian rules footballer',
-'"'+p.name+'" footballer '+(p.dobYear||''),
-'"'+p.name+'" AFL'
+'"'+p.name+'" "Australian rules footballer" '+year,
+'"'+p.name+'" AFL '+year
 ];
+
 for(const q of searchTerms){
-const u='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=3&prop=pageimages&piprop=thumbnail&pithumbsize=700';
-r=await fetchWithTimeout(u,{},4000);
-j=await r.json();
+const u='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=5&prop=pageimages&piprop=thumbnail&pithumbsize=700';
+const r=await fetchWithTimeout(u,{},4000);
+if(!r.ok)continue;
+const j=await r.json();
 const pages=Object.values(j.query?.pages||{});
-const hit=pages.find(x=>x?.thumbnail?.source);
-if(hit?.thumbnail?.source)return setAndReturn(hit.thumbnail.source);
+const candidates=pages
+.filter(x=>x?.thumbnail?.source&&titleMatchesPlayer(x.title,p))
+.sort((a,b)=>(a.index??999)-(b.index??999));
+if(candidates[0]?.thumbnail?.source)return setAndReturn(candidates[0].thumbnail.source);
 }
 
+// Commons is only accepted when the image filename itself contains the full player name.
 for(const q of searchTerms){
-const u='https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=5&prop=imageinfo&iiprop=url&iiurlwidth=700';
-r=await fetchWithTimeout(u,{},4000);
-j=await r.json();
+const u='https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=700';
+const r=await fetchWithTimeout(u,{},4000);
+if(!r.ok)continue;
+const j=await r.json();
 const pages=Object.values(j.query?.pages||{});
-const hit=pages.find(x=>x?.imageinfo?.[0]?.thumburl||x?.imageinfo?.[0]?.url);
+const hit=pages.find(x=>
+commonsTitleMatchesPlayer(x.title,p)&&
+(x?.imageinfo?.[0]?.thumburl||x?.imageinfo?.[0]?.url)
+);
 if(hit){
 const src=hit.imageinfo[0].thumburl||hit.imageinfo[0].url;
 if(src)return setAndReturn(src);
 }
 }
+
 return setAndReturn('');
 }catch(e){
 return setAndReturn('');
@@ -588,7 +606,7 @@ render();
 }
 
 function positionLabel(p){
-return p.positions.length?p.positions.join(' / '):'Historical position unavailable';
+return p.positions.length?p.positions.join(' / '):'UTL';
 }
 
 function render(){
@@ -677,9 +695,10 @@ if(m)return lastName.startsWith(m[1])?'YES':'NO';
 m=s.match(/(?:full )?name.*start(?:s)? with\s+([a-z])/);
 if(m)return fullName.startsWith(m[1])?'YES':'NO';
 
-const asksPosition=/\b(mid|midfielder|midfield|defender|defence|defense|backman|backline|forward|ruck|ruckman)\b/.test(s);
+const asksPosition=/\b(mid|midfielder|midfield|defender|defence|defense|backman|backline|forward|ruck|ruckman|utl|utility)\b/.test(s);
 if(asksPosition){
-if(!target.positions.length)return "I DON'T KNOW — this historical player's position isn't verified in the data source.";
+if(/\b(utl|utility)\b/.test(s))return target.positions.length===0?'YES':'NO';
+if(!target.positions.length)return "I DON'T KNOW — this player's exact position isn't verified, so the card is listed as UTL.";
 const pos=target.positions.map(x=>x.toLowerCase());
 if(/\b(mid|midfielder|midfield)\b/.test(s))return pos.includes('midfielder')?'YES':'NO';
 if(/\b(defender|defence|defense|backman|backline)\b/.test(s))return pos.includes('defender')?'YES':'NO';
