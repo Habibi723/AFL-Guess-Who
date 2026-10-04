@@ -79,8 +79,92 @@ async function wikipediaPhoto(rec){
   return '';
 }
 
+
+async function getText(url,tries=2){
+  let err;
+  for(let i=0;i<tries;i++){
+    try{
+      const r=await fetch(url,{headers:{
+        'user-agent':'AFL-Guess-Who-photo-gap-builder/1.1 (player photo verification)'
+      }});
+      if(r.ok)return {text:await r.text(),url:r.url};
+      err=new Error('HTTP '+r.status);
+    }catch(e){err=e}
+    await sleep(250*(i+1));
+  }
+  throw err;
+}
+
+function decodeHtml(s){
+  return String(s||'')
+    .replace(/&amp;/g,'&')
+    .replace(/&quot;/g,'"')
+    .replace(/&#39;/g,"'")
+    .replace(/&lt;/g,'<')
+    .replace(/&gt;/g,'>');
+}
+
+function ogImage(html){
+  const patterns=[
+    /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+    /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i
+  ];
+  for(const re of patterns){
+    const m=String(html||'').match(re);
+    if(m?.[1]){
+      const src=decodeHtml(m[1]);
+      if(!/wikipedia-wordmark|wiki-logo|wikimedia-button/i.test(src))return src;
+    }
+  }
+  return '';
+}
+
+function looksLikeCorrectAflPage(html,rec){
+  const h=String(html||'');
+  const birthYear=String(rec.dobKey||'').slice(-4);
+  const lower=h.toLowerCase();
+  const afl=/australian rules football|australian football league|\bafl\b/.test(lower);
+  const year=!birthYear||lower.includes(birthYear);
+  const surname=lastToken(rec.name);
+  const hasSurname=norm(h.slice(0,250000)).includes(surname);
+  return afl&&year&&hasSurname;
+}
+
+async function wikipediaHtmlPhoto(rec){
+  const title=String(rec.name||'').trim().replace(/\s+/g,'_');
+  const direct='https://en.wikipedia.org/wiki/'+encodeURIComponent(title).replace(/%2F/g,'/');
+  try{
+    const r=await getText(direct);
+    if(looksLikeCorrectAflPage(r.text,rec)){
+      const src=ogImage(r.text);
+      if(src)return src;
+    }
+  }catch(e){}
+
+  // Normal Wikipedia HTML search page fallback.
+  try{
+    const q=rec.name+' Australian rules footballer '+String(rec.dobKey||'').slice(-4);
+    const r=await getText('https://en.wikipedia.org/w/index.php?search='+encodeURIComponent(q));
+    const links=[...r.text.matchAll(/href=["'](\/wiki\/[^"'#?]+)["']/gi)]
+      .map(m=>m[1])
+      .filter(x=>!/Special:|Help:|Wikipedia:|Category:|File:/i.test(x));
+    const seen=new Set();
+    for(const path of links.slice(0,10)){
+      if(seen.has(path))continue;
+      seen.add(path);
+      try{
+        const page=await getText('https://en.wikipedia.org'+path);
+        if(!looksLikeCorrectAflPage(page.text,rec))continue;
+        const src=ogImage(page.text);
+        if(src)return src;
+      }catch(e){}
+    }
+  }catch(e){}
+  return '';
+}
+
 async function findPhoto(rec){
-  return await wikidataPhoto(rec)||await wikipediaPhoto(rec)||'';
+  return await wikipediaHtmlPhoto(rec)||await wikidataPhoto(rec)||await wikipediaPhoto(rec)||'';
 }
 
 const targets=Object.entries(players).filter(([,r])=>!r.photoURL&&!r.fallbackPhotoURL);
