@@ -123,6 +123,7 @@ let target=null;
 let questions=0;
 let gameOver=false;
 let loadingBoard=false;
+let boardVersion=0;
 let wins=+localStorage.getItem('agwWins')||0;
 let streak=+localStorage.getItem('agwStreak')||0;
 let flippedCards=new Set();
@@ -244,6 +245,74 @@ names.add(key);
 chosen.push(m);
 }
 return chosen;
+}
+
+function titleWord(s){
+return String(s||'').split(/([-'])/).map(part=>{
+if(part==='-'||part==="'")return part;
+return part?part.charAt(0).toUpperCase()+part.slice(1):part;
+}).join('');
+}
+
+function basicPlayer(meta){
+const name=(titleWord(meta.first)+' '+titleWord(meta.last)).trim();
+return {
+slug:meta.slug,
+name,
+careerTeams:[],
+currentTeam:null,
+positions:[],
+status:meta.sourceStatus==='active'?'current':'retired',
+height:null,
+jumper:null,
+careerGames:meta.careerGames,
+seasonsPlayed:0,
+seasonYears:[],
+firstYear:null,
+lastYear:meta.lastYear||null,
+futureClub:CONFIRMED_2027_MOVES[name]||null,
+dobYear:meta.dobKey?Number(meta.dobKey.slice(-4)):null,
+photo:SPECIAL_PHOTOS[name]||'',
+aflId:null,
+detailsLoading:true
+};
+}
+
+function applyCurrentInfo(p){
+const info=currentAflMap.get(normaliseName(p.name));
+if(!info)return p;
+return {
+...p,
+positions:info.positions?.length?info.positions:p.positions,
+height:info.height||p.height,
+jumper:info.jumper??p.jumper,
+photo:SPECIAL_PHOTOS[p.name]||info.photo||p.photo,
+aflId:info.aflId||p.aflId
+};
+}
+
+async function hydrateBoardDetails(metas,version,targetSlug){
+let next=0;
+const workers=Array.from({length:4},async()=>{
+while(next<metas.length){
+const meta=metas[next++];
+if(meta.slug===targetSlug)continue;
+try{
+let full=await loadDetails(meta);
+full=applyCurrentInfo(full);
+full.detailsLoading=false;
+if(version!==boardVersion)return;
+const i=board.findIndex(p=>p.slug===meta.slug);
+if(i>=0){
+board[i]=full;
+render();
+}
+}catch(e){
+console.warn('Background player load failed',meta.slug,e);
+}
+}
+});
+await Promise.allSettled(workers);
 }
 
 async function fetchText(url){
@@ -385,7 +454,7 @@ async function hydratePhotos(){
 const slots=[...document.querySelectorAll('.photo-slot')];
 await Promise.all(slots.map(async el=>{
 const p=board.find(x=>x.slug===el.dataset.slug);
-if(!p)return;
+if(!p||p.detailsLoading)return;
 const src=p.photo||await wikiPhoto(p);
 if(src&&document.body.contains(el)){
 el.style.backgroundImage='url("'+src.replace(/"/g,'%22')+'")';
@@ -405,27 +474,49 @@ localStorage.setItem('agwStreak',streak);
 
 async function newGame(){
 if(loadingBoard||allPlayerMeta.length<24)return;
+const version=++boardVersion;
 loadingBoard=true;
 gameOver=false;
 questions=0;
 flippedCards=new Set();
 $('questionInput').value='';
 $('guess').value='';
-$('answer').textContent='Loading 24 player histories…';
+
+const metas=pickBoardMeta();
+board=metas.map(basicPlayer);
+target=board[Math.floor(Math.random()*board.length)];
+const targetMeta=metas.find(m=>m.slug===target.slug);
+
+$('answer').textContent='Loading the secret player…';
+render();
 $('newBtn').disabled=true;
 $('askBtn').disabled=true;
 $('guessBtn').disabled=true;
 
 try{
-const metas=pickBoardMeta();
-board=await Promise.all(metas.map(loadDetails));
-target=board[Math.floor(Math.random()*board.length)];
+let fullTarget=await loadDetails(targetMeta);
+fullTarget=applyCurrentInfo(fullTarget);
+fullTarget.detailsLoading=false;
+if(version!==boardVersion)return;
+const ti=board.findIndex(p=>p.slug===fullTarget.slug);
+if(ti>=0)board[ti]=fullTarget;
+target=fullTarget;
 $('answer').textContent='';
 render();
-}finally{
+
 loadingBoard=false;
 $('newBtn').disabled=false;
-if(!gameOver){$('askBtn').disabled=false;$('guessBtn').disabled=false}
+if(!gameOver){
+$('askBtn').disabled=false;
+$('guessBtn').disabled=false;
+}
+
+hydrateBoardDetails(metas,version,target.slug);
+}catch(err){
+console.error(err);
+loadingBoard=false;
+$('answer').textContent='Could not load this board. Press New board to try again.';
+$('newBtn').disabled=false;
 }
 }
 
@@ -453,9 +544,9 @@ $('guessOptions').innerHTML=board.map(p=>'<option value="'+p.name.replace(/"/g,'
 
 $('grid').innerHTML=board.map(p=>{
 const current=p.futureClub?'<span>🔜 2027 club: '+p.futureClub+'</span>':(p.currentTeam?'<span>⭐ Current: '+p.currentTeam+'</span>':'');
-const clubs=p.careerTeams.length?p.careerTeams.join(' / '):'Club history unavailable';
-const years=(p.firstYear&&p.lastYear)?'<span>📅 Played: '+p.firstYear+'–'+p.lastYear+'</span>':'';
-const length='<span>⏱️ '+p.seasonsPlayed+' season'+(p.seasonsPlayed===1?'':'s')+' • '+p.careerGames+' game'+(p.careerGames===1?'':'s')+'</span>';
+const clubs=p.detailsLoading?'Loading club history…':(p.careerTeams.length?p.careerTeams.join(' / '):'Club history unavailable');
+const years=(!p.detailsLoading&&p.firstYear&&p.lastYear)?'<span>📅 Played: '+p.firstYear+'–'+p.lastYear+'</span>':'';
+const length=p.detailsLoading?'<span>⏱️ Loading career…</span>':'<span>⏱️ '+p.seasonsPlayed+' season'+(p.seasonsPlayed===1?'':'s')+' • '+p.careerGames+' game'+(p.careerGames===1?'':'s')+'</span>';
 return '<button type="button" data-slug="'+p.slug+'" class="player '+(flippedCards.has(p.slug)?'flipped':'')+'">'+
 '<div class="player-front">'+portrait(p)+
 '<h3>'+p.name+'</h3>'+
@@ -616,16 +707,24 @@ async function init(){
 $('askBtn').disabled=true;
 $('guessBtn').disabled=true;
 $('newBtn').disabled=true;
-$('answer').textContent='Loading the all-time VFL/AFL player database…';
+$('answer').textContent='Loading the all-time player list…';
 try{
-[allPlayerMeta,currentAflMap]=await Promise.all([loadMaster(),loadCurrentAflMap()]);
+allPlayerMeta=await loadMaster();
 $('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' all-time players';
 $('newBtn').disabled=false;
 await newGame();
+
+loadCurrentAflMap().then(map=>{
+currentAflMap=map;
+if(!map.size)return;
+board=board.map(p=>applyCurrentInfo(p));
+target=applyCurrentInfo(target);
+render();
+}).catch(e=>console.warn('Current AFL extras failed',e));
 }catch(err){
 console.error(err);
 $('playerCount').textContent='Database load failed';
-$('answer').textContent='Could not load the all-time player database. Refresh the page to try again.';
+$('answer').textContent='Could not load the all-time player list. Refresh the page to try again.';
 $('newBtn').disabled=false;
 }
 }
