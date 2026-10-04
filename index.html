@@ -30,9 +30,9 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 .player.flipped{transform:rotateY(180deg)}
 .player-front,.player-back{backface-visibility:hidden;width:100%;height:100%}
 .player-back{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:12px;transform:rotateY(180deg);font-weight:1000;font-size:18px}
-.avatar{width:100%;height:130px;border-radius:12px;display:block;margin-bottom:9px;background-color:#0c1913;overflow:hidden}
+.avatar{width:100%;height:138px;border-radius:12px;display:block;margin-bottom:9px;background:radial-gradient(circle at 50% 35%,#254634 0,#102019 68%);overflow:hidden;object-fit:contain;object-position:center bottom}
 .avatar.fallback{display:grid;place-items:center;font-size:20px;font-weight:1000;color:#fff;background:linear-gradient(135deg,var(--green),#167a49)}
-.avatar.photo-ready{background-size:cover;background-repeat:no-repeat;background-position:center 8%;font-size:0}
+.avatar.photo-ready{background-size:contain;background-repeat:no-repeat;background-position:center bottom;font-size:0}
 .player h3{font-size:15px;margin:0 0 6px;font-weight:900}
 .player small{display:none}
 .player-meta{display:grid;gap:3px;padding-top:7px;border-top:1px solid rgba(169,190,177,.18);font-size:12px;line-height:1.25;color:#dcebe1;font-weight:750}
@@ -67,7 +67,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 <div class="stats">
 <div class="pill">❓ <b id="qcount">0</b>/10 questions</div>
 <div class="pill">❤️ 1 life</div>
-<div class="pill">🎯 Target is hidden</div>
+<div class="pill">🎯 Target is hidden</div><div class="pill">👥 <b id="playerCount">Loading AFL players…</b></div>
 </div>
 
 <div class="questionbar">
@@ -80,7 +80,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 <div class="grid" id="grid"></div>
 
 <div class="final">
-<input id="guess" placeholder="Type the AFL player's name here..." autocomplete="off">
+<input id="guess" list="guessOptions" placeholder="Type the AFL player's name here..." autocomplete="off"><datalist id="guessOptions"></datalist>
 <button class="btn" id="guessBtn">Guess player</button>
 </div>
 
@@ -98,65 +98,51 @@ For supported questions the game will answer <b>YES</b> or <b>NO</b>. If the gam
 </div>
 
 <script>
-const players=[
-['Wayne Carey','North Melbourne','Forward','retired'],
-['Tony Lockett','St Kilda / Sydney','Forward','retired'],
-['Gary Ablett Sr','Hawthorn / Geelong','Forward','retired'],
-['Jason Dunstall','Hawthorn','Forward','retired'],
-['Leigh Matthews','Hawthorn','Midfielder','retired'],
-['Michael Voss','Brisbane','Midfielder','retired'],
-['Nathan Buckley','Collingwood','Midfielder','retired'],
-['Robert Harvey','St Kilda','Midfielder','retired'],
-['James Hird','Essendon','Midfielder','retired'],
-['Matthew Scarlett','Geelong','Defender','retired'],
-['Glenn Archer','North Melbourne','Defender','retired'],
-['Dustin Fletcher','Essendon','Defender','retired'],
-['Matthew Lloyd','Essendon','Forward','retired'],
-['Chris Judd','West Coast / Carlton','Midfielder','retired'],
-['Adam Goodes','Sydney','Forward','retired'],
-['Cyril Rioli','Hawthorn','Forward','retired'],
-['Buddy Franklin','Hawthorn / Sydney','Forward','retired'],
-['Luke Hodge','Hawthorn / Brisbane','Defender','retired'],
-['Sam Mitchell','Hawthorn / West Coast','Midfielder','retired'],
-['Joel Selwood','Geelong','Midfielder','retired'],
-['Scott Pendlebury','Collingwood','Midfielder','current'],
-['Dane Swan','Collingwood','Midfielder','retired'],
-['Gary Ablett Jr','Geelong / Gold Coast','Midfielder','retired'],
-['Nick Riewoldt','St Kilda','Forward','retired'],
-['Matthew Pavlich','Fremantle','Forward','retired'],
-['Jimmy Bartel','Geelong','Midfielder','retired'],
-['Lenny Hayes','St Kilda','Midfielder','retired'],
-['Trent Cotchin','Richmond','Midfielder','retired'],
-['Jack Riewoldt','Richmond','Forward','retired'],
-['Eddie Betts','Carlton / Adelaide','Forward','retired'],
-['Andrew McLeod','Adelaide','Defender','retired'],
-['Mark Ricciuto','Adelaide','Midfielder','retired'],
-['Simon Black','Brisbane','Midfielder','retired'],
-['Jonathan Brown','Brisbane','Forward','retired'],
-['Josh Kennedy','Carlton / West Coast','Forward','retired'],
-['Shane Crawford','Hawthorn','Midfielder','retired'],
-['Brad Johnson','Western Bulldogs','Forward','retired'],
-['Nick Daicos','Collingwood','Midfielder','current'],
-['Harry Sheezel','North Melbourne','Midfielder','current'],
-['Sam Walsh','Carlton','Midfielder','current'],
-['Will Day','Hawthorn','Defender','current'],
-['James Sicily','Hawthorn','Defender','current'],
-['Charlie Curnow','Carlton','Forward','current'],
-['Jeremy Cameron','GWS / Geelong','Forward','current'],
-['Ben King','Gold Coast','Forward','current'],
-['Max Gawn','Melbourne','Ruck','current'],
-['Lachie Neale','Fremantle / Brisbane','Midfielder','current'],
-['Marcus Bontempelli','Western Bulldogs','Midfielder','current'],
-['Jason Horne-Francis','North Melbourne / Port Adelaide','Midfielder','current'],
-['Jack Sinclair','St Kilda','Defender','current'],
-['Zach Merrett','Essendon','Midfielder','current']
-].map(x=>({
-name:x[0],
-team:x[1],
-pos:x[2],
-status:x[3]
-}));
+const AFL_SEASON_ID=85;
+const AFL_API='https://aflapi.afl.com.au/afl/v2/';
+const HEADSHOT_BASE='https://fantasy.afl.com.au/assets/media/players/afl/';
 
+const legends=[
+{name:'Wayne Carey',team:'North Melbourne',positions:['Forward'],status:'retired'},
+{name:'Tony Lockett',team:'St Kilda / Sydney',positions:['Forward'],status:'retired',photo:'https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Files/Images/Lockett_57587567HF1.jpg'},
+{name:'Gary Ablett Sr',team:'Hawthorn / Geelong',positions:['Forward'],status:'retired',wiki:'Gary Ablett Sr.'},
+{name:'Jason Dunstall',team:'Hawthorn',positions:['Forward'],status:'retired'},
+{name:'Leigh Matthews',team:'Hawthorn',positions:['Midfielder'],status:'retired'},
+{name:'Michael Voss',team:'Brisbane Lions',positions:['Midfielder'],status:'retired'},
+{name:'Nathan Buckley',team:'Collingwood',positions:['Midfielder'],status:'retired'},
+{name:'Robert Harvey',team:'St Kilda',positions:['Midfielder'],status:'retired',wiki:'Robert Harvey (footballer)'},
+{name:'James Hird',team:'Essendon',positions:['Midfielder'],status:'retired'},
+{name:'Matthew Scarlett',team:'Geelong Cats',positions:['Defender'],status:'retired'},
+{name:'Glenn Archer',team:'North Melbourne',positions:['Defender'],status:'retired'},
+{name:'Dustin Fletcher',team:'Essendon',positions:['Defender'],status:'retired'},
+{name:'Matthew Lloyd',team:'Essendon',positions:['Forward'],status:'retired'},
+{name:'Chris Judd',team:'West Coast Eagles / Carlton',positions:['Midfielder'],status:'retired'},
+{name:'Adam Goodes',team:'Sydney Swans',positions:['Forward'],status:'retired'},
+{name:'Cyril Rioli',team:'Hawthorn',positions:['Forward'],status:'retired'},
+{name:'Buddy Franklin',team:'Hawthorn / Sydney Swans',positions:['Forward'],status:'retired',wiki:'Lance Franklin'},
+{name:'Luke Hodge',team:'Hawthorn / Brisbane Lions',positions:['Defender'],status:'retired'},
+{name:'Sam Mitchell',team:'Hawthorn / West Coast Eagles',positions:['Midfielder'],status:'retired',wiki:'Sam Mitchell (footballer)'},
+{name:'Joel Selwood',team:'Geelong Cats',positions:['Midfielder'],status:'retired'},
+{name:'Dane Swan',team:'Collingwood',positions:['Midfielder'],status:'retired'},
+{name:'Gary Ablett Jr',team:'Geelong Cats / Gold Coast SUNS',positions:['Midfielder'],status:'retired',wiki:'Gary Ablett Jr.'},
+{name:'Nick Riewoldt',team:'St Kilda',positions:['Forward'],status:'retired'},
+{name:'Matthew Pavlich',team:'Fremantle',positions:['Forward'],status:'retired'},
+{name:'Jimmy Bartel',team:'Geelong Cats',positions:['Midfielder'],status:'retired'},
+{name:'Lenny Hayes',team:'St Kilda',positions:['Midfielder'],status:'retired'},
+{name:'Trent Cotchin',team:'Richmond',positions:['Midfielder'],status:'retired'},
+{name:'Jack Riewoldt',team:'Richmond',positions:['Forward'],status:'retired'},
+{name:'Eddie Betts',team:'Carlton / Adelaide Crows',positions:['Forward'],status:'retired'},
+{name:'Andrew McLeod',team:'Adelaide Crows',positions:['Defender'],status:'retired',wiki:'Andrew McLeod (footballer)'},
+{name:'Mark Ricciuto',team:'Adelaide Crows',positions:['Midfielder'],status:'retired'},
+{name:'Simon Black',team:'Brisbane Lions',positions:['Midfielder'],status:'retired'},
+{name:'Jonathan Brown',team:'Brisbane Lions',positions:['Forward'],status:'retired',wiki:'Jonathan Brown (Australian footballer)'},
+{name:'Josh Kennedy',team:'Carlton / West Coast Eagles',positions:['Forward'],status:'retired',wiki:'Josh Kennedy (footballer, born 1987)'},
+{name:'Shane Crawford',team:'Hawthorn',positions:['Midfielder'],status:'retired'},
+{name:'Brad Johnson',team:'Western Bulldogs',positions:['Forward'],status:'retired',wiki:'Brad Johnson (Australian footballer)'}
+];
+
+let players=[];
+let currentPlayers=[];
 let target=null;
 let board=[];
 let questions=0;
@@ -164,179 +150,219 @@ let gameOver=false;
 let wins=+localStorage.getItem('agwWins')||0;
 let streak=+localStorage.getItem('agwStreak')||0;
 let flippedCards=new Set();
-
-const $=id=>document.getElementById(id);
-
-const initials=n=>
-n.split(' ')
-.map(x=>x[0])
-.join('')
-.slice(0,2);
-
-const wikiTitles={
-'Gary Ablett Sr':'Gary Ablett Sr.',
-'Buddy Franklin':'Lance Franklin',
-'Gary Ablett Jr':'Gary Ablett Jr.',
-'Robert Harvey':'Robert Harvey (footballer)',
-'Sam Mitchell':'Sam Mitchell (footballer)',
-'Andrew McLeod':'Andrew McLeod (footballer)',
-'Jonathan Brown':'Jonathan Brown (Australian footballer)',
-'Josh Kennedy':'Josh Kennedy (footballer, born 1987)',
-'Brad Johnson':'Brad Johnson (Australian footballer)',
-'Sam Walsh':'Sam Walsh (footballer)',
-'Will Day':'Will Day (footballer)',
-'Ben King':'Ben King (Australian footballer)',
-'Jack Sinclair':'Jack Sinclair (footballer)'
-};
-
-const specialPhotos={
-'Tony Lockett':'https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Files/Images/Lockett_57587567HF1.jpg'
-};
-
 const photoCache={};
 
-const portrait=p=>
-'<div class="avatar fallback photo-slot" data-player="'+p.name.replace(/"/g,'&quot;')+'">'+initials(p.name)+'</div>';
+const $=id=>document.getElementById(id);
+const initials=n=>n.split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();
 
-async function getPlayerPhoto(name){
-if(photoCache[name]!==undefined)return photoCache[name];
-if(specialPhotos[name]){
-photoCache[name]=specialPhotos[name];
-return specialPhotos[name]
+function mapPosition(raw){
+const r=String(raw||'').toUpperCase();
+const out=[];
+if(r.includes('RUCK'))out.push('Ruck');
+if(r.includes('MIDFIELD')||r==='MID'||r.includes('MID_')||r.includes('_MID'))out.push('Midfielder');
+if(r.includes('DEFENDER')||r.includes('DEFENCE')||r.includes('DEFENSE')||r.includes('BACK'))out.push('Defender');
+if(r.includes('FORWARD')||r.includes('FWD'))out.push('Forward');
+if(!out.length&&r.includes('WING'))out.push('Midfielder');
+return [...new Set(out.length?out:['Utility'])];
 }
-let title=wikiTitles[name]||name;
+
+function teamDisplay(name){
+const map={
+'Adelaide':'Adelaide Crows',
+'Brisbane':'Brisbane Lions',
+'Geelong':'Geelong Cats',
+'Gold Coast':'Gold Coast SUNS',
+'GWS':'GWS GIANTS',
+'Sydney':'Sydney Swans',
+'West Coast':'West Coast Eagles'
+};
+return map[name]||name;
+}
+
+function shuffled(arr){
+const a=[...arr];
+for(let i=a.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[a[i],a[j]]=[a[j],a[i]];
+}
+return a;
+}
+
+async function loadCurrentAflPlayers(){
+const teamRes=await fetch(AFL_API+'teams?compSeasonId='+AFL_SEASON_ID+'&pageSize=100');
+if(!teamRes.ok)throw new Error('Could not load AFL teams');
+const teamJson=await teamRes.json();
+let teams=(teamJson.teams||[]).filter(t=>!t.teamType||t.teamType==='MEN');
+if(teams.length<18)throw new Error('Incomplete AFL team list');
+
+const squadResults=await Promise.all(teams.map(async team=>{
+const r=await fetch(AFL_API+'squads?teamId='+team.id+'&compSeasonId='+AFL_SEASON_ID);
+if(!r.ok)throw new Error('Could not load '+team.name);
+const j=await r.json();
+return j.squad;
+}));
+
+const all=[];
+for(const squad of squadResults){
+const team=teamDisplay(squad.team?.name||'Unknown');
+for(const row of (squad.players||[])){
+const p=row.player||{};
+const name=((p.firstName||'')+' '+(p.surname||'')).trim();
+if(!name||!p.id)continue;
+all.push({
+name,
+team,
+positions:mapPosition(row.position),
+rawPosition:row.position||'',
+status:'current',
+id:p.id,
+jumper:row.jumperNumber??null,
+height:Number(p.heightInCm)||null,
+dob:p.dateOfBirth||null,
+photo:HEADSHOT_BASE+p.id+'_450.png?v=2026',
+official:true
+});
+}
+}
+const dedup=[...new Map(all.map(p=>[p.name,p])).values()];
+if(dedup.length<650)throw new Error('Incomplete AFL player list: '+dedup.length);
+return dedup.sort((a,b)=>a.name.localeCompare(b.name));
+}
+
+async function wikiPhoto(p){
+if(photoCache[p.name]!==undefined)return photoCache[p.name];
 try{
-let url='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail&pithumbsize=500&titles='+encodeURIComponent(title);
-let r=await fetch(url);
-let j=await r.json();
-let page=Object.values(j.query?.pages||{})[0];
-let src=page?.thumbnail?.source||'';
-if(!src){
-let s='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch='+encodeURIComponent(name+' Australian rules footballer')+'&gsrlimit=1&prop=pageimages&piprop=thumbnail&pithumbsize=500';
-let sr=await fetch(s);
-let sj=await sr.json();
-let sp=Object.values(sj.query?.pages||{})[0];
-src=sp?.thumbnail?.source||'';
-}
-photoCache[name]=src;
-return src
+const title=p.wiki||p.name;
+const url='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail&pithumbsize=500&titles='+encodeURIComponent(title);
+const r=await fetch(url);
+const j=await r.json();
+const page=Object.values(j.query?.pages||{})[0];
+const src=page?.thumbnail?.source||'';
+photoCache[p.name]=src;
+return src;
 }catch(e){
-photoCache[name]='';
-return ''
+photoCache[p.name]='';
+return '';
 }
 }
 
-async function hydratePhotos(){
-let slots=[...document.querySelectorAll('.photo-slot')];
+function portrait(p){
+if(p.photo){
+return '<img class="avatar" src="'+p.photo+'" alt="'+p.name+'" loading="lazy" onerror="this.outerHTML=\'<div class=&quot;avatar fallback wiki-slot&quot; data-player=&quot;'+p.name.replace(/"/g,'&quot;')+'&quot;>'+initials(p.name)+'</div>\'">';
+}
+return '<div class="avatar fallback wiki-slot" data-player="'+p.name.replace(/"/g,'&quot;')+'">'+initials(p.name)+'</div>';
+}
+
+async function hydrateLegendPhotos(){
+const slots=[...document.querySelectorAll('.wiki-slot')];
 await Promise.all(slots.map(async el=>{
-let name=el.dataset.player;
-let src=await getPlayerPhoto(name);
+const p=players.find(x=>x.name===el.dataset.player);
+if(!p||p.official)return;
+const src=await wikiPhoto(p);
 if(src&&document.body.contains(el)){
 el.style.backgroundImage='url("'+src.replace(/"/g,'%22')+'")';
 el.classList.add('photo-ready');
 el.textContent='';
 }
-}))
+}));
 }
 
 function save(){
 localStorage.setItem('agwWins',wins);
-localStorage.setItem('agwStreak',streak)
+localStorage.setItem('agwStreak',streak);
 }
 
 function newGame(){
-target=players[Math.floor(Math.random()*players.length)];
-
-let pool=players.filter(p=>p.name!==target.name).sort(()=>Math.random()-.5).slice(0,23);
-board=[target,...pool].sort(()=>Math.random()-.5);
-
+if(players.length<24)return;
+board=shuffled(players).slice(0,24);
+target=board[Math.floor(Math.random()*board.length)];
 questions=0;
 gameOver=false;
 flippedCards=new Set();
-
 $('answer').textContent='';
 $('questionInput').value='';
-
-render()
+$('guess').value='';
+render();
 }
 
 function toggleCard(name){
-if(flippedCards.has(name))
-flippedCards.delete(name);
-else
-flippedCards.add(name);
-
-render()
+if(flippedCards.has(name))flippedCards.delete(name);
+else flippedCards.add(name);
+render();
 }
 
 function render(){
-
 $('wins').textContent=wins;
 $('streak').textContent=streak;
 $('qcount').textContent=questions;
-
+$('playerCount').textContent=currentPlayers.length+' current + '+legends.length+' legends';
 $('guess').disabled=gameOver;
 $('guessBtn').disabled=gameOver;
 $('askBtn').disabled=gameOver;
 $('questionInput').disabled=gameOver;
 
+$('guessOptions').innerHTML=board.map(p=>'<option value="'+p.name.replace(/"/g,'&quot;')+'"></option>').join('');
+
 $('grid').innerHTML=board.map(p=>
-'<button type="button" class="player '+(flippedCards.has(p.name)?'flipped':'')+'" onclick="toggleCard(\''+
-p.name.replace(/'/g,"\\'")+
-'\')">'+
+'<button type="button" class="player '+(flippedCards.has(p.name)?'flipped':'')+'" onclick="toggleCard(\''+p.name.replace(/'/g,"\\'")+'\')">'+
 '<div class="player-front">'+
 portrait(p)+
 '<h3>'+p.name+'</h3>'+
-'<div class="player-meta"><span>🏟️ '+p.team+'</span><span>📍 '+p.pos+'</span></div>'+
+'<div class="player-meta"><span>🏟️ '+p.team+'</span><span>📍 '+p.positions.join(' / ')+'</span></div>'+
 '</div>'+
 '<div class="player-back">'+p.name+'</div>'+
 '</button>'
 ).join('');
-hydratePhotos()
+hydrateLegendPhotos();
 }
 
-function answerQuestion(q){
-const s=q.toLowerCase().replace(/[^a-z0-9\s-]/g,' ').replace(/\s+/g,' ').trim();
-const fullName=target.name.toLowerCase();
-const nameParts=fullName.split(' ');
-const firstName=nameParts[0];
-const lastName=nameParts[nameParts.length-1];
-const pos=target.pos.toLowerCase();
-const careerClubs=target.team.split('/').map(x=>x.trim());
-const currentClub=target.status==='current'?careerClubs[careerClubs.length-1]:null;
+function normaliseText(q){
+return q.toLowerCase().replace(/[^a-z0-9\s'-]/g,' ').replace(/\s+/g,' ').trim();
+}
 
 const teamAliases={
-'Adelaide':['adelaide','crows'],
-'Brisbane':['brisbane','brisbane lions','lions'],
+'Adelaide Crows':['adelaide','crows','adelaide crows'],
+'Brisbane Lions':['brisbane','lions','brisbane lions'],
 'Carlton':['carlton','blues'],
 'Collingwood':['collingwood','magpies','pies'],
 'Essendon':['essendon','bombers','dons'],
 'Fremantle':['fremantle','dockers','freo'],
-'Geelong':['geelong','cats'],
-'Gold Coast':['gold coast','gold coast suns','suns'],
-'GWS':['gws','giants','greater western sydney'],
+'Geelong Cats':['geelong','cats','geelong cats'],
+'Gold Coast SUNS':['gold coast','suns','gold coast suns'],
+'GWS GIANTS':['gws','giants','gws giants','greater western sydney'],
 'Hawthorn':['hawthorn','hawks'],
 'Melbourne':['melbourne','demons','dees'],
 'North Melbourne':['north melbourne','kangaroos','roos'],
 'Port Adelaide':['port adelaide','power'],
 'Richmond':['richmond','tigers'],
 'St Kilda':['st kilda','saints'],
-'Sydney':['sydney','sydney swans','swans'],
-'West Coast':['west coast','west coast eagles','eagles'],
+'Sydney Swans':['sydney','swans','sydney swans'],
+'West Coast Eagles':['west coast','eagles','west coast eagles'],
 'Western Bulldogs':['western bulldogs','bulldogs','dogs']
 };
 
-const containsAlias=(text,alias)=>(' '+text+' ').includes(' '+alias+' ');
-const mentionedTeams=[];
-for(const club of Object.keys(teamAliases)){
-if(teamAliases[club].some(a=>containsAlias(s,a)))mentionedTeams.push(club);
+function phraseIn(text,phrase){
+return (' '+text+' ').includes(' '+phrase+' ');
 }
 
-const careerHas=club=>careerClubs.includes(club);
-const currentIs=club=>currentClub===club;
+function targetCurrentTeam(){
+return target.status==='current'?target.team:null;
+}
 
-let known=players.find(p=>s.includes(p.name.toLowerCase()));
-if(known)return known.name===target.name?'YES':'NO';
+function targetCareerTeams(){
+return target.team.split('/').map(x=>x.trim());
+}
+
+function answerQuestion(q){
+const s=normaliseText(q);
+const fullName=target.name.toLowerCase();
+const parts=fullName.split(/\s+/);
+const firstName=parts[0];
+const lastName=parts[parts.length-1];
+const positions=target.positions.map(x=>x.toLowerCase());
+
+const exactPlayer=players.find(p=>phraseIn(s,p.name.toLowerCase()));
+if(exactPlayer)return exactPlayer.name===target.name?'YES':'NO';
 
 let m=s.match(/first name.*start(?:s)? with\s+([a-z])/);
 if(m)return firstName.startsWith(m[1])?'YES':'NO';
@@ -344,130 +370,118 @@ m=s.match(/last name.*start(?:s)? with\s+([a-z])/);
 if(m)return lastName.startsWith(m[1])?'YES':'NO';
 m=s.match(/(?:full )?name.*start(?:s)? with\s+([a-z])/);
 if(m)return fullName.startsWith(m[1])?'YES':'NO';
-m=s.match(/first name\s+(?:is|called)\s+([a-z-]+)/);
+m=s.match(/first name\s+(?:is|called)\s+([a-z'-]+)/);
 if(m)return firstName===m[1]?'YES':'NO';
-m=s.match(/last name\s+(?:is|called)\s+([a-z-]+)/);
+m=s.match(/last name\s+(?:is|called)\s+([a-z'-]+)/);
 if(m)return lastName===m[1]?'YES':'NO';
 
-if(/\b(mid|midfielder|midfield)\b/.test(s))return pos==='midfielder'?'YES':'NO';
-if(/\b(defender|backman|backline|back pocket|half back)\b/.test(s))return pos==='defender'?'YES':'NO';
-if(/\b(forward|full forward|key forward|small forward|half forward)\b/.test(s))return pos==='forward'?'YES':'NO';
-if(/\b(ruck|ruckman)\b/.test(s))return pos==='ruck'?'YES':'NO';
+if(/\b(mid|midfielder|midfield)\b/.test(s))return positions.includes('midfielder')?'YES':'NO';
+if(/\b(defender|defence|defense|backman|backline|half back)\b/.test(s))return positions.includes('defender')?'YES':'NO';
+if(/\b(forward|full forward|key forward|small forward|half forward)\b/.test(s))return positions.includes('forward')?'YES':'NO';
+if(/\b(ruck|ruckman)\b/.test(s))return positions.includes('ruck')?'YES':'NO';
 
 if(/\b(retired|retire|retirement)\b/.test(s))return target.status==='retired'?'YES':'NO';
-if(/\b(current player|active player|still playing|playing now)\b/.test(s))return target.status==='current'?'YES':'NO';
+if(/\b(current player|active player|still playing|playing now|in the afl now)\b/.test(s))return target.status==='current'?'YES':'NO';
 
-const clubCount=careerClubs.length;
-if(/\b(more than one|multiple|two or more) clubs?\b/.test(s))return clubCount>1?'YES':'NO';
-if(/\b(one club|one-club|only one club|single club)\b/.test(s))return clubCount===1?'YES':'NO';
-if(/\b(two clubs|2 clubs)\b/.test(s))return clubCount===2?'YES':'NO';
+m=s.match(/(?:number|jumper|guernsey)\s*(?:is|number)?\s*#?\s*(\d{1,2})/);
+if(m&&target.status==='current'&&target.jumper!=null)return Number(m[1])===Number(target.jumper)?'YES':'NO';
 
-if(mentionedTeams.length){
-const asksCareer=/\b(did|ever|formerly|previously|used to|played for|career)\b/.test(s);
-const asksCurrent=/\b(does|currently|now|plays for|play for|at the moment)\b/.test(s);
+m=s.match(/(?:taller|over|above|more than)\s*(\d{3})\s*(?:cm|centimetres|centimeters)?/);
+if(m&&target.height)return target.height>Number(m[1])?'YES':'NO';
+m=s.match(/(?:shorter|under|below|less than)\s*(\d{3})\s*(?:cm|centimetres|centimeters)?/);
+if(m&&target.height)return target.height<Number(m[1])?'YES':'NO';
 
-if(asksCurrent&&!asksCareer){
-if(target.status!=='current')return 'NO';
-return mentionedTeams.some(currentIs)?'YES':'NO';
+const mentionedTeams=[];
+for(const [club,aliases] of Object.entries(teamAliases)){
+if(aliases.some(a=>phraseIn(s,a)))mentionedTeams.push(club);
 }
-return mentionedTeams.some(careerHas)?'YES':'NO';
+if(mentionedTeams.length){
+const past=/\b(did|ever|formerly|previously|used to|played for|career)\b/.test(s);
+const current=/\b(does|currently|now|plays for|play for|team is|at)\b/.test(s);
+
+if(target.status==='current'){
+if(past&&!current)return "I DON'T KNOW — current AFL squad data doesn't include every player's old clubs.";
+return mentionedTeams.includes(targetCurrentTeam())?'YES':'NO';
+}
+return mentionedTeams.some(t=>targetCareerTeams().includes(t))?'YES':'NO';
 }
 
 if(/\b(name|called|named)\b/.test(s)){
 const words=s.split(' ');
-if(words.includes(firstName)||words.includes(lastName))return 'YES';
-return 'NO';
+return (words.includes(firstName)||words.includes(lastName))?'YES':'NO';
 }
 
-return "I DON'T KNOW — try a yes/no question about team, position, current/retired status, clubs played for, or the player's name.";
+return "I DON'T KNOW — ask about the player's current team, position, name, current/retired status, jumper number or height.";
 }
 
 function ask(){
-
 if(gameOver)return;
-
-let q=$('questionInput').value.trim();
-
+const q=$('questionInput').value.trim();
 if(!q){
 $('answer').textContent='Type a question first.';
-return
+return;
 }
-
-questions++;
-
-$('answer').textContent=answerQuestion(q);
-
+const ans=answerQuestion(q);
+if(!ans.startsWith("I DON'T KNOW"))questions++;
+$('answer').textContent=ans;
 $('questionInput').value='';
-
-render()
+render();
 }
 
 function finalGuess(){
-
 if(gameOver)return;
-
-let typed=$('guess').value.trim();
-
+const typed=$('guess').value.trim();
 if(!typed){
 $('answer').textContent='Type a player name first.';
-return
+return;
 }
-
-let found=players.find(p=>
-p.name.toLowerCase()===typed.toLowerCase()
-);
-
+const found=board.find(p=>p.name.toLowerCase()===typed.toLowerCase());
 if(!found){
-$('answer').textContent=
-'Player not found — type the full player name.';
-return
+$('answer').textContent='That player is not on this board — choose one of the 24 shown.';
+return;
 }
-
 gameOver=true;
-
 if(found.name===target.name){
-
 wins++;
 streak++;
-
-$('answer').innerHTML=
-'<span class="win">🔥 Correct! It was '+
-target.name+
-' — you cooked.</span>'
-
+$('answer').innerHTML='<span class="win">🔥 Correct! It was '+target.name+' — you cooked.</span>';
 }else{
-
 streak=0;
-
-$('answer').innerHTML=
-'<span class="lose">😭 Wrong! It was '+
-target.name+
-'. Game over.</span>'
+$('answer').innerHTML='<span class="lose">😭 Wrong! It was '+target.name+'. Game over.</span>';
+}
+save();
+render();
 }
 
-save();
-render()
+async function init(){
+$('askBtn').disabled=true;
+$('guessBtn').disabled=true;
+$('newBtn').disabled=true;
+$('answer').textContent='Loading every current AFL player…';
+try{
+currentPlayers=await loadCurrentAflPlayers();
+players=[...currentPlayers,...legends];
+$('answer').textContent='';
+$('newBtn').disabled=false;
+newGame();
+}catch(err){
+console.error(err);
+players=[...legends];
+currentPlayers=[];
+$('playerCount').textContent='AFL list failed to load';
+$('answer').textContent='Could not load the full AFL player list. Refresh the page to try again.';
+$('newBtn').disabled=false;
+newGame();
+}
 }
 
 $('askBtn').onclick=ask;
 $('guessBtn').onclick=finalGuess;
 $('newBtn').onclick=newGame;
-
-$('scoreBtn').onclick=()=>{
-wins=0;
-streak=0;
-save();
-newGame()
-};
-
-$('questionInput').addEventListener(
-'keydown',
-e=>{
-if(e.key==='Enter')ask()
-}
-);
-
-newGame();
+$('scoreBtn').onclick=()=>{wins=0;streak=0;save();newGame()};
+$('questionInput').addEventListener('keydown',e=>{if(e.key==='Enter')ask()});
+$('guess').addEventListener('keydown',e=>{if(e.key==='Enter')finalGuess()});
+init();
 </script>
 
 </body>
