@@ -91,7 +91,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known players who played at some point from 2008 to now</b>. Current players use official AFL headshots. Retired-player photos are only shown when the full name can be verified; otherwise the card shows no verified photo instead of risking the wrong person. If a position cannot be verified, it is shown as <b>UTL</b>.
+The board uses <b>well-known players who played from 2008 to now</b>. Current positions are loaded locally from the 2026 AFL position list, while retired players get a verified historical position lookup. <b>UTL</b> is only used when no reliable position can be found. Nasiah Wanganeen-Milera is included as <b>Defender / Midfielder</b>.
 </div>
 
 </section>
@@ -99,6 +99,7 @@ The board uses <b>well-known players who played at some point from 2008 to now</
 
 <script>
 const MASTER_URL='./data/player_status.csv';
+const CURRENT_POSITIONS_URL='./data/current_positions_2026.csv';
 const PLAYER_DATA_BASE='https://cdn.jsdelivr.net/gh/apur27/SuperCoach-VIA@main/data/player_data/';
 const AFL_SEASON_ID=85;
 const AFL_API='https://aflapi.afl.com.au/afl/v2/';
@@ -123,6 +124,10 @@ const MODERN_STAR_NAMES=new Set([
 'Mabior Chol','Dylan Moore','Jarman Impey','Josh Battle',
 'Jordan Clark','Lachie Ash','Oliver Dempsey','Murphy Reid'
 ]);
+
+const POSITION_OVERRIDES={
+'Nasiah Wanganeen-Milera':['Defender','Midfielder']
+};
 
 const SPECIAL_PHOTOS={
 'Tony Lockett':'https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Files/Images/Lockett_57587567HF1.jpg'
@@ -163,6 +168,7 @@ let flippedCards=new Set();
 
 const detailCache=new Map();
 const photoCache=new Map();
+const positionCache=new Map();
 const $=id=>document.getElementById(id);
 
 const initials=n=>String(n||'').split(/\s+/).filter(Boolean).map(x=>x[0]).join('').slice(0,2).toUpperCase();
@@ -200,7 +206,7 @@ return map[t]||t;
 function mapPosition(raw){
 const r=String(raw||'').toUpperCase();
 const out=[];
-if(r.includes('RUCK'))out.push('Ruck');
+if(r.includes('RUCK')||r.includes('RUC'))out.push('Ruck');
 if(r.includes('MID'))out.push('Midfielder');
 if(r.includes('DEF')||r.includes('BACK'))out.push('Defender');
 if(r.includes('FWD')||r.includes('FORWARD'))out.push('Forward');
@@ -238,6 +244,37 @@ sourceStatus:x[idx.status]||'retired'
 });
 }
 return rows.filter(isWellKnownModernPlayer);
+}
+
+async function loadLocalPositionMap(){
+try{
+const r=await fetchWithTimeout(CURRENT_POSITIONS_URL,{cache:'no-store'},5000);
+if(!r.ok)return new Map();
+const text=await r.text();
+const lines=text.trim().split(/\r?\n/);
+if(lines.length<2)return new Map();
+const head=csvCells(lines[0]);
+const idx=Object.fromEntries(head.map((h,i)=>[h,i]));
+const m=new Map();
+for(let i=1;i<lines.length;i++){
+if(!lines[i].trim())continue;
+const v=csvCells(lines[i]);
+const name=v[idx.name]||'';
+if(!name)continue;
+let positions=mapPosition(v[idx.pos]||'');
+if(POSITION_OVERRIDES[name])positions=POSITION_OVERRIDES[name];
+m.set(normaliseName(name),{
+name,
+positions,
+club:v[idx.club]||'',
+positionSource:'AFL Fantasy 2026'
+});
+}
+return m;
+}catch(e){
+console.warn('Local position database unavailable',e);
+return new Map();
+}
 }
 
 async function loadCurrentAflMap(){
@@ -317,6 +354,7 @@ futureClub:CONFIRMED_2027_MOVES[name]||null,
 dobYear:meta.dobKey?Number(meta.dobKey.slice(-4)):null,
 photo:SPECIAL_PHOTOS[name]||'',
 aflId:null,
+positionLoading:true,
 detailsLoading:true
 };
 }
@@ -330,7 +368,8 @@ positions:info.positions?.length?info.positions:p.positions,
 height:info.height||p.height,
 jumper:info.jumper??p.jumper,
 photo:SPECIAL_PHOTOS[p.name]||info.photo||p.photo,
-aflId:info.aflId||p.aflId
+aflId:info.aflId||p.aflId,
+positionLoading:(info.positions?.length||p.positions?.length)?false:p.positionLoading
 };
 }
 
@@ -471,7 +510,8 @@ lastYear,
 futureClub,
 dobYear,
 photo:SPECIAL_PHOTOS[name]||currentInfo?.photo||'',
-aflId:currentInfo?.aflId||null
+aflId:currentInfo?.aflId||null,
+positionLoading:positions.length===0
 };
 detailCache.set(meta.slug,player);
 return player;
@@ -536,6 +576,88 @@ return setAndReturn('');
 }
 }
 
+function cleanWikiPosition(raw){
+return String(raw||'')
+.replace(/<ref[^>]*>[\s\S]*?<\/ref>/gi,' ')
+.replace(/<ref[^/>]*\/>/gi,' ')
+.replace(/\{\{[^{}]*\}\}/g,' ')
+.replace(/\[\[(?:[^\]|]+\|)?([^\]]+)\]\]/g,'$1')
+.replace(/<br\s*\/?>/gi,' / ')
+.replace(/''+/g,'')
+.replace(/\s+/g,' ')
+.trim();
+}
+
+function mapHistoricalPosition(raw){
+const r=cleanWikiPosition(raw).toLowerCase();
+const out=[];
+if(/\bruck|ruckman|ruck-man\b/.test(r))out.push('Ruck');
+if(/\bmidfield|midfielder|wing|winger|centre|center|rover|ruck-rover|on-baller|tagger\b/.test(r))out.push('Midfielder');
+if(/\bdefender|defence|defense|backman|back-man|full[- ]?back|half[- ]?back|back pocket|key defender\b/.test(r))out.push('Defender');
+if(/\bforward|full[- ]?forward|half[- ]?forward|forward pocket|key forward\b/.test(r))out.push('Forward');
+return [...new Set(out)];
+}
+
+async function wikiPosition(p){
+if(POSITION_OVERRIDES[p.name])return POSITION_OVERRIDES[p.name];
+if(positionCache.has(p.slug))return positionCache.get(p.slug);
+const finish=pos=>{positionCache.set(p.slug,pos||[]);return pos||[]};
+try{
+const year=p.dobYear||'';
+const q='"'+p.name+'" "Australian rules footballer" '+year;
+const search='https://en.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*&generator=search&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=5&prop=info';
+let r=await fetchWithTimeout(search,{},4000);
+if(!r.ok)return finish([]);
+let j=await r.json();
+const pages=(j.query?.pages||[]).filter(x=>titleMatchesPlayer(x.title,p));
+if(!pages.length)return finish([]);
+for(const page of pages){
+const parse='https://en.wikipedia.org/w/api.php?action=parse&format=json&formatversion=2&origin=*&page='+encodeURIComponent(page.title)+'&prop=wikitext';
+r=await fetchWithTimeout(parse,{},4000);
+if(!r.ok)continue;
+j=await r.json();
+const wikitext=j.parse?.wikitext||'';
+const m=wikitext.match(/\|\s*(?:position|positions?)\s*=\s*([^\n]+)/i);
+if(!m)continue;
+const positions=mapHistoricalPosition(m[1]);
+if(positions.length)return finish(positions);
+}
+return finish([]);
+}catch(e){
+return finish([]);
+}
+}
+
+async function hydrateHistoricalPositions(version){
+let next=0;
+const workers=Array.from({length:4},async()=>{
+while(next<board.length){
+const snapshot=board[next++];
+if(!snapshot||snapshot.positions.length){
+if(snapshot){
+const i=board.findIndex(p=>p.slug===snapshot.slug);
+if(i>=0)board[i]={...board[i],positionLoading:false};
+}
+continue;
+}
+try{
+const positions=await wikiPosition(snapshot);
+if(version!==boardVersion)return;
+const i=board.findIndex(p=>p.slug===snapshot.slug);
+if(i>=0){
+board[i]={...board[i],positions,positionLoading:false};
+if(target?.slug===snapshot.slug)target=board[i];
+render();
+}
+}catch(e){
+const i=board.findIndex(p=>p.slug===snapshot.slug);
+if(i>=0)board[i]={...board[i],positionLoading:false};
+}
+}
+});
+await Promise.allSettled(workers);
+}
+
 function portrait(p){
 return '<div class="avatar fallback photo-slot" data-slug="'+p.slug+'">'+initials(p.name)+'</div>';
 }
@@ -585,6 +707,7 @@ render();
 
 // Load all detailed histories after the game is already usable.
 hydrateBoardDetails(metas,version,target.slug);
+hydrateHistoricalPositions(version);
 
 // Load the secret player's details separately, but never block gameplay.
 const targetMeta=metas.find(m=>m.slug===target.slug);
@@ -596,6 +719,15 @@ const i=board.findIndex(p=>p.slug===full.slug);
 if(i>=0)board[i]=full;
 target=full;
 render();
+if(!target.positions.length){
+wikiPosition(target).then(positions=>{
+if(version!==boardVersion)return;
+target={...target,positions,positionLoading:false};
+const ti=board.findIndex(p=>p.slug===target.slug);
+if(ti>=0)board[ti]=target;
+render();
+});
+}
 }).catch(err=>console.warn('Secret player detail load failed',err));
 }
 
@@ -606,7 +738,8 @@ render();
 }
 
 function positionLabel(p){
-return p.positions.length?p.positions.join(' / '):'UTL';
+if(p.positions.length)return p.positions.join(' / ');
+return p.positionLoading?'Position loading…':'UTL';
 }
 
 function render(){
@@ -697,8 +830,9 @@ if(m)return fullName.startsWith(m[1])?'YES':'NO';
 
 const asksPosition=/\b(mid|midfielder|midfield|defender|defence|defense|backman|backline|forward|ruck|ruckman|utl|utility)\b/.test(s);
 if(asksPosition){
+if(target.positionLoading)return "I DON'T KNOW — that player's position is still loading.";
 if(/\b(utl|utility)\b/.test(s))return target.positions.length===0?'YES':'NO';
-if(!target.positions.length)return "I DON'T KNOW — this player's exact position isn't verified, so the card is listed as UTL.";
+if(!target.positions.length)return "I DON'T KNOW — no reliable position was found, so the card is listed as UTL.";
 const pos=target.positions.map(x=>x.toLowerCase());
 if(/\b(mid|midfielder|midfield)\b/.test(s))return pos.includes('midfielder')?'YES':'NO';
 if(/\b(defender|defence|defense|backman|backline)\b/.test(s))return pos.includes('defender')?'YES':'NO';
@@ -813,13 +947,21 @@ $('newBtn').disabled=true;
 $('answer').textContent='Loading well-known AFL players from 2008 to now…';
 try{
 allPlayerMeta=await loadMaster();
+currentAflMap=await loadLocalPositionMap();
 $('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' well-known players (2008–current)';
 $('newBtn').disabled=false;
 await newGame();
 
-loadCurrentAflMap().then(map=>{
-currentAflMap=map;
-if(!map.size)return;
+loadCurrentAflMap().then(apiMap=>{
+if(!apiMap.size)return;
+for(const [key,apiInfo] of apiMap){
+const local=currentAflMap.get(key)||{};
+currentAflMap.set(key,{
+...local,
+...apiInfo,
+positions:apiInfo.positions?.length?apiInfo.positions:(local.positions||[])
+});
+}
 board=board.map(p=>applyCurrentInfo(p));
 target=applyCurrentInfo(target);
 render();
