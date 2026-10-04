@@ -184,11 +184,12 @@ const workers=Array.from({length:concurrency},async()=>{
     const p=pool[n];
     const rec=findIndexRec(p);
     const primary=rec?.photoURL||'';
-    const ok=primary?await imageWorks(primary):false;
-    if(ok){
-      if((n+1)%50===0)console.log('Checked',n+1,'/',pool.length);
-      continue;
-    }
+    const existingFallback=rec?.fallbackPhotoURL||'';
+
+    // The normal game already handles known AFL photos and prebuilt fallbacks.
+    // Overrides are only for the players that still have no known image at all.
+    if(primary||existingFallback)continue;
+
     output.brokenPrimary++;
     const backup=await verifiedBackup(p.name,p.dobKey);
     if(backup){
