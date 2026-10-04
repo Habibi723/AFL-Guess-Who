@@ -175,7 +175,7 @@ return [...new Set(out)];
 }
 
 async function loadMaster(){
-const r=await fetch(MASTER_URL,{cache:'no-store'});
+const r=await fetchWithTimeout(MASTER_URL,{cache:'no-store'},8000);
 if(!r.ok)throw new Error('Could not load all-time AFL player list');
 const text=await r.text();
 const lines=text.trim().split(/\r?\n/);
@@ -200,12 +200,12 @@ return rows;
 
 async function loadCurrentAflMap(){
 try{
-const tr=await fetch(AFL_API+'teams?compSeasonId='+AFL_SEASON_ID+'&pageSize=100');
+const tr=await fetchWithTimeout(AFL_API+'teams?compSeasonId='+AFL_SEASON_ID+'&pageSize=100',{},4000);
 if(!tr.ok)return new Map();
 const tj=await tr.json();
 const teams=(tj.teams||[]).filter(t=>!t.teamType||t.teamType==='MEN');
 const squads=await Promise.all(teams.map(async team=>{
-const r=await fetch(AFL_API+'squads?teamId='+team.id+'&compSeasonId='+AFL_SEASON_ID);
+const r=await fetchWithTimeout(AFL_API+'squads?teamId='+team.id+'&compSeasonId='+AFL_SEASON_ID,{},4000);
 if(!r.ok)return null;
 return (await r.json()).squad;
 }));
@@ -315,8 +315,18 @@ console.warn('Background player load failed',meta.slug,e);
 await Promise.allSettled(workers);
 }
 
+async function fetchWithTimeout(url,options={},ms=4500){
+const controller=new AbortController();
+const timer=setTimeout(()=>controller.abort(),ms);
+try{
+return await fetch(url,{...options,signal:controller.signal});
+}finally{
+clearTimeout(timer);
+}
+}
+
 async function fetchText(url){
-const r=await fetch(url,{cache:'force-cache'});
+const r=await fetchWithTimeout(url,{cache:'force-cache'},4500);
 if(!r.ok)throw new Error('Failed '+url);
 return r.text();
 }
@@ -410,7 +420,7 @@ if(photoCache.has(p.slug))return photoCache.get(p.slug);
 const setAndReturn=src=>{photoCache.set(p.slug,src||'');return src||''};
 try{
 const titleUrl='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&prop=pageimages&piprop=thumbnail&pithumbsize=700&titles='+encodeURIComponent(p.name);
-let r=await fetch(titleUrl);
+let r=await fetchWithTimeout(titleUrl,{},4000);
 let j=await r.json();
 let page=Object.values(j.query?.pages||{})[0];
 if(page?.thumbnail?.source)return setAndReturn(page.thumbnail.source);
@@ -422,7 +432,7 @@ const searchTerms=[
 ];
 for(const q of searchTerms){
 const u='https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=3&prop=pageimages&piprop=thumbnail&pithumbsize=700';
-r=await fetch(u);
+r=await fetchWithTimeout(u,{},4000);
 j=await r.json();
 const pages=Object.values(j.query?.pages||{});
 const hit=pages.find(x=>x?.thumbnail?.source);
@@ -431,7 +441,7 @@ if(hit?.thumbnail?.source)return setAndReturn(hit.thumbnail.source);
 
 for(const q of searchTerms){
 const u='https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrnamespace=6&gsrsearch='+encodeURIComponent(q)+'&gsrlimit=5&prop=imageinfo&iiprop=url&iiurlwidth=700';
-r=await fetch(u);
+r=await fetchWithTimeout(u,{},4000);
 j=await r.json();
 const pages=Object.values(j.query?.pages||{});
 const hit=pages.find(x=>x?.imageinfo?.[0]?.thumburl||x?.imageinfo?.[0]?.url);
@@ -483,41 +493,30 @@ $('questionInput').value='';
 $('guess').value='';
 
 const metas=pickBoardMeta();
-board=metas.map(basicPlayer);
+board=metas.map(basicPlayer).map(applyCurrentInfo);
 target=board[Math.floor(Math.random()*board.length)];
-const targetMeta=metas.find(m=>m.slug===target.slug);
 
-$('answer').textContent='Loading the secret player…';
-render();
-$('newBtn').disabled=true;
-$('askBtn').disabled=true;
-$('guessBtn').disabled=true;
-
-try{
-let fullTarget=await loadDetails(targetMeta);
-fullTarget=applyCurrentInfo(fullTarget);
-fullTarget.detailsLoading=false;
-if(version!==boardVersion)return;
-const ti=board.findIndex(p=>p.slug===fullTarget.slug);
-if(ti>=0)board[ti]=fullTarget;
-target=fullTarget;
 $('answer').textContent='';
-render();
-
 loadingBoard=false;
 $('newBtn').disabled=false;
-if(!gameOver){
 $('askBtn').disabled=false;
 $('guessBtn').disabled=false;
-}
+render();
 
+// Load all detailed histories after the game is already usable.
 hydrateBoardDetails(metas,version,target.slug);
-}catch(err){
-console.error(err);
-loadingBoard=false;
-$('answer').textContent='Could not load this board. Press New board to try again.';
-$('newBtn').disabled=false;
-}
+
+// Load the secret player's details separately, but never block gameplay.
+const targetMeta=metas.find(m=>m.slug===target.slug);
+loadDetails(targetMeta).then(full=>{
+if(version!==boardVersion)return;
+full=applyCurrentInfo(full);
+full.detailsLoading=false;
+const i=board.findIndex(p=>p.slug===full.slug);
+if(i>=0)board[i]=full;
+target=full;
+render();
+}).catch(err=>console.warn('Secret player detail load failed',err));
 }
 
 function toggleCard(slug){
@@ -638,6 +637,10 @@ if(!target.height)return "I DON'T KNOW — height isn't available for this playe
 return target.height<Number(m[1])?'YES':'NO';
 }
 
+if(target.detailsLoading&&/\b(season|seasons|career|played before|played after|debuted)\b/.test(s)){
+return "I DON'T KNOW — that player's career history is still loading.";
+}
+
 m=s.match(/(?:played|career|seasons?)\s+(?:for\s+)?(?:more than|over)\s+(\d+)\s*(?:seasons?|years?)?/);
 if(m)return target.seasonsPlayed>Number(m[1])?'YES':'NO';
 m=s.match(/(?:played|career|seasons?)\s+(?:for\s+)?(?:less than|under)\s+(\d+)\s*(?:seasons?|years?)?/);
@@ -652,6 +655,9 @@ if(m&&target.lastYear)return target.lastYear>Number(m[1])?'YES':'NO';
 
 const mentioned=TEAM_GROUPS.filter(g=>g.aliases.some(a=>phraseIn(s,a)));
 if(mentioned.length){
+if(target.detailsLoading&&!target.currentTeam){
+return "I DON'T KNOW — that player's club history is still loading. Try another question or ask again shortly.";
+}
 const keys=mentioned.map(x=>x.key);
 const careerKeys=target.careerTeams.map(teamKey);
 const currentKey=target.currentTeam?teamKey(target.currentTeam):null;
@@ -707,7 +713,7 @@ async function init(){
 $('askBtn').disabled=true;
 $('guessBtn').disabled=true;
 $('newBtn').disabled=true;
-$('answer').textContent='Loading the all-time player list…';
+$('answer').textContent='Loading player list…';
 try{
 allPlayerMeta=await loadMaster();
 $('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' all-time players';
