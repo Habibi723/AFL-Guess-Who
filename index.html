@@ -91,7 +91,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use AFL-owned sources only. The game now retries current AFL Fantasy headshots, Champion Data season archives, the AFL legacy CloudFront archive, name-based AFL image stores and official club-player image folders before giving up. Ask direct stat questions or yes/no questions.
+The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use AFL-owned sources only. Current players now use their Champion Data ID on AFL static-image servers first, avoiding Fantasy hotlink blocks. Retired players are matched through the full AFL all-time catalogue with proper pagination, then checked across historical AFL image archives. Ask direct stat questions or yes/no questions.
 </div>
 
 </section>
@@ -285,7 +285,9 @@ name,
 positions,
 club:v[idx.club]||'',
 fantasyId,
-photo:fantasyId?HEADSHOT_BASE+fantasyId+'_450.webp?v=2026':'',
+providerId:fantasyId?'CD_I'+fantasyId:'',
+champId:fantasyId||'',
+photo:'',
 positionSource:'AFL Fantasy 2026'
 });
 }
@@ -347,34 +349,39 @@ champId:hit.champId||p.champId||''
 async function loadOfficialAflCatalogue(){
 if(officialAflCataloguePromise)return officialAflCataloguePromise;
 officialAflCataloguePromise=(async()=>{
-const wanted=new Set(allPlayerMeta.map(m=>
-officialIdentityKey((titleWord(m.first)+' '+titleWord(m.last)).trim(),m.dobKey)
-));
-const cachedKey='agwOfficialAflIdsV2';
+const wanted=new Set(
+allPlayerMeta
+.filter(m=>m.sourceStatus!=='active')
+.map(m=>officialIdentityKey((titleWord(m.first)+' '+titleWord(m.last)).trim(),m.dobKey))
+);
+const cachedKey='agwOfficialAflIdsV3';
 try{
-const cached=JSON.parse(sessionStorage.getItem(cachedKey)||'{}');
+const cached=JSON.parse(localStorage.getItem(cachedKey)||'{}');
 for(const [key,val] of Object.entries(cached)){
 if(wanted.has(key)&&val?.providerId)officialAflPlayerMap.set(key,val);
 }
 }catch(e){}
 
-if(officialAflPlayerMap.size>=Math.floor(wanted.size*.95)){
+if(!wanted.size||officialAflPlayerMap.size>=wanted.size){
 officialAflCatalogueDone=true;
 return officialAflPlayerMap;
 }
 
-const pageSize=1000;
-let page=0;
-let keepGoing=true;
-while(keepGoing&&page<30){
-let r;
+const requestedPageSize=300;
+
+async function fetchPage(page){
 try{
-r=await fetchWithTimeout(AFL_ALL_PLAYERS_URL+'?page='+page+'&pageSize='+pageSize,{},10000);
-}catch(e){break}
-if(!r.ok)break;
-const j=await r.json();
-const players=j.players||[];
-for(const x of players){
+const r=await fetchWithTimeout(AFL_ALL_PLAYERS_URL+'?page='+page+'&pageSize='+requestedPageSize,{},10000);
+if(!r.ok)return null;
+return await r.json();
+}catch(e){
+console.warn('AFL player catalogue page failed',page,e);
+return null;
+}
+}
+
+function absorb(j){
+for(const x of (j?.players||[])){
 const name=((x.firstName||'')+' '+(x.surname||'')).trim();
 const key=officialIdentityKey(name,dobKeyFromIso(x.dateOfBirth));
 if(!wanted.has(key))continue;
@@ -385,14 +392,34 @@ providerId,
 champId:String(providerId).replace(/^CD_I/,'')
 });
 }
-if(players.length<pageSize||officialAflPlayerMap.size>=wanted.size)keepGoing=false;
-page++;
+}
+
+const first=await fetchPage(0);
+if(first){
+absorb(first);
+const pagination=first.meta?.pagination||{};
+const numPages=Number(pagination.numPages)||Math.ceil((Number(pagination.numEntries)||17403)/(Number(pagination.pageSize)||requestedPageSize));
+
+const concurrency=5;
+for(let page=1;page<numPages&&officialAflPlayerMap.size<wanted.size;page+=concurrency){
+const pages=[];
+for(let p=page;p<Math.min(page+concurrency,numPages);p++)pages.push(fetchPage(p));
+const batch=await Promise.all(pages);
+for(const j of batch)if(j)absorb(j);
+
+// Save progress so a refresh does not start over.
+try{
+const small={};
+for(const [key,val] of officialAflPlayerMap)if(wanted.has(key))small[key]=val;
+localStorage.setItem(cachedKey,JSON.stringify(small));
+}catch(e){}
+}
 }
 
 try{
 const small={};
 for(const [key,val] of officialAflPlayerMap)if(wanted.has(key))small[key]=val;
-sessionStorage.setItem(cachedKey,JSON.stringify(small));
+localStorage.setItem(cachedKey,JSON.stringify(small));
 }catch(e){}
 officialAflCatalogueDone=true;
 return officialAflPlayerMap;
@@ -400,68 +427,17 @@ return officialAflPlayerMap;
 return officialAflCataloguePromise;
 }
 
-
-function playerPhotoSlug(name){
-return String(name||'')
-.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-.toLowerCase()
-.replace(/['’]/g,'')
-.replace(/[^a-z0-9]+/g,'-')
-.replace(/^-+|-+$/g,'');
-}
-
-function clubTenantNames(team){
-const map={
-'Adelaide Crows':['Adelaide','AdelaideCrows'],
-'Brisbane Lions':['Brisbane','BrisbaneLions'],
-'Carlton':['Carlton'],
-'Collingwood':['Collingwood'],
-'Essendon':['Essendon'],
-'Fremantle':['Fremantle'],
-'Geelong Cats':['Geelong','GeelongCats'],
-'Gold Coast Suns':['GoldCoast','GoldCoastSuns'],
-'GWS Giants':['GWS','GWSGiants'],
-'Hawthorn':['Hawthorn'],
-'Melbourne':['Melbourne'],
-'North Melbourne':['NorthMelbourne'],
-'Port Adelaide':['PortAdelaide'],
-'Richmond':['Richmond'],
-'St Kilda':['StKilda'],
-'Sydney Swans':['Sydney','SydneySwans'],
-'West Coast Eagles':['WestCoast','WestCoastEagles'],
-'Western Bulldogs':['WesternBulldogs']
-};
-return map[team]||[];
-}
-
 function officialPhotoCandidates(p){
 const urls=[];
 const add=u=>{if(u&&!urls.includes(u))urls.push(u)};
 const slug=playerPhotoSlug(p.name);
+const champ=String(p.champId||p.providerId||p.fantasyId||'').replace(/^CD_I/,'');
 
-// Current-player official AFL Fantasy variants.
-if(p.fantasyId){
-add(HEADSHOT_BASE+p.fantasyId+'_450.webp?v=2026');
-add(HEADSHOT_BASE+p.fantasyId+'_450.png?v=2026');
-add(HEADSHOT_BASE+p.fantasyId+'_100.png?v=2026');
-add(HEADSHOT_BASE+p.fantasyId+'_50.png?v=2026');
-add('https://fantasy.afl.com.au/assets/mug-shots/afl/'+p.fantasyId+'.webp');
-}
-
-// AFL name-based image stores. These catch some players whose ID archive image moved.
-if(slug){
-add(AFL_CHAMP_BASE+'AFL/240x240/'+slug+'.png');
-for(const y of [2026,2025,2024,2023,2022,2021,2020,2019,2018,2017,2016]){
-add(AFL_RESOURCES_PHOTO+y+'/'+slug+'.png');
-}
-}
-
-// Official AFL/Champion Data ID archives, newest relevant season first.
-const champ=String(p.champId||p.providerId||'').replace(/^CD_I/,'');
+// Prefer AFL static image hosts. These are much less likely to be blocked by ORB.
 if(champ){
 const endYear=Math.max(2008,Math.min(2026,Number(p.lastYear)||2026));
 const yearList=[];
-for(const y of [endYear,endYear-1,endYear+1,2026,2025,2024,2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008]){
+for(const y of [2026,2025,endYear,endYear-1,endYear+1,2024,2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008]){
 if(y>=2008&&y<=2026&&!yearList.includes(y))yearList.push(y);
 }
 for(const y of yearList){
@@ -470,17 +446,24 @@ add(AFL_CHAMP_BASE+'XLarge'+y+'/'+champ+'.png');
 add(AFL_CHAMP_BASE+'Large'+y+'/'+champ+'.png');
 add(AFL_CHAMP_BASE+'Small'+y+'/'+champ+'.png');
 }
+add(AFL_CHAMP_BASE+champ+'.png');
 
-// Known legacy AFL CloudFront mirror used by old AFL pages.
 for(const y of [2017,2016,2015,2014,2013,2012,2011,2010,2009,2008]){
 add(AFL_LEGACY_CDN+'XLarge'+y+'/'+champ+'.png');
 add(AFL_LEGACY_CDN+'Large'+y+'/'+champ+'.png');
 add(AFL_LEGACY_CDN+'Small'+y+'/'+champ+'.png');
 }
-add(AFL_CHAMP_BASE+champ+'.png');
 }
 
-// Official club-site tenant player image folders, especially useful when the central headshot moved.
+// AFL name-based image stores.
+if(slug){
+add(AFL_CHAMP_BASE+'AFL/240x240/'+slug+'.png');
+for(const y of [2026,2025,2024,2023,2022,2021,2020,2019,2018,2017,2016]){
+add(AFL_RESOURCES_PHOTO+y+'/'+slug+'.png');
+}
+}
+
+// Official club tenant folders.
 const team=p.currentTeam||(p.careerTeams?.length?p.careerTeams[p.careerTeams.length-1]:'');
 if(slug&&team){
 for(const tenant of clubTenantNames(team)){
@@ -488,6 +471,13 @@ for(const y of [2026,2025,2024]){
 add('https://s.afl.com.au/staticfile/AFL%20Tenant/'+tenant+'/Players/'+y+'%20-%20Verticals/'+slug+'.png');
 }
 }
+}
+
+// Fantasy host last only: valid URL, but some browsers block cross-site hotlinking with ORB.
+if(p.fantasyId){
+add(HEADSHOT_BASE+p.fantasyId+'_450.webp?v=2026');
+add(HEADSHOT_BASE+p.fantasyId+'_450.png?v=2026');
+add('https://fantasy.afl.com.au/assets/mug-shots/afl/'+p.fantasyId+'.webp');
 }
 return urls;
 }
@@ -511,7 +501,7 @@ img.src=src;
 }
 
 async function resolveOfficialPhoto(p){
-const cacheKey=p.slug+'|'+(p.fantasyId||'')+'|'+(p.champId||p.providerId||'');
+const cacheKey=p.slug+'|'+(p.fantasyId||'')+'|'+(p.champId||p.providerId||'')+'|'+(officialAflCatalogueDone?'done':'loading');
 if(officialPhotoCache.has(cacheKey))return officialPhotoCache.get(cacheKey);
 const candidates=officialPhotoCandidates(p);
 const batchSize=6;
@@ -592,8 +582,8 @@ height:info.height||p.height,
 jumper:info.jumper??p.jumper,
 photo:info.photo||p.photo,
 fantasyId:info.fantasyId||p.fantasyId||null,
-providerId:info.providerId||p.providerId||'',
-champId:String(info.providerId||p.providerId||'').replace(/^CD_I/,'')||p.champId||'',
+providerId:info.providerId||p.providerId||(info.fantasyId?'CD_I'+info.fantasyId:''),
+champId:String(info.champId||info.providerId||p.champId||p.providerId||info.fantasyId||p.fantasyId||'').replace(/^CD_I/,'')||'',
 aflProfileId:info.aflProfileId||info.aflId||p.aflProfileId||null,
 aflId:info.aflId||p.aflId,
 positionLoading:(info.positions?.length||p.positions?.length)?false:p.positionLoading
