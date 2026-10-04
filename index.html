@@ -577,6 +577,8 @@ if(src)return setAndReturn(src);
 }
 }
 
+const wd=await wikidataPhoto(p);
+if(wd)return setAndReturn(wd);
 return setAndReturn('');
 }catch(e){
 return setAndReturn('');
