@@ -514,8 +514,13 @@ async function resolveOfficialPhoto(p){
 const cacheKey=p.slug+'|'+(p.fantasyId||'')+'|'+(p.champId||p.providerId||'');
 if(officialPhotoCache.has(cacheKey))return officialPhotoCache.get(cacheKey);
 const candidates=officialPhotoCandidates(p);
-for(const src of candidates){
-if(await imageWorks(src)){
+const batchSize=6;
+for(let i=0;i<candidates.length;i+=batchSize){
+const batch=candidates.slice(i,i+batchSize);
+const results=await Promise.all(batch.map(src=>imageWorks(src)));
+const hit=results.findIndex(Boolean);
+if(hit>=0){
+const src=batch[hit];
 officialPhotoCache.set(cacheKey,src);
 return src;
 }
@@ -935,7 +940,7 @@ return '<div class="avatar fallback photo-slot" data-slug="'+p.slug+'">'+initial
 async function hydratePhotos(){
 const slots=[...document.querySelectorAll('.photo-slot')];
 let next=0;
-const workers=Array.from({length:6},async()=>{
+const workers=Array.from({length:4},async()=>{
 while(next<slots.length){
 const el=slots[next++];
 const p=board.find(x=>x.slug===el.dataset.slug);
