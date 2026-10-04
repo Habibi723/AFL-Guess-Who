@@ -66,15 +66,20 @@ for(let year=START;year<=END;year++){
       const name=((p.firstName||'')+' '+(p.surname||'')).trim();
       if(!name)continue;
       const key=identity(name,dobKey(p.dateOfBirth));
-      const photoURL=p.photoURL||row.photoURL||'';
       const providerId=p.providerId||'';
+      const champId=String(providerId||'').replace(/^CD_I/,'');
+      const returnedPhotoURL=p.photoURL||row.photoURL||'';
+      const derivedAflPhotoURL=champId
+        ? 'https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Players/ChampIDImages/AFL/'+year+'014/'+champId+'.png?im=Scale,width=0.6,height=0.6'
+        : '';
+      const photoURL=returnedPhotoURL||derivedAflPhotoURL;
       const prev=out.players[key];
       const rec={
         name,
         dobKey:dobKey(p.dateOfBirth),
         photoURL:photoURL||prev?.photoURL||'',
         providerId:providerId||prev?.providerId||'',
-        champId:String(providerId||prev?.providerId||'').replace(/^CD_I/,''),
+        champId:champId||String(prev?.providerId||'').replace(/^CD_I/,''),
         aflProfileId:p.id||prev?.aflProfileId||null,
         team:j.squad?.team?.name||team.name||prev?.team||'',
         season:year
