@@ -91,7 +91,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos now use AFL-owned sources only: official AFL Fantasy headshots for current players and the AFL Champion Data headshot archives for retired players, matched by exact name and date of birth. Ask direct stat questions or yes/no questions.
+The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use AFL-owned sources only. The game now retries current AFL Fantasy headshots, Champion Data season archives, the AFL legacy CloudFront archive, name-based AFL image stores and official club-player image folders before giving up. Ask direct stat questions or yes/no questions.
 </div>
 
 </section>
@@ -106,6 +106,8 @@ const AFL_API='https://aflapi.afl.com.au/afl/v2/';
 const HEADSHOT_BASE='https://fantasy.afl.com.au/assets/media/players/afl/';
 const AFL_ALL_PLAYERS_URL=AFL_API+'players';
 const AFL_CHAMP_BASE='https://s.afl.com.au/staticfile/AFL%20Tenant/AFL/Players/ChampIDImages/';
+const AFL_LEGACY_CDN='https://d1u46b1a8y6qs8.cloudfront.net/staticfile/AFL%20Tenant/AFL/Players/ChampIDImages/';
+const AFL_RESOURCES_PHOTO='https://resources.afl.com.au/photo/';
 
 const CONFIRMED_2027_MOVES={
 'Lachie Neale':'Collingwood',
@@ -398,21 +400,68 @@ return officialAflPlayerMap;
 return officialAflCataloguePromise;
 }
 
+
+function playerPhotoSlug(name){
+return String(name||'')
+.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+.toLowerCase()
+.replace(/['’]/g,'')
+.replace(/[^a-z0-9]+/g,'-')
+.replace(/^-+|-+$/g,'');
+}
+
+function clubTenantNames(team){
+const map={
+'Adelaide Crows':['Adelaide','AdelaideCrows'],
+'Brisbane Lions':['Brisbane','BrisbaneLions'],
+'Carlton':['Carlton'],
+'Collingwood':['Collingwood'],
+'Essendon':['Essendon'],
+'Fremantle':['Fremantle'],
+'Geelong Cats':['Geelong','GeelongCats'],
+'Gold Coast Suns':['GoldCoast','GoldCoastSuns'],
+'GWS Giants':['GWS','GWSGiants'],
+'Hawthorn':['Hawthorn'],
+'Melbourne':['Melbourne'],
+'North Melbourne':['NorthMelbourne'],
+'Port Adelaide':['PortAdelaide'],
+'Richmond':['Richmond'],
+'St Kilda':['StKilda'],
+'Sydney Swans':['Sydney','SydneySwans'],
+'West Coast Eagles':['WestCoast','WestCoastEagles'],
+'Western Bulldogs':['WesternBulldogs']
+};
+return map[team]||[];
+}
+
 function officialPhotoCandidates(p){
 const urls=[];
 const add=u=>{if(u&&!urls.includes(u))urls.push(u)};
+const slug=playerPhotoSlug(p.name);
 
+// Current-player official AFL Fantasy variants.
 if(p.fantasyId){
 add(HEADSHOT_BASE+p.fantasyId+'_450.webp?v=2026');
 add(HEADSHOT_BASE+p.fantasyId+'_450.png?v=2026');
+add(HEADSHOT_BASE+p.fantasyId+'_100.png?v=2026');
+add(HEADSHOT_BASE+p.fantasyId+'_50.png?v=2026');
 add('https://fantasy.afl.com.au/assets/mug-shots/afl/'+p.fantasyId+'.webp');
 }
 
+// AFL name-based image stores. These catch some players whose ID archive image moved.
+if(slug){
+add(AFL_CHAMP_BASE+'AFL/240x240/'+slug+'.png');
+for(const y of [2026,2025,2024,2023,2022,2021,2020,2019,2018,2017,2016]){
+add(AFL_RESOURCES_PHOTO+y+'/'+slug+'.png');
+}
+}
+
+// Official AFL/Champion Data ID archives, newest relevant season first.
 const champ=String(p.champId||p.providerId||'').replace(/^CD_I/,'');
 if(champ){
 const endYear=Math.max(2008,Math.min(2026,Number(p.lastYear)||2026));
 const yearList=[];
-for(const y of [endYear,endYear-1,endYear+1,2026,2025,2024,2023,2022,2021,2020,2019,2018,2017,2016]){
+for(const y of [endYear,endYear-1,endYear+1,2026,2025,2024,2023,2022,2021,2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,2010,2009,2008]){
 if(y>=2008&&y<=2026&&!yearList.includes(y))yearList.push(y);
 }
 for(const y of yearList){
@@ -421,12 +470,29 @@ add(AFL_CHAMP_BASE+'XLarge'+y+'/'+champ+'.png');
 add(AFL_CHAMP_BASE+'Large'+y+'/'+champ+'.png');
 add(AFL_CHAMP_BASE+'Small'+y+'/'+champ+'.png');
 }
+
+// Known legacy AFL CloudFront mirror used by old AFL pages.
+for(const y of [2017,2016,2015,2014,2013,2012,2011,2010,2009,2008]){
+add(AFL_LEGACY_CDN+'XLarge'+y+'/'+champ+'.png');
+add(AFL_LEGACY_CDN+'Large'+y+'/'+champ+'.png');
+add(AFL_LEGACY_CDN+'Small'+y+'/'+champ+'.png');
+}
 add(AFL_CHAMP_BASE+champ+'.png');
+}
+
+// Official club-site tenant player image folders, especially useful when the central headshot moved.
+const team=p.currentTeam||(p.careerTeams?.length?p.careerTeams[p.careerTeams.length-1]:'');
+if(slug&&team){
+for(const tenant of clubTenantNames(team)){
+for(const y of [2026,2025,2024]){
+add('https://s.afl.com.au/staticfile/AFL%20Tenant/'+tenant+'/Players/'+y+'%20-%20Verticals/'+slug+'.png');
+}
+}
 }
 return urls;
 }
 
-function imageWorks(src,timeout=2200){
+function imageWorks(src,timeout=3000){
 return new Promise(resolve=>{
 const img=new Image();
 let done=false;
