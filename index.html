@@ -93,7 +93,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use a local index built from AFL.com.au's official season/squad photoURL data (2008–2026), then AFL/club archives, AFL Photos, and verified Wikipedia/Wikimedia/Wikidata. Cards now try image URLs directly in the browser and only move on when an image actually errors. Ask direct stat questions or yes/no questions.
+The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use AFL.com.au first, then AFL/club archives and AFL Photos. Older players that AFL cannot cover now get a prebuilt verified Wikimedia/Wikipedia backup stored in the local photo index, so cards no longer depend on a slow live search. Ask direct stat questions or yes/no questions.
 </div>
 
 </section>
@@ -1280,16 +1280,20 @@ out.push(src);
 
 if(bestPhotoCache.get(p.slug))add(bestPhotoCache.get(p.slug));
 
-// Exact AFL.com.au photoURL first.
+// 1) Exact AFL.com.au photoURL first.
 add(await resolveAflWebsitePhoto(p));
 
-// Then other official AFL/club archives.
+// 2) Other official AFL/club archives.
 for(const src of officialPhotoCandidates(p))add(src);
 
-// Then AFL Photos public exact-name thumbnail when accessible.
+// 3) AFL Photos public exact-name thumbnail when accessible.
 add(await resolveAflPhotosPublicThumb(p));
 
-// Finally verified Wikipedia/Wikimedia/Wikidata.
+// 4) Prebuilt verified fallback from the local photo index.
+const local=localAflPhotoMap.get(officialIdentityKey(p.name,p.dobKey));
+add(local?.fallbackPhotoURL||'');
+
+// 5) Final live verified Wikipedia/Wikimedia/Wikidata lookup.
 add(await wikiPhoto(p));
 return out;
 }
