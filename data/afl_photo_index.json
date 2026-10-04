@@ -760,14 +760,14 @@
       "name": "Joel Bowden",
       "dobKey": "21061978",
       "photoURL": "",
-      "fallbackPhotoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Joel_Bowden_%28cropped%29.jpg/1280px-Joel_Bowden_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "unresolved"
+      "source": "verified-wikimedia-fallback"
     },
     "jackbowes|26011998": {
       "name": "Jack Bowes",
@@ -1098,14 +1098,14 @@
       "name": "Peter Burgoyne",
       "dobKey": "29011978",
       "photoURL": "",
-      "fallbackPhotoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/6/66/Peter_burgoyne.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "unresolved"
+      "source": "verified-wikimedia-fallback"
     },
     "shaunburgoyne|21101982": {
       "name": "Shaun Burgoyne",
@@ -1137,14 +1137,14 @@
       "name": "Brett Burton",
       "dobKey": "04051978",
       "photoURL": "",
-      "fallbackPhotoURL": "",
+      "fallbackPhotoURL": "https://upload.wikimedia.org/wikipedia/commons/9/96/Brett_Burton.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail_unscaled",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2010,
       "lastYear": 2010,
-      "source": "unresolved"
+      "source": "verified-wikimedia-fallback"
     },
     "ryanburton|31011997": {
       "name": "Ryan Burton",
@@ -5009,14 +5009,14 @@
       "name": "Brendon Lade",
       "dobKey": "10071976",
       "photoURL": "",
-      "fallbackPhotoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Brendon_Lade_2018.1.jpg/960px-Brendon_Lade_2018.1.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2009,
       "lastYear": 2009,
-      "source": "unresolved"
+      "source": "verified-wikimedia-fallback"
     },
     "rorylaird|29121993": {
       "name": "Rory Laird",
@@ -9895,14 +9895,14 @@
       "name": "Adem Yze",
       "dobKey": "21091977",
       "photoURL": "",
-      "fallbackPhotoURL": "",
+      "fallbackPhotoURL": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e0/Adem_Yze_2017.jpg/960px-Adem_Yze_2017.jpg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
       "providerId": "",
       "champId": "",
       "aflProfileId": null,
       "team": "",
       "season": 2008,
       "lastYear": 2008,
-      "source": "unresolved"
+      "source": "verified-wikimedia-fallback"
     },
     "davidzaharakis|21021990": {
       "name": "David Zaharakis",
@@ -9973,5 +9973,6 @@
   "poolCount": 767,
   "matchedCount": 767,
   "photoUrlCount": 660,
-  "fallbackPhotoCount": 24
+  "fallbackPhotoCount": 24,
+  "quickFallbackGenerated": "2026-10-04T08:16:50.698Z"
 }
