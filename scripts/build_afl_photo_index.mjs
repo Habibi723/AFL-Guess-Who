@@ -255,16 +255,110 @@ for(const m of masterRecords){
 }
 
 
+
+function wikiTitleMatches(title,m){
+  const clean=String(title||'').replace(/\([^)]*\)/g,'').trim();
+  const exact=norm(clean)===norm(m.name);
+  if(exact)return true;
+  const parts=clean.split(/\s+/);
+  if(parts.length<2)return false;
+  const first=norm(parts[0]);
+  const last=norm(parts[parts.length-1]);
+  const wantedFirst=norm(m.first);
+  const wantedLast=norm(m.last);
+  return last===wantedLast && (
+    first===wantedFirst ||
+    first.startsWith(wantedFirst) ||
+    wantedFirst.startsWith(first)
+  );
+}
+
+async function getVerifiedWikiPhoto(m){
+  const birthYear=String(m.dobKey||'').slice(-4);
+  const terms=[
+    '"'+m.name+'" "Australian rules footballer" '+birthYear,
+    '"'+m.name+'" AFL '+birthYear
+  ];
+
+  for(const term of terms){
+    try{
+      const url='https://en.wikipedia.org/w/api.php?action=query&format=json&generator=search'
+        +'&gsrsearch='+encodeURIComponent(term)
+        +'&gsrlimit=5&prop=pageimages&piprop=thumbnail%7Coriginal&pithumbsize=900';
+      const j=await getJson(url);
+      const pages=Object.values(j.query?.pages||{})
+        .filter(p=>wikiTitleMatches(p.title,m))
+        .sort((a,b)=>(a.index??999)-(b.index??999));
+      for(const p of pages){
+        const src=p.thumbnail?.source||p.original?.source||'';
+        if(src)return src;
+      }
+    }catch(e){
+      console.warn('Wikipedia image lookup failed for',m.name,String(e));
+    }
+  }
+
+  // Commons fallback, but only accept filenames containing both the player's
+  // first name and surname so we don't attach a random same-surname photo.
+  for(const term of terms){
+    try{
+      const url='https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search'
+        +'&gsrnamespace=6&gsrsearch='+encodeURIComponent(term)
+        +'&gsrlimit=8&prop=imageinfo&iiprop=url&iiurlwidth=900';
+      const j=await getJson(url);
+      const first=norm(m.first);
+      const last=norm(m.last);
+      for(const p of Object.values(j.query?.pages||{})){
+        const file=norm(String(p.title||'').replace(/^File:/i,''));
+        if(!file.includes(first)||!file.includes(last))continue;
+        const info=p.imageinfo?.[0];
+        const src=info?.thumburl||info?.url||'';
+        if(src)return src;
+      }
+    }catch(e){
+      console.warn('Commons image lookup failed for',m.name,String(e));
+    }
+  }
+  return '';
+}
+
+// Pre-build a verified backup for players that don't have a reliable AFL identity.
+// The browser still tries AFL.com.au / AFL Photos first; this is only the safety net.
+const missingForFallback=masterRecords.filter(m=>!out.players[identity(m.name,m.dobKey)]);
+await mapPool(missingForFallback,6,async m=>{
+  const fallbackPhotoURL=await getVerifiedWikiPhoto(m);
+  const key=identity(m.name,m.dobKey);
+  if(!out.players[key]){
+    out.players[key]={
+      name:m.name,
+      dobKey:m.dobKey,
+      photoURL:'',
+      fallbackPhotoURL,
+      providerId:'',
+      champId:'',
+      aflProfileId:null,
+      team:'',
+      season:m.lastYear,
+      lastYear:m.lastYear,
+      source:fallbackPhotoURL?'verified-wikimedia-fallback':'unresolved'
+    };
+  }else if(fallbackPhotoURL){
+    out.players[key].fallbackPhotoURL=fallbackPhotoURL;
+  }
+});
+
 // Keep the published index small and exact: only players actually eligible for the game.
 const poolPlayers={};
 const missing=[];
 let withPhoto=0;
+let withFallback=0;
 for(const m of masterRecords){
   const key=identity(m.name,m.dobKey);
   const rec=out.players[key];
   if(rec){
     poolPlayers[key]=rec;
     if(rec.photoURL)withPhoto++;
+    if(rec.fallbackPhotoURL)withFallback++;
   }else{
     missing.push(m.name);
   }
@@ -273,12 +367,15 @@ out.players=poolPlayers;
 out.poolCount=masterRecords.length;
 out.matchedCount=Object.keys(poolPlayers).length;
 out.photoUrlCount=withPhoto;
+out.fallbackPhotoCount=withFallback;
 
 await fs.writeFile('data/afl_photo_index_summary.json',JSON.stringify({
   generated:out.generated,
   poolCount:masterRecords.length,
   matchedCount:Object.keys(poolPlayers).length,
   photoUrlCount:withPhoto,
+  fallbackPhotoCount:withFallback,
+  coveredByAnyPhoto:withPhoto+withFallback,
   missingCount:missing.length,
   missing
 },null,2)+'\n');
