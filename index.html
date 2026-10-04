@@ -34,6 +34,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 .avatar.fallback{display:grid;place-items:center;text-align:center;padding:8px;font-size:18px;font-weight:1000;color:#fff;background:linear-gradient(135deg,var(--green),#167a49)}
 .avatar.no-photo{font-size:11px;line-height:1.25;color:#dcebe1}
 .avatar.photo-ready{background-size:contain;background-repeat:no-repeat;background-position:center bottom;font-size:0}
+.avatar img{width:100%;height:100%;object-fit:contain;object-position:center bottom;display:block}
 .photo-source-link{display:inline-block;margin-top:6px;padding:4px 7px;border-radius:8px;background:rgba(0,0,0,.28);font-size:10px;line-height:1;color:#fff;text-decoration:underline;cursor:pointer}
 .player h3{font-size:15px;margin:0 0 6px;font-weight:900}
 .player small{display:none}
@@ -92,7 +93,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use AFL.com.au first. If AFL.com.au has no usable image, the game next checks the public AFL Photos search for an exact-name thumbnail, then older AFL image archives, then a verified Wikipedia/Wikimedia/Wikidata fallback. Any final missing card includes an AFL Photos search shortcut. Ask direct stat questions or yes/no questions.
+The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use a local index built from AFL.com.au's official season/squad photoURL data (2008–2026), then AFL/club archives, AFL Photos, and verified Wikipedia/Wikimedia/Wikidata. Cards now try image URLs directly in the browser and only move on when an image actually errors. Ask direct stat questions or yes/no questions.
 </div>
 
 </section>
@@ -101,6 +102,7 @@ The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goa
 <script>
 const MASTER_URL='./data/player_status.csv';
 const CURRENT_POSITIONS_URL='./data/current_positions_2026.csv';
+const AFL_PHOTO_INDEX_URL='./data/afl_photo_index.json';
 const PLAYER_DATA_BASE='https://cdn.jsdelivr.net/gh/apur27/SuperCoach-VIA@main/data/player_data/';
 const AFL_SEASON_ID=85;
 const AFL_API='https://aflapi.afl.com.au/afl/v2/';
@@ -161,6 +163,7 @@ sourceStatus:x[2]
 
 let allPlayerMeta=[];
 let currentAflMap=new Map();
+let localAflPhotoMap=new Map();
 let officialAflPlayerMap=new Map();
 let officialAflCataloguePromise=null;
 let officialAflCatalogueDone=false;
@@ -303,6 +306,30 @@ return new Map();
 }
 }
 
+async function loadLocalAflPhotoIndex(){
+try{
+const r=await fetchWithTimeout(AFL_PHOTO_INDEX_URL,{cache:'no-store'},6000);
+if(!r.ok)return new Map();
+const j=await r.json();
+return new Map(Object.entries(j.players||{}));
+}catch(e){
+console.warn('Local AFL photo index unavailable',e);
+return new Map();
+}
+}
+
+function applyLocalAflPhoto(p){
+const hit=localAflPhotoMap.get(officialIdentityKey(p.name,p.dobKey));
+if(!hit)return p;
+return {
+...p,
+photo:hit.photoURL||p.photo||'',
+providerId:hit.providerId||p.providerId||'',
+champId:hit.champId||p.champId||'',
+aflProfileId:hit.aflProfileId||p.aflProfileId||null
+};
+}
+
 async function loadCurrentAflMap(){
 try{
 const tr=await fetchWithTimeout(AFL_API+'teams?compSeasonId='+AFL_SEASON_ID+'&pageSize=100',{},4000);
@@ -440,15 +467,11 @@ return resolved;
 
 async function resolveAflWebsitePhoto(p){
 const key=officialIdentityKey(p.name,p.dobKey);
+const local=localAflPhotoMap.get(key);
+if(local?.photoURL)return local.photoURL;
+if(p.photo)return p.photo;
 
-// Current season exact AFL squad photo captured by the website feed.
-if(p.photo){
-const ok=await imageWorks(p.photo,1600);
-if(ok)return p.photo;
-}
-
-// For retired players (and current players missing a photo), use the AFL website
-// squad feed from their actual latest season.
+// If the static index does not yet have this player, try the AFL season feed live.
 const years=[];
 const addYear=y=>{y=Number(y);if(y>=2008&&y<=2026&&!years.includes(y))years.push(y)};
 addYear(p.lastYear);
@@ -459,20 +482,15 @@ for(const year of years){
 const map=await loadAflSeasonPhotoMap(year);
 const hit=map.get(key);
 if(!hit)continue;
-
 if(hit.providerId&&!p.providerId){
 p.providerId=hit.providerId;
 p.champId=hit.champId||'';
 p.aflProfileId=hit.aflProfileId||p.aflProfileId||null;
 }
-if(hit.photo){
-const ok=await imageWorks(hit.photo,1800);
-if(ok)return hit.photo;
-}
+if(hit.photo)return hit.photo;
 }
 return '';
 }
-
 
 async function resolveAflPhotosPublicThumb(p){
 if(aflPhotosThumbCache.has(p.slug))return aflPhotosThumbCache.get(p.slug);
@@ -518,10 +536,8 @@ if(!matched)continue;
 
 let absolute;
 try{absolute=new URL(src,searchUrl).href}catch(e){continue}
-if(await imageWorks(absolute,1800)){
 aflPhotosThumbCache.set(p.slug,absolute);
 return absolute;
-}
 }
 }catch(e){
 console.warn('AFL Photos public thumbnail lookup failed',p.name,e);
@@ -852,13 +868,13 @@ const meta=metas[next++];
 if(meta.slug===targetSlug)continue;
 try{
 let full=await loadDetails(meta);
-full=applyOfficialIdentity(applyCurrentInfo(full));
+full=applyOfficialIdentity(applyLocalAflPhoto(applyCurrentInfo(full)));
 full.detailsLoading=false;
 if(version!==boardVersion)return;
 const i=board.findIndex(p=>p.slug===meta.slug);
 if(i>=0){
 const existing=board[i];
-board[i]=applyOfficialIdentity({
+board[i]=applyOfficialIdentity(applyLocalAflPhoto({
 ...full,
 fantasyId:full.fantasyId||existing.fantasyId,
 providerId:full.providerId||existing.providerId,
@@ -867,7 +883,7 @@ aflProfileId:full.aflProfileId||existing.aflProfileId,
 photo:full.photo||existing.photo,
 positions:full.positions.length?full.positions:existing.positions,
 positionLoading:full.positions.length?false:existing.positionLoading
-});
+}));
 render();
 }
 }catch(e){
@@ -1037,7 +1053,7 @@ return !!first&&!!surname&&fileKey.includes(first)&&fileKey.includes(surname);
 
 async function wikiPhoto(p){
 if(photoCache.has(p.slug))return photoCache.get(p.slug);
-const setAndReturn=src=>{photoCache.set(p.slug,src||'');return src||''};
+const setAndReturn=src=>{if(src)photoCache.set(p.slug,src);return src||''};
 
 try{
 const year=p.dobYear||'';
@@ -1198,6 +1214,60 @@ function portrait(p){
 return '<div class="avatar fallback photo-slot" data-slug="'+p.slug+'">'+initials(p.name)+'</div>';
 }
 
+async function photoSourcesForPlayer(p){
+const out=[];
+const seen=new Set();
+const add=src=>{
+src=String(src||'').trim();
+if(!src||seen.has(src))return;
+seen.add(src);
+out.push(src);
+};
+
+if(bestPhotoCache.get(p.slug))add(bestPhotoCache.get(p.slug));
+
+// Exact AFL.com.au photoURL first.
+add(await resolveAflWebsitePhoto(p));
+
+// Then other official AFL/club archives.
+for(const src of officialPhotoCandidates(p))add(src);
+
+// Then AFL Photos public exact-name thumbnail when accessible.
+add(await resolveAflPhotosPublicThumb(p));
+
+// Finally verified Wikipedia/Wikimedia/Wikidata.
+add(await wikiPhoto(p));
+return out;
+}
+
+function displayPhotoSources(el,p,sources,index=0){
+if(!document.body.contains(el))return;
+if(index>=sources.length){
+el.style.backgroundImage='';
+el.innerHTML='NO VERIFIED PHOTO<br>'+initials(p.name)+'<br><span class="photo-source-link" data-aflphotos="'+encodeURIComponent(p.name)+'">AFL Photos ↗</span>';
+el.classList.remove('photo-ready');
+el.classList.add('no-photo');
+return;
+}
+
+const src=sources[index];
+const img=new Image();
+img.alt=p.name;
+img.decoding='async';
+img.loading='eager';
+img.onload=()=>{
+if(!document.body.contains(el))return;
+bestPhotoCache.set(p.slug,src);
+el.style.backgroundImage='';
+el.innerHTML='';
+el.appendChild(img);
+el.classList.add('photo-ready');
+el.classList.remove('no-photo');
+};
+img.onerror=()=>displayPhotoSources(el,p,sources,index+1);
+img.src=src;
+}
+
 async function hydratePhotos(){
 const slots=[...document.querySelectorAll('.photo-slot')];
 let next=0;
@@ -1210,19 +1280,12 @@ if(!p||!document.body.contains(el))continue;
 el.classList.add('no-photo');
 el.textContent='PHOTO LOADING\n'+initials(p.name);
 
-const src=await resolveBestPhoto(p);
-if(!document.body.contains(el))continue;
-
-if(src){
-el.style.backgroundImage='url("'+src.replace(/"/g,'%22')+'")';
-el.classList.add('photo-ready');
-el.classList.remove('no-photo');
-el.textContent='';
-}else{
-el.style.backgroundImage='';
-el.classList.remove('photo-ready');
-el.classList.add('no-photo');
-el.innerHTML='NO VERIFIED PHOTO<br>'+initials(p.name)+'<br><span class="photo-source-link" data-aflphotos="'+encodeURIComponent(p.name)+'">AFL Photos ↗</span>';
+try{
+const sources=await photoSourcesForPlayer(p);
+displayPhotoSources(el,p,sources,0);
+}catch(e){
+console.warn('Photo source build failed',p.name,e);
+displayPhotoSources(el,p,[],0);
 }
 }
 });
@@ -1245,7 +1308,7 @@ $('questionInput').value='';
 $('guess').value='';
 
 const metas=pickBoardMeta();
-board=metas.map(basicPlayer).map(applyCurrentInfo).map(applyOfficialIdentity);
+board=metas.map(basicPlayer).map(applyCurrentInfo).map(applyLocalAflPhoto).map(applyOfficialIdentity);
 target=board[Math.floor(Math.random()*board.length)];
 
 $('answer').textContent='';
@@ -1535,15 +1598,18 @@ $('newBtn').disabled=true;
 $('answer').textContent='Loading well-known AFL players from 2008 to now…';
 try{
 allPlayerMeta=await loadMaster();
-currentAflMap=await loadLocalPositionMap();
+[currentAflMap,localAflPhotoMap]=await Promise.all([
+loadLocalPositionMap(),
+loadLocalAflPhotoIndex()
+]);
 $('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' well-known players (2008–current)';
 $('newBtn').disabled=false;
 await newGame();
 
 officialAflCataloguePromise=loadOfficialAflCatalogue();
 officialAflCataloguePromise.then(()=>{
-board=board.map(p=>applyOfficialIdentity(p));
-target=applyOfficialIdentity(target);
+board=board.map(p=>applyOfficialIdentity(applyLocalAflPhoto(p)));
+target=applyOfficialIdentity(applyLocalAflPhoto(target));
 render();
 }).catch(e=>{
 officialAflCatalogueDone=true;
@@ -1565,8 +1631,8 @@ providerId:apiInfo.providerId||local.providerId||'',
 aflProfileId:apiInfo.aflProfileId||apiInfo.aflId||local.aflProfileId||null
 });
 }
-board=board.map(p=>applyOfficialIdentity(applyCurrentInfo(p)));
-target=applyOfficialIdentity(applyCurrentInfo(target));
+board=board.map(p=>applyOfficialIdentity(applyLocalAflPhoto(applyCurrentInfo(p))));
+target=applyOfficialIdentity(applyLocalAflPhoto(applyCurrentInfo(target)));
 render();
 }).catch(e=>console.warn('Current AFL extras failed',e));
 }catch(err){
