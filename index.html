@@ -72,7 +72,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="questionbar">
-<input id="questionInput" placeholder="Ask ANY yes/no question about the player..." autocomplete="off">
+<input id="questionInput" placeholder="Ask anything about the hidden player..." autocomplete="off">
 <button class="btn" id="askBtn">Ask question</button>
 </div>
 
@@ -91,7 +91,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known players who played from 2008 to now</b>. Current positions are loaded locally from the 2026 AFL position list, while retired players get a verified historical position lookup. <b>UTL</b> is only used when no reliable position can be found. Nasiah Wanganeen-Milera is included as <b>Defender / Midfielder</b>.
+The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Current photos use AFL headshots; retired-player photos use strict Wikipedia, Commons and Wikidata matching. Ask direct stat questions or yes/no questions.
 </div>
 
 </section>
@@ -459,6 +459,7 @@ if(ym)dobYear=Number(ym[1]);
 const careerTeams=[];
 const seasonYears=new Set();
 let careerGoals=0;
+let performanceGames=0;
 let firstYear=null,lastYear=meta.lastYear||null,lastJumper=null;
 if(perf){
 const lines=perf.trim().split(/\r?\n/);
@@ -473,6 +474,7 @@ const year=Number(v[pix.year]??v[1])||null;
 const jumperRaw=v[pix.jersey_num]??v[6];
 const jumper=jumperRaw!==undefined&&jumperRaw!==''?String(jumperRaw).replace(/[^\d]/g,''):null;
 const goals=Number(v[pix.goals])||0;
+performanceGames++;
 
 if(team&&!careerTeams.includes(team))careerTeams.push(team);
 if(year){
@@ -506,7 +508,7 @@ positions,
 status,
 height:currentInfo?.height||height,
 jumper:currentInfo?.jumper??lastJumper,
-careerGames:meta.careerGames,
+careerGames:performanceGames||meta.careerGames,
 careerGoals,
 seasonsPlayed:seasonYears.size,
 seasonYears:[...seasonYears].sort((a,b)=>a-b),
@@ -663,6 +665,35 @@ if(i>=0)board[i]={...board[i],positionLoading:false};
 await Promise.allSettled(workers);
 }
 
+async function wikidataPhoto(p){
+try{
+const q=p.name+' Australian rules footballer';
+let r=await fetchWithTimeout('https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json&origin=*&language=en&limit=5&search='+encodeURIComponent(q),{},4000);
+if(!r.ok)return '';
+let j=await r.json();
+const candidates=(j.search||[]).filter(x=>
+normaliseName(x.label)===normaliseName(p.name)&&
+/australian rules|australian football|afl|footballer/i.test(x.description||'')
+);
+for(const candidate of candidates){
+r=await fetchWithTimeout('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&ids='+encodeURIComponent(candidate.id)+'&props=claims',{},4000);
+if(!r.ok)continue;
+j=await r.json();
+const entity=j.entities?.[candidate.id];
+const claims=entity?.claims||{};
+if(p.dobYear&&claims.P569?.[0]?.mainsnak?.datavalue?.value?.time){
+const y=Number(String(claims.P569[0].mainsnak.datavalue.value.time).slice(1,5));
+if(y&&y!==p.dobYear)continue;
+}
+const file=claims.P18?.[0]?.mainsnak?.datavalue?.value;
+if(file)return 'https://commons.wikimedia.org/wiki/Special:Redirect/file/'+encodeURIComponent(file);
+}
+return '';
+}catch(e){
+return '';
+}
+}
+
 function portrait(p){
 return '<div class="avatar fallback photo-slot" data-slug="'+p.slug+'">'+initials(p.name)+'</div>';
 }
@@ -671,7 +702,7 @@ async function hydratePhotos(){
 const slots=[...document.querySelectorAll('.photo-slot')];
 await Promise.all(slots.map(async el=>{
 const p=board.find(x=>x.slug===el.dataset.slug);
-if(!p||p.detailsLoading)return;
+if(!p)return;
 const src=p.photo||await wikiPhoto(p);
 if(src&&document.body.contains(el)){
 el.style.backgroundImage='url("'+src.replace(/"/g,'%22')+'")';
@@ -762,7 +793,7 @@ $('guessOptions').innerHTML=board.map(p=>'<option value="'+p.name.replace(/"/g,'
 $('grid').innerHTML=board.map(p=>{
 const current=p.futureClub?'<span>🔜 2027 club: '+p.futureClub+'</span>':(p.currentTeam?'<span>⭐ Current: '+p.currentTeam+'</span>':'');
 const clubs=p.detailsLoading?'Loading club history…':(p.careerTeams.length?p.careerTeams.join(' / '):'Club history unavailable');
-const years=(!p.detailsLoading&&p.firstYear&&p.lastYear)?'<span>📅 Career: '+p.firstYear+'–'+p.lastYear+'</span>':'';
+const years=(!p.detailsLoading&&p.firstYear)?'<span>📅 Career: '+p.firstYear+'–'+(p.status==='current'?'Current':p.lastYear)+'</span>':'';
 const games='<span>🎮 Games: '+p.careerGames+'</span>';
 const goals=p.detailsLoading?'<span>🥅 Goals: loading…</span>':'<span>🥅 Goals: '+p.careerGoals+'</span>';
 const length=p.detailsLoading?'<span>⏱️ Seasons: loading…</span>':'<span>⏱️ Seasons played: '+p.seasonsPlayed+'</span>';
@@ -822,6 +853,44 @@ const s=normaliseText(q);
 const fullName=target.name.toLowerCase();
 const parts=fullName.split(/\s+/);
 const firstName=parts[0],lastName=parts[parts.length-1];
+
+// Direct factual questions.
+if(/\bhow many games\b|\bcareer games\b/.test(s)){
+return target.careerGames+' games';
+}
+if(/\bhow many goals\b|\bcareer goals\b/.test(s)){
+if(target.detailsLoading||target.careerGoals==null)return "I DON'T KNOW — career goals are still loading.";
+return target.careerGoals+' goals';
+}
+if(/\bwhat position\b|\bwhich position\b|\bwhat pos\b/.test(s)){
+if(target.positionLoading)return "I DON'T KNOW — position is still loading.";
+return target.positions.length?target.positions.join(' / '):'UTL';
+}
+if(/\bwhen did (?:he|she|they|the player) debut\b|\bwhat year did (?:he|she|they|the player) debut\b|\bdebut year\b/.test(s)){
+if(target.detailsLoading||!target.firstYear)return "I DON'T KNOW — debut year is still loading.";
+return String(target.firstYear);
+}
+if(/\bhow long (?:has|did) (?:he|she|they|the player) play\b|\bhow many seasons\b|\bcareer length\b/.test(s)){
+if(target.detailsLoading)return "I DON'T KNOW — career length is still loading.";
+return target.seasonsPlayed+' season'+(target.seasonsPlayed===1?'':'s')+' ('+target.firstYear+'–'+(target.status==='current'?'Current':target.lastYear)+')';
+}
+if(/\bwhat clubs?\b|\bwhich clubs?\b|\bteams? did (?:he|she|they|the player) play for\b/.test(s)){
+if(target.detailsLoading)return "I DON'T KNOW — club history is still loading.";
+return target.careerTeams.length?target.careerTeams.join(' / '):"I DON'T KNOW — club history isn't available.";
+}
+if(/\bwhat (?:team|club) (?:does|is) (?:he|she|they|the player)\b|\bcurrent (?:team|club)\b/.test(s)){
+if(target.currentTeam)return target.currentTeam;
+return target.status==='retired'?'Retired':"I DON'T KNOW — current club isn't available.";
+}
+if(/\bis (?:he|she|they|the player) still playing\b|\bis (?:he|she|they|the player) current\b/.test(s)){
+return target.status==='current'?'YES':'NO';
+}
+if(/\bhow tall\b|\bwhat height\b/.test(s)){
+return target.height?target.height+' cm':"I DON'T KNOW — height isn't available.";
+}
+if(/\bwhat (?:number|jumper number|guernsey number)\b/.test(s)){
+return target.jumper!=null?'#'+target.jumper:"I DON'T KNOW — jumper number isn't available.";
+}
 
 const named=board.find(p=>phraseIn(s,p.name.toLowerCase()));
 if(named)return named.slug===target.slug?'YES':'NO';
@@ -912,7 +981,7 @@ const words=s.split(' ');
 return (words.includes(firstName)||words.includes(lastName))?'YES':'NO';
 }
 
-return "I DON'T KNOW — ask about clubs, current club, name, current/retired status, verified position, height or playing era.";
+return "I DON'T KNOW — try asking about games, goals, position, clubs, debut year, career length, height, jumper number, current/retired status or the player's name.";
 }
 
 function ask(){
