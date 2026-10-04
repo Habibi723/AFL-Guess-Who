@@ -1268,7 +1268,7 @@ function portrait(p){
 return '<div class="avatar fallback photo-slot" data-slug="'+p.slug+'">'+initials(p.name)+'</div>';
 }
 
-async function photoSourcesForPlayer(p){
+function immediatePhotoSourcesForPlayer(p){
 const out=[];
 const seen=new Set();
 const add=src=>{
@@ -1278,29 +1278,53 @@ seen.add(src);
 out.push(src);
 };
 
-if(bestPhotoCache.get(p.slug))add(bestPhotoCache.get(p.slug));
+const local=localAflPhotoMap.get(officialIdentityKey(p.name,p.dobKey));
 
-// 1) Exact AFL.com.au photoURL first.
-add(await resolveAflWebsitePhoto(p));
+// Known exact AFL.com.au/local index image first — no network lookup before display.
+add(local?.photoURL||'');
+add(p.photo);
 
-// 2) Other official AFL/club archives.
+// Other known AFL/club archive candidates next.
 for(const src of officialPhotoCandidates(p))add(src);
 
-// 3) AFL Photos public exact-name thumbnail when accessible.
-add(await resolveAflPhotosPublicThumb(p));
-
-// 4) Prebuilt verified fallback from the local photo index.
-const local=localAflPhotoMap.get(officialIdentityKey(p.name,p.dobKey));
+// Prebuilt verified fallback from the local index.
 add(local?.fallbackPhotoURL||'');
 
-// 5) Final live verified Wikipedia/Wikimedia/Wikidata lookup.
-add(await wikiPhoto(p));
 return out;
 }
 
-function displayPhotoSources(el,p,sources,index=0){
+async function dynamicFallbackSources(p){
+const out=[];
+const seen=new Set();
+const add=src=>{
+src=String(src||'').trim();
+if(!src||seen.has(src))return;
+seen.add(src);
+out.push(src);
+};
+
+// Only do live network searches after every pre-known URL has actually failed.
+try{add(await resolveAflWebsitePhoto(p))}catch(e){}
+try{add(await resolveAflPhotosPublicThumb(p))}catch(e){}
+try{add(await wikiPhoto(p))}catch(e){}
+return out;
+}
+
+function displayPhotoSources(el,p,sources,index=0,dynamicTried=false){
 if(!document.body.contains(el))return;
+
 if(index>=sources.length){
+if(!dynamicTried){
+el.classList.add('no-photo');
+el.textContent='FINDING PHOTO\n'+initials(p.name);
+dynamicFallbackSources(p).then(extra=>{
+if(!document.body.contains(el))return;
+const fresh=extra.filter(x=>!sources.includes(x));
+displayPhotoSources(el,p,sources.concat(fresh),sources.length,true);
+}).catch(()=>displayPhotoSources(el,p,sources,sources.length,true));
+return;
+}
+
 el.style.backgroundImage='';
 el.innerHTML='NO VERIFIED PHOTO<br>'+initials(p.name)+'<br><span class="photo-source-link" data-aflphotos="'+encodeURIComponent(p.name)+'">AFL Photos ↗</span>';
 el.classList.remove('photo-ready');
@@ -1313,6 +1337,8 @@ const img=new Image();
 img.alt=p.name;
 img.decoding='async';
 img.loading='eager';
+img.referrerPolicy='no-referrer';
+
 img.onload=()=>{
 if(!document.body.contains(el))return;
 bestPhotoCache.set(p.slug,src);
@@ -1322,7 +1348,8 @@ el.appendChild(img);
 el.classList.add('photo-ready');
 el.classList.remove('no-photo');
 };
-img.onerror=()=>displayPhotoSources(el,p,sources,index+1);
+
+img.onerror=()=>displayPhotoSources(el,p,sources,index+1,dynamicTried);
 img.src=src;
 }
 
@@ -1339,11 +1366,11 @@ el.classList.add('no-photo');
 el.textContent='PHOTO LOADING\n'+initials(p.name);
 
 try{
-const sources=await photoSourcesForPlayer(p);
-displayPhotoSources(el,p,sources,0);
+const sources=immediatePhotoSourcesForPlayer(p);
+displayPhotoSources(el,p,sources,0,false);
 }catch(e){
 console.warn('Photo source build failed',p.name,e);
-displayPhotoSources(el,p,[],0);
+displayPhotoSources(el,p,[],0,false);
 }
 }
 });
