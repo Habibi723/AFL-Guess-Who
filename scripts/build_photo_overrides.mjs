@@ -108,30 +108,92 @@ async function wikidataPhoto(name,dobKey){
   return '';
 }
 
+async function validateWikiPageCandidate(page,name,dobKey){
+  if(!page||!nameMatch(page.title,name))return '';
+  const item=page.pageprops?.wikibase_item;
+  if(item){
+    try{
+      const e=await json('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&ids='+encodeURIComponent(item)+'&props=claims');
+      const born=e.entities?.[item]?.claims?.P569?.[0]?.mainsnak?.datavalue?.value?.time;
+      if(born&&!birthMatches(born,dobKey))return '';
+    }catch{}
+  }
+  const url=page.thumbnail?.source||'';
+  if(url&&await imageWorks(url))return url;
+  return '';
+}
+
 async function wikipediaPhoto(name,dobKey){
-  const q=encodeURIComponent('"'+name+'" "Australian rules footballer"');
+  // Most famous AFL players have an article at their exact name.
   try{
-    const s=await json('https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch='+q+'&gsrlimit=8&prop=pageprops|pageimages&piprop=thumbnail&pithumbsize=800');
-    const pages=Object.values(s.query?.pages||{}).filter(p=>nameMatch(p.title,name));
-    for(const p of pages){
-      const item=p.pageprops?.wikibase_item;
-      if(item){
-        const e=await json('https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&origin=*&ids='+encodeURIComponent(item)+'&props=claims');
-        const born=e.entities?.[item]?.claims?.P569?.[0]?.mainsnak?.datavalue?.value?.time;
-        if(born&&!birthMatches(born,dobKey))continue;
-      }
-      const url=p.thumbnail?.source||'';
-      if(url&&await imageWorks(url))return url;
+    const direct=await json(
+      'https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&titles='+
+      encodeURIComponent(name)+
+      '&prop=pageprops|pageimages&piprop=thumbnail&pithumbsize=1000'
+    );
+    for(const p of Object.values(direct.query?.pages||{})){
+      const url=await validateWikiPageCandidate(p,name,dobKey);
+      if(url)return url;
     }
   }catch{}
+
+  // Then use broader searches but still only accept a matching player name.
+  for(const raw of [
+    name+' Australian rules footballer',
+    name+' AFL',
+    name+' footballer'
+  ]){
+    try{
+      const s=await json(
+        'https://en.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrsearch='+
+        encodeURIComponent(raw)+
+        '&gsrlimit=10&prop=pageprops|pageimages&piprop=thumbnail&pithumbsize=1000'
+      );
+      const pages=Object.values(s.query?.pages||{}).filter(p=>nameMatch(p.title,name));
+      for(const p of pages){
+        const url=await validateWikiPageCandidate(p,name,dobKey);
+        if(url)return url;
+      }
+    }catch{}
+  }
+  return '';
+}
+
+async function commonsSearchPhoto(name){
+  const parts=String(name||'').trim().split(/\s+/);
+  if(parts.length<2)return '';
+  const first=norm(parts[0]);
+  const surname=norm(parts[parts.length-1]);
+
+  for(const raw of [name, name+' AFL', name+' Australian footballer']){
+    try{
+      const j=await json(
+        'https://commons.wikimedia.org/w/api.php?action=query&format=json&origin=*&generator=search'+
+        '&gsrnamespace=6&gsrsearch='+encodeURIComponent(raw)+
+        '&gsrlimit=20&prop=imageinfo&iiprop=url&iiurlwidth=1000'
+      );
+      const pages=Object.values(j.query?.pages||{});
+      for(const p of pages){
+        const fileKey=norm(String(p.title||'').replace(/^File:/i,''));
+        if(!fileKey.includes(first)||!fileKey.includes(surname))continue;
+        const url=p.imageinfo?.[0]?.thumburl||p.imageinfo?.[0]?.url||'';
+        if(url&&await imageWorks(url))return url;
+      }
+    }catch{}
+  }
   return '';
 }
 
 async function verifiedBackup(name,dobKey){
   let u=await wikidataPhoto(name,dobKey);
   if(u)return {url:u,source:'Wikimedia/Wikidata'};
+
   u=await wikipediaPhoto(name,dobKey);
   if(u)return {url:u,source:'Wikipedia/Wikimedia'};
+
+  u=await commonsSearchPhoto(name);
+  if(u)return {url:u,source:'Wikimedia Commons exact-name search'};
+
   return null;
 }
 
