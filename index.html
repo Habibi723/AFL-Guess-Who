@@ -386,7 +386,12 @@ full.detailsLoading=false;
 if(version!==boardVersion)return;
 const i=board.findIndex(p=>p.slug===meta.slug);
 if(i>=0){
-board[i]=full;
+const existing=board[i];
+board[i]={
+...full,
+positions:full.positions.length?full.positions:existing.positions,
+positionLoading:full.positions.length?false:existing.positionLoading
+};
 render();
 }
 }catch(e){
