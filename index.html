@@ -91,7 +91,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known players from 1989 to now</b>. Every loaded card shows career games, career goals, seasons played and career years. Current players use AFL headshots; retired players try Wikipedia and Wikimedia Commons for a real photo.
+The board uses <b>well-known players who played at some point from 2008 to now</b>, including current AFL players. Every loaded card shows career games, career goals, seasons played and career years. Current players use AFL headshots; retired players try Wikipedia and Wikimedia Commons for a real photo.
 </div>
 
 </section>
@@ -209,7 +209,7 @@ return [...new Set(out)];
 
 function isWellKnownModernPlayer(row){
 const name=(titleWord(row.first)+' '+titleWord(row.last)).trim();
-if(!row.lastYear||row.lastYear<1989)return false;
+if(!row.lastYear||row.lastYear<2008)return false;
 if(row.careerGames>=150)return true;
 if(row.sourceStatus==='active'&&row.careerGames>=80)return true;
 if(MODERN_STAR_NAMES.has(name))return true;
@@ -595,7 +595,7 @@ function render(){
 $('wins').textContent=wins;
 $('streak').textContent=streak;
 $('qcount').textContent=questions;
-$('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' well-known players (1989–current)';
+$('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' well-known players (2008–current)';
 $('guess').disabled=gameOver||loadingBoard;
 $('guessBtn').disabled=gameOver||loadingBoard;
 $('askBtn').disabled=gameOver||loadingBoard;
@@ -791,10 +791,10 @@ async function init(){
 $('askBtn').disabled=true;
 $('guessBtn').disabled=true;
 $('newBtn').disabled=true;
-$('answer').textContent='Loading well-known AFL players from 1989 to now…';
+$('answer').textContent='Loading well-known AFL players from 2008 to now…';
 try{
 allPlayerMeta=await loadMaster();
-$('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' well-known players (1989–current)';
+$('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' well-known players (2008–current)';
 $('newBtn').disabled=false;
 await newGame();
 
