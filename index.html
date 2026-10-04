@@ -26,15 +26,17 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 .btn:disabled{opacity:.45;cursor:not-allowed}
 .answer{min-height:30px;margin:10px 0;font-weight:900;text-align:center}
 .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:18px}
-.player{min-height:305px;background:rgba(23,42,33,.45);color:var(--text);border:1px solid rgba(41,68,56,.65);border-radius:17px;padding:12px;text-align:left;cursor:pointer;transition:.35s;transform-style:preserve-3d;position:relative}
+.player{min-height:305px;background:linear-gradient(180deg,rgba(29,54,41,.92) 0%,rgba(13,27,20,.98) 100%);color:var(--text);border:1px solid rgba(255,255,255,.07);border-radius:17px;padding:12px;text-align:left;cursor:pointer;transition:.35s;transform-style:preserve-3d;position:relative;overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.2)}
 .player.flipped{transform:rotateY(180deg)}
 .player-front,.player-back{backface-visibility:hidden;width:100%;height:100%}
 .player-back{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:12px;transform:rotateY(180deg);font-weight:1000;font-size:18px}
-.avatar{width:100%;height:138px;border-radius:12px;display:block;margin-bottom:9px;background:radial-gradient(circle at 50% 35%,#254634 0,#102019 68%);overflow:hidden;object-fit:contain;object-position:center bottom}
+.avatar{position:relative;width:100%;height:148px;border-radius:14px;display:block;margin-bottom:9px;background:radial-gradient(circle at 50% 24%,rgba(70,119,89,.62) 0%,rgba(28,58,42,.72) 42%,rgba(13,27,20,.98) 100%);overflow:hidden;object-fit:contain;object-position:center bottom;box-shadow:inset 0 0 0 1px rgba(255,255,255,.045)}
 .avatar.fallback{display:grid;place-items:center;text-align:center;padding:8px;font-size:18px;font-weight:1000;color:#fff;background:linear-gradient(135deg,var(--green),#167a49)}
 .avatar.no-photo{font-size:11px;line-height:1.25;color:#dcebe1}
 .avatar.photo-ready{background-size:contain;background-repeat:no-repeat;background-position:center bottom;font-size:0}
-.avatar img{width:100%;height:100%;object-fit:contain;object-position:center bottom;display:block}
+.avatar img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;object-position:center bottom;display:block;filter:drop-shadow(0 10px 12px rgba(0,0,0,.32));-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 69%,rgba(0,0,0,.94) 78%,rgba(0,0,0,.62) 89%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 69%,rgba(0,0,0,.94) 78%,rgba(0,0,0,.62) 89%,transparent 100%)}
+.avatar::after{content:"";position:absolute;z-index:2;inset:auto 0 0;height:42%;pointer-events:none;background:linear-gradient(to bottom,transparent 0%,rgba(13,27,20,.18) 35%,rgba(13,27,20,.74) 78%,rgba(13,27,20,.97) 100%)}
+.avatar.no-photo::after{display:none}
 .photo-source-link{display:inline-block;margin-top:6px;padding:4px 7px;border-radius:8px;background:rgba(0,0,0,.28);font-size:10px;line-height:1;color:#fff;text-decoration:underline;cursor:pointer}
 .player h3{font-size:15px;margin:0 0 6px;font-weight:900}
 .player small{display:none}
@@ -93,7 +95,7 @@ header{display:flex;justify-content:space-between;gap:15px;align-items:center}
 </div>
 
 <div class="help">
-The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use AFL.com.au first, then AFL/club archives and AFL Photos. Older players that AFL cannot cover now get a prebuilt verified Wikimedia/Wikipedia backup stored in the local photo index, so cards no longer depend on a slow live search. Ask direct stat questions or yes/no questions.
+The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goals, seasons and debut years are calculated from match-by-match records. Current players display <b>Debut year–Current</b>. Player photos use AFL.com.au first, then AFL/club archives and AFL Photos. Any stubborn broken photo can now be pinned in a local verified override file, and remaining gaps fall back to verified Wikimedia/Wikipedia images. Player cutouts fade into the card background for a cleaner AFL-style look. Ask direct stat questions or yes/no questions.
 </div>
 
 </section>
@@ -103,6 +105,7 @@ The board uses <b>well-known AFL players from 2008 to now</b>. Career games, goa
 const MASTER_URL='./data/player_status.csv';
 const CURRENT_POSITIONS_URL='./data/current_positions_2026.csv';
 const AFL_PHOTO_INDEX_URL='./data/afl_photo_index.json';
+const PHOTO_OVERRIDES_URL='./data/photo_overrides.json';
 const PLAYER_DATA_BASE='https://cdn.jsdelivr.net/gh/apur27/SuperCoach-VIA@main/data/player_data/';
 const AFL_SEASON_ID=85;
 const AFL_API='https://aflapi.afl.com.au/afl/v2/';
@@ -165,6 +168,7 @@ let allPlayerMeta=[];
 let currentAflMap=new Map();
 let localAflPhotoMap=new Map();
 let localAflPhotoByDob=new Map();
+let photoOverrides=new Map();
 let officialAflPlayerMap=new Map();
 let officialAflCataloguePromise=null;
 let officialAflCatalogueDone=false;
@@ -307,6 +311,32 @@ return new Map();
 }
 }
 
+async function loadPhotoOverrides(){
+try{
+const r=await fetchWithTimeout(PHOTO_OVERRIDES_URL,{cache:'no-store'},5000);
+if(!r.ok)return new Map();
+const j=await r.json();
+return new Map(Object.entries(j.players||j.overrides||j||{}));
+}catch(e){
+console.warn('Photo overrides unavailable',e);
+return new Map();
+}
+}
+
+function overridePhotoFor(p){
+const exact=photoOverrides.get(officialIdentityKey(p.name,p.dobKey));
+if(exact){
+if(typeof exact==='string')return exact;
+return exact.url||exact.photoURL||'';
+}
+const byName=photoOverrides.get(normaliseName(p.name));
+if(byName){
+if(typeof byName==='string')return byName;
+return byName.url||byName.photoURL||'';
+}
+return '';
+}
+
 async function loadLocalAflPhotoIndex(){
 try{
 const r=await fetchWithTimeout(AFL_PHOTO_INDEX_URL,{cache:'no-store'},6000);
@@ -374,13 +404,14 @@ return bestScore>=6?best:null;
 
 function applyLocalAflPhoto(p){
 const hit=findLocalAflPhotoRecord(p);
-if(!hit)return p;
+const override=overridePhotoFor(p);
+if(!hit&&!override)return p;
 return {
 ...p,
-photo:hit.photoURL||p.photo||'',
-providerId:hit.providerId||p.providerId||'',
-champId:hit.champId||p.champId||'',
-aflProfileId:hit.aflProfileId||p.aflProfileId||null
+photo:override||hit?.photoURL||p.photo||'',
+providerId:hit?.providerId||p.providerId||'',
+champId:hit?.champId||p.champId||'',
+aflProfileId:hit?.aflProfileId||p.aflProfileId||null
 };
 }
 
@@ -1278,9 +1309,12 @@ seen.add(src);
 out.push(src);
 };
 
-const local=localAflPhotoMap.get(officialIdentityKey(p.name,p.dobKey));
+const local=findLocalAflPhotoRecord(p);
 
-// Known exact AFL.com.au/local index image first — no network lookup before display.
+// Hand-verified/manual override first for stubborn broken photos.
+add(overridePhotoFor(p));
+
+// Known exact AFL.com.au/local index image next — no network lookup before display.
 add(local?.photoURL||'');
 add(p.photo);
 
@@ -1683,9 +1717,10 @@ $('newBtn').disabled=true;
 $('answer').textContent='Loading well-known AFL players from 2008 to now…';
 try{
 allPlayerMeta=await loadMaster();
-[currentAflMap,localAflPhotoMap]=await Promise.all([
+[currentAflMap,localAflPhotoMap,photoOverrides]=await Promise.all([
 loadLocalPositionMap(),
-loadLocalAflPhotoIndex()
+loadLocalAflPhotoIndex(),
+loadPhotoOverrides()
 ]);
 $('playerCount').textContent=allPlayerMeta.length.toLocaleString()+' well-known players (2008–current)';
 $('newBtn').disabled=false;
