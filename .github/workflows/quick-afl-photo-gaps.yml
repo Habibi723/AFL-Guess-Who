@@ -1,0 +1,38 @@
+name: Quick AFL photo gaps
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/quick-afl-photo-gaps.yml"
+      - "scripts/quick_afl_photo_gaps.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: quick-afl-photo-gaps
+  cancel-in-progress: true
+
+jobs:
+  fill-gaps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Fill unresolved player photos
+        run: node scripts/quick_afl_photo_gaps.mjs
+      - name: Commit photo gaps
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/afl_photo_index.json data/photo_gap_summary.json
+          if git diff --cached --quiet; then
+            echo "No quick photo-gap changes"
+          else
+            git commit -m "Fill remaining verified AFL player photo gaps"
+            git push
+          fi
