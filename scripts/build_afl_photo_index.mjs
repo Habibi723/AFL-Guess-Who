@@ -273,7 +273,46 @@ function wikiTitleMatches(title,m){
   );
 }
 
+
+async function getWikidataPhoto(m){
+  try{
+    const birthYear=String(m.dobKey||'').slice(-4);
+    const searchUrl='https://www.wikidata.org/w/api.php?action=wbsearchentities&format=json'
+      +'&language=en&limit=8&search='+encodeURIComponent(m.name+' Australian rules footballer');
+    const search=await getJson(searchUrl);
+    const candidates=(search.search||[]).filter(x=>
+      norm(x.label)===norm(m.name) ||
+      (
+        lastToken(x.label)===norm(m.last) &&
+        (firstToken(x.label)===norm(m.first) ||
+         firstToken(x.label).startsWith(norm(m.first)) ||
+         norm(m.first).startsWith(firstToken(x.label)))
+      )
+    );
+    for(const candidate of candidates){
+      const entityUrl='https://www.wikidata.org/w/api.php?action=wbgetentities&format=json'
+        +'&props=claims&ids='+encodeURIComponent(candidate.id);
+      const j=await getJson(entityUrl);
+      const claims=j.entities?.[candidate.id]?.claims||{};
+      const dob=claims.P569?.[0]?.mainsnak?.datavalue?.value?.time||'';
+      if(birthYear&&dob){
+        const y=String(dob).match(/^\+?(\d{4})-/)?.[1]||'';
+        if(y&&y!==birthYear)continue;
+      }
+      const file=claims.P18?.[0]?.mainsnak?.datavalue?.value;
+      if(file){
+        return 'https://commons.wikimedia.org/wiki/Special:Redirect/file/'+encodeURIComponent(file);
+      }
+    }
+  }catch(e){
+    console.warn('Wikidata image lookup failed for',m.name,String(e));
+  }
+  return '';
+}
+
 async function getVerifiedWikiPhoto(m){
+  const wikidataPhoto=await getWikidataPhoto(m);
+  if(wikidataPhoto)return wikidataPhoto;
   const birthYear=String(m.dobKey||'').slice(-4);
   const terms=[
     '"'+m.name+'" "Australian rules footballer" '+birthYear,
@@ -324,13 +363,11 @@ async function getVerifiedWikiPhoto(m){
 
 // Pre-build a verified backup for players that don't have a reliable AFL identity.
 // The browser still tries AFL.com.au / AFL Photos first; this is only the safety net.
-const missingForFallback=masterRecords.filter(m=>{
-  const rec=out.players[identity(m.name,m.dobKey)];
-  return !rec?.photoURL;
-});
+const missingForFallback=masterRecords;
 await mapPool(missingForFallback,6,async m=>{
-  const fallbackPhotoURL=await getVerifiedWikiPhoto(m);
   const key=identity(m.name,m.dobKey);
+  const preexisting=out.players[key]?.fallbackPhotoURL||'';
+  const fallbackPhotoURL=preexisting||await getVerifiedWikiPhoto(m);
   const existing=out.players[key];
   if(!existing){
     out.players[key]={
@@ -380,7 +417,7 @@ await fs.writeFile('data/afl_photo_index_summary.json',JSON.stringify({
   matchedCount:Object.keys(poolPlayers).length,
   photoUrlCount:withPhoto,
   fallbackPhotoCount:withFallback,
-  coveredByAnyPhoto:withPhoto+withFallback,
+  coveredByAnyPhoto:Object.values(poolPlayers).filter(x=>x.photoURL||x.fallbackPhotoURL).length,
   missingCount:missing.length,
   missing
 },null,2)+'\n');
