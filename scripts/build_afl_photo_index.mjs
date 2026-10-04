@@ -4,6 +4,13 @@ import fs from 'node:fs/promises';
 const API='https://aflapi.afl.com.au/afl/v2/';
 const START=2008, END=2026;
 
+// Preserve already-verified fallback photos across full rebuilds. A rebuild should
+// refresh AFL identities, not erase a player photo we already verified earlier.
+let previousIndex={players:{}};
+try{
+  previousIndex=JSON.parse(await fs.readFile('data/afl_photo_index.json','utf8'));
+}catch{}
+
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function getJson(url, tries=4){
   let last;
@@ -360,6 +367,33 @@ async function getVerifiedWikiPhoto(m){
     }
   }
   return '';
+}
+
+// Carry forward verified fallbacks from the previous published index before doing
+// any new network lookups. This prevents a later rebuild from wiping good photos.
+for(const m of masterRecords){
+  const key=identity(m.name,m.dobKey);
+  const old=previousIndex.players?.[key];
+  const oldFallback=old?.fallbackPhotoURL||'';
+  if(!oldFallback)continue;
+  if(!out.players[key]){
+    out.players[key]={
+      name:m.name,
+      dobKey:m.dobKey,
+      photoURL:'',
+      fallbackPhotoURL:oldFallback,
+      providerId:'',
+      champId:'',
+      aflProfileId:null,
+      team:'',
+      season:m.lastYear,
+      lastYear:m.lastYear,
+      source:old?.source||'verified-fallback-preserved'
+    };
+  }else if(!out.players[key].fallbackPhotoURL){
+    out.players[key].fallbackPhotoURL=oldFallback;
+    if(!out.players[key].source)out.players[key].source=old?.source||'verified-fallback-preserved';
+  }
 }
 
 // Pre-build a verified backup for players that don't have a reliable AFL identity.
