@@ -164,6 +164,7 @@ sourceStatus:x[2]
 let allPlayerMeta=[];
 let currentAflMap=new Map();
 let localAflPhotoMap=new Map();
+let localAflPhotoByDob=new Map();
 let officialAflPlayerMap=new Map();
 let officialAflCataloguePromise=null;
 let officialAflCatalogueDone=false;
@@ -311,15 +312,68 @@ try{
 const r=await fetchWithTimeout(AFL_PHOTO_INDEX_URL,{cache:'no-store'},6000);
 if(!r.ok)return new Map();
 const j=await r.json();
-return new Map(Object.entries(j.players||{}));
+const exact=new Map(Object.entries(j.players||{}));
+const byDob=new Map();
+for(const rec of exact.values()){
+if(!rec?.dobKey)continue;
+if(!byDob.has(rec.dobKey))byDob.set(rec.dobKey,[]);
+byDob.get(rec.dobKey).push(rec);
+}
+localAflPhotoByDob=byDob;
+return exact;
 }catch(e){
 console.warn('Local AFL photo index unavailable',e);
+localAflPhotoByDob=new Map();
 return new Map();
 }
 }
 
+function photoNameMatchScore(gameName,aflName){
+const a=String(gameName||'').trim().split(/\s+/).filter(Boolean);
+const b=String(aflName||'').trim().split(/\s+/).filter(Boolean);
+if(!a.length||!b.length)return 0;
+
+const af=normaliseName(a[0]);
+const bf=normaliseName(b[0]);
+const al=normaliseName(a[a.length-1]);
+const bl=normaliseName(b[b.length-1]);
+let score=0;
+
+if(af&&bf){
+if(af===bf)score+=4;
+else if(af.startsWith(bf)||bf.startsWith(af))score+=2;
+else if(af[0]===bf[0])score+=1;
+}
+if(al&&bl&&al===bl)score+=5;
+
+const an=normaliseName(gameName);
+const bn=normaliseName(aflName);
+if(an===bn)score+=8;
+else if(an&&bn&&(an.includes(bn)||bn.includes(an)))score+=3;
+
+return score;
+}
+
+function findLocalAflPhotoRecord(p){
+const exact=localAflPhotoMap.get(officialIdentityKey(p.name,p.dobKey));
+if(exact)return exact;
+if(!p.dobKey)return null;
+
+const candidates=localAflPhotoByDob.get(p.dobKey)||[];
+let best=null,bestScore=0;
+for(const rec of candidates){
+const score=photoNameMatchScore(p.name,rec.name);
+if(score>bestScore){
+best=rec;
+bestScore=score;
+}
+}
+// Require meaningful name agreement as well as exact DOB.
+return bestScore>=6?best:null;
+}
+
 function applyLocalAflPhoto(p){
-const hit=localAflPhotoMap.get(officialIdentityKey(p.name,p.dobKey));
+const hit=findLocalAflPhotoRecord(p);
 if(!hit)return p;
 return {
 ...p,
@@ -467,7 +521,7 @@ return resolved;
 
 async function resolveAflWebsitePhoto(p){
 const key=officialIdentityKey(p.name,p.dobKey);
-const local=localAflPhotoMap.get(key);
+const local=findLocalAflPhotoRecord(p);
 if(local?.photoURL)return local.photoURL;
 if(p.photo)return p.photo;
 
