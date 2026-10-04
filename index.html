@@ -547,6 +547,13 @@ if(!target.height)return "I DON'T KNOW — height isn't available for this playe
 return target.height<Number(m[1])?'YES':'NO';
 }
 
+m=s.match(/(?:played|career|seasons?)\s+(?:for\s+)?(?:more than|over)\s+(\d+)\s*(?:seasons?|years?)?/);
+if(m)return target.seasonsPlayed>Number(m[1])?'YES':'NO';
+m=s.match(/(?:played|career|seasons?)\s+(?:for\s+)?(?:less than|under)\s+(\d+)\s*(?:seasons?|years?)?/);
+if(m)return target.seasonsPlayed<Number(m[1])?'YES':'NO';
+m=s.match(/(?:played|career|seasons?)\s+(?:for\s+)?(?:exactly\s+)?(\d+)\s*(?:seasons?|years?)/);
+if(m)return target.seasonsPlayed===Number(m[1])?'YES':'NO';
+
 m=s.match(/(?:played|play|debuted)\s+(?:before|prior to)\s+(\d{4})/);
 if(m&&target.firstYear)return target.firstYear<Number(m[1])?'YES':'NO';
 m=s.match(/(?:played|play)\s+(?:after|since)\s+(\d{4})/);
