@@ -55,6 +55,20 @@ for(let i=1;i<masterLines.length;i++){
   masterRecords.push({name,first,last,dobKey:dk,lastYear});
 }
 
+
+const masterByNormName=new Map();
+const masterByFirstLast=new Map();
+const firstToken=s=>norm(String(s||'').trim().split(/\s+/)[0]||'');
+const lastToken=s=>norm(String(s||'').trim().split(/\s+/).pop()||'');
+for(const m of masterRecords){
+  const nk=norm(m.name);
+  if(!masterByNormName.has(nk))masterByNormName.set(nk,[]);
+  masterByNormName.get(nk).push(m);
+  const fl=norm(m.first)+'|'+norm(m.last);
+  if(!masterByFirstLast.has(fl))masterByFirstLast.set(fl,[]);
+  masterByFirstLast.get(fl).push(m);
+}
+
 const compsJson=await getJson(API+'competitions');
 const comps=Array.isArray(compsJson)?compsJson:(compsJson.competitions||[]);
 const aflComp=comps.find(x=>x.code==='AFL'||x.code==='AFLM'||x.id===1)||comps[0];
@@ -135,16 +149,38 @@ while(page<numPages){
   numPages=Number(pg.numPages)||Math.ceil((Number(pg.numEntries)||17403)/(Number(pg.pageSize)||pageSize));
   for(const p of players){
     const dk=dobKey(p.dateOfBirth);
-    if(!dk||!wantedDobs.has(dk))continue;
-    const name=((p.firstName||'')+' '+(p.surname||'')).trim();
-    if(!name)continue;
-    const key=identity(name,dk);
+    const officialName=((p.firstName||'')+' '+(p.surname||'')).trim();
+    if(!officialName)continue;
+
+    let candidates=masterByNormName.get(norm(officialName))||[];
+    if(!candidates.length){
+      const fl=norm(p.firstName)+'|'+lastToken(p.surname);
+      candidates=masterByFirstLast.get(fl)||[];
+    }
+    if(!candidates.length)continue;
+
+    // Prefer exact DOB, otherwise birth-year match, otherwise a unique name match.
+    let matches=candidates;
+    if(dk){
+      const exactDob=candidates.filter(m=>m.dobKey===dk);
+      if(exactDob.length)matches=exactDob;
+      else{
+        const y=dk.slice(-4);
+        const sameYear=candidates.filter(m=>String(m.dobKey||'').slice(-4)===y);
+        if(sameYear.length)matches=sameYear;
+      }
+    }
+    if(matches.length!==1)continue;
+
+    const m=matches[0];
+    const key=identity(m.name,m.dobKey);
     const providerId=p.providerId||'';
     const champId=String(providerId).replace(/^CD_I/,'');
     const prev=out.players[key]||{};
     out.players[key]={
-      name,
-      dobKey:dk,
+      name:m.name,
+      officialName,
+      dobKey:m.dobKey,
       photoURL:prev.photoURL||'',
       providerId:providerId||prev.providerId||'',
       champId:champId||prev.champId||'',
@@ -168,9 +204,6 @@ for(const rec of Object.values(out.players)){
   if(!byDob.has(rec.dobKey))byDob.set(rec.dobKey,[]);
   byDob.get(rec.dobKey).push(rec);
 }
-const firstToken=s=>norm(String(s||'').trim().split(/\s+/)[0]||'');
-const lastToken=s=>norm(String(s||'').trim().split(/\s+/).pop()||'');
-
 for(const m of masterRecords){
   const gameKey=identity(m.name,m.dobKey);
   let rec=out.players[gameKey];
