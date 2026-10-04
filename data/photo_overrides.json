@@ -1,16 +1,8 @@
 {
-  "generated": "2026-10-04T07:44:09.709Z",
+  "generated": "2026-10-04T07:46:13.080Z",
   "sourcePriority": "AFL.com.au primary; these are verified fallbacks only when the primary image fails.",
   "testedPlayers": 767,
-  "brokenPrimary": 132,
-  "verifiedOverrides": 1,
-  "players": {
-    "jasonakermanis|24021977": {
-      "name": "Jason Akermanis",
-      "dobKey": "24021977",
-      "url": "https://upload.wikimedia.org/wikipedia/commons/6/62/Jason_Akermanis.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
-      "source": "Wikipedia/Wikimedia",
-      "failedAflPhoto": ""
-    }
-  }
+  "brokenPrimary": 83,
+  "verifiedOverrides": 0,
+  "players": {}
 }
