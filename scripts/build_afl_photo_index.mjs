@@ -1,3 +1,4 @@
+// Rebuild marker: full all-time catalogue + verified fallbacks
 import fs from 'node:fs/promises';
 
 const API='https://aflapi.afl.com.au/afl/v2/';
