@@ -944,14 +944,11 @@ if(!p||!document.body.contains(el))continue;
 // If the browser rejects it, the card falls back into the AFL archive resolver below.
 if(p.status==='current'&&p.photo){
 const direct=p.photo;
-const ok=await imageWorks(direct,1800);
-if(ok&&document.body.contains(el)){
 el.style.backgroundImage='url("'+direct.replace(/"/g,'%22')+'")';
 el.classList.add('photo-ready');
 el.classList.remove('no-photo');
 el.textContent='';
 continue;
-}
 }
 
 if(!p.fantasyId&&!p.providerId&&!officialAflCatalogueDone){
