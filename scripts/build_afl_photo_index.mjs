@@ -363,7 +363,10 @@ async function getVerifiedWikiPhoto(m){
 
 // Pre-build a verified backup for players that don't have a reliable AFL identity.
 // The browser still tries AFL.com.au / AFL Photos first; this is only the safety net.
-const missingForFallback=masterRecords;
+const missingForFallback=masterRecords.filter(m=>{
+  const rec=out.players[identity(m.name,m.dobKey)];
+  return !rec?.photoURL;
+});
 await mapPool(missingForFallback,6,async m=>{
   const key=identity(m.name,m.dobKey);
   const preexisting=out.players[key]?.fallbackPhotoURL||'';
