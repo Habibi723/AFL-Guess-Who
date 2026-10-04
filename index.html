@@ -350,18 +350,15 @@ return '';
 }
 
 function portrait(p){
-if(p.photo){
-return '<img class="avatar" src="'+p.photo+'" alt="'+p.name+'" loading="lazy" onerror="this.outerHTML=\\'<div class=&quot;avatar fallback wiki-slot&quot; data-slug=&quot;'+p.slug+'&quot;>'+initials(p.name)+'</div>\\'">';
-}
-return '<div class="avatar fallback wiki-slot" data-slug="'+p.slug+'">'+initials(p.name)+'</div>';
+return '<div class="avatar fallback photo-slot" data-slug="'+p.slug+'">'+initials(p.name)+'</div>';
 }
 
 async function hydratePhotos(){
-const slots=[...document.querySelectorAll('.wiki-slot')];
+const slots=[...document.querySelectorAll('.photo-slot')];
 await Promise.all(slots.map(async el=>{
 const p=board.find(x=>x.slug===el.dataset.slug);
 if(!p)return;
-const src=await wikiPhoto(p);
+const src=p.photo||await wikiPhoto(p);
 if(src&&document.body.contains(el)){
 el.style.backgroundImage='url("'+src.replace(/"/g,'%22')+'")';
 el.classList.add('photo-ready');
@@ -427,7 +424,7 @@ $('grid').innerHTML=board.map(p=>{
 const current=p.currentTeam?'<span>⭐ Current: '+p.currentTeam+'</span>':'';
 const clubs=p.careerTeams.length?p.careerTeams.join(' / '):'Club history unavailable';
 const years=(p.firstYear&&p.lastYear)?'<span>📅 '+p.firstYear+'–'+p.lastYear+'</span>':'';
-return '<button type="button" class="player '+(flippedCards.has(p.slug)?'flipped':'')+'" onclick="toggleCard(\\''+p.slug.replace(/'/g,"\\'")+'\\')">'+
+return '<button type="button" data-slug="'+p.slug+'" class="player '+(flippedCards.has(p.slug)?'flipped':'')+'">'+
 '<div class="player-front">'+portrait(p)+
 '<h3>'+p.name+'</h3>'+
 '<div class="player-meta">'+current+
@@ -594,6 +591,10 @@ $('newBtn').disabled=false;
 }
 }
 
+$('grid').addEventListener('click',e=>{
+const card=e.target.closest('.player[data-slug]');
+if(card)toggleCard(card.dataset.slug);
+});
 $('askBtn').onclick=ask;
 $('guessBtn').onclick=finalGuess;
 $('newBtn').onclick=newGame;
